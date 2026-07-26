@@ -246,6 +246,8 @@
    .DS_Store        ← Macが作る隠しファイル
    Thumbs.db        ← Windowsが作るサムネイルキャッシュ
 </pre>
+<br>実物はこんな感じです。100行ほどありますが、全部GitHubが用意してくれたものです。
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-05_gitignore.png" alt="Unity用の.gitignore">
 <li>【超重要】Unity特有の注意点：.metaファイルは必ず一緒にコミットする
 <br>Assetsフォルダを見ると、画像1枚につき「Player.png」と「Player.png.meta」の2つがあるはずです。
 <br>この.metaファイルには、<strong>その素材の設定（Pixels Per Unit、Sprite Modeなど）と、Unity内部での通し番号（GUID）</strong>が書かれています。
@@ -329,8 +331,9 @@
 <ul><li><strong>OneDriveやGoogle Driveの同期フォルダの中に置かない</strong> ← これ超重要！</li></ul>
 <br>後者が特に事故ります。GitとOneDriveが同時に同じファイルをいじろうとして、両方が壊れます。<strong>バックアップはGitHubがやってくれるので、クラウド同期は不要</strong>です。おすすめは <code>C:\Users\自分の名前\source\repos</code> あたり。
 <li>「Clone」ボタンを押すと、ダウンロードが始まります。プロジェクトの大きさによっては数分かかります。
-<li>完了したら、Forkの画面にファイル一覧と履歴が表示されます。これがあなたの作業場所です。
-<div class="placeholder">📷 スクショ：クローン直後のFork画面</div>
+<li>完了したら、Forkの画面に履歴が表示されます。これがあなたの作業場所です。
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-07_fork_main.png" alt="Forkのメイン画面">
+<br>左に<strong>ブランチ一覧</strong>、中央に<strong>変更履歴</strong>、下に<strong>選択したコミットの中身</strong>。この3ブロックだけ覚えておけば大丈夫です。
 <li>では、UnityHubからこのプロジェクトを開いてみましょう。
 <ul><li>UnityHubの「Add」→「Add project from disk」</li></ul>
 <ul><li>さっきクローンしたフォルダを選択</li></ul>
@@ -350,7 +353,8 @@
 <br>（例：シーンにテキストを1つ追加して保存、画像を1枚Assetsに追加、など）
 <br>※必ず<strong>Unity側でCtrl+Sして保存</strong>してから、Forkに戻ってください。保存していない変更はGitからは見えません。
 <li>Forkを開くと、左メニューの一番上に「Local Changes」という項目があり、数字が付いているはずです。この数字が「変更されたファイルの数」です。クリックしてみましょう。
-<div class="placeholder">📷 スクショ：ForkのLocal Changes画面</div>
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_localchanges_image.png" alt="ForkのLocal Changes画面">
+<br>ちなみにこのスクショ、<strong>画像ファイルを選ぶとプレビューまで出る</strong>ところを写しています。デザイナーさんには嬉しい機能ですね。
 <li>画面が上下2つに分かれています。ここがコミットの操作盤です。
 <ul><li><strong>上（Unstaged）</strong>：変更されたけど、まだセーブ対象に選んでいないファイル</li></ul>
 <ul><li><strong>下（Staged）</strong>：セーブ対象に選んだファイル</li></ul>
@@ -358,8 +362,10 @@
 「この変更をセーブに含める」と選ぶ作業。<strong>カメラのファインダーを覗いて、写す範囲を決める作業</strong>だと思ってください。全部写す必要はなく、今回の作業に関係するものだけ選べます。
 </div>
 <li>ファイルを選んで「Stage」ボタン（または右クリック→Stage）を押すと、下に移動します。
-<br>全部まとめて送るなら「Stage All」でOK。
-<br>※このとき、右側にそのファイルの変更内容が表示されます。画像なら<strong>変更前と変更後を並べて見られる</strong>ので、デザイナーさんには嬉しい機能です。
+<br>全部まとめて送るなら「Stage」でOK。
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_stage_area.png" alt="StagedとUnstaged">
+<br>※このとき、右側にそのファイルの変更内容が表示されます。テキストファイルなら、<strong>追加した行が緑色</strong>でハイライトされます。
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_diff_text.png" alt="テキストの差分表示">
 <li>【1-05の復習】.metaファイルも一緒にステージしてください。
 <br>画像を1枚追加すると「Player.png」と「Player.png.meta」の2つが出てくるはずです。<strong>必ずセット</strong>で。片方だけコミットすると、相手の環境で絵が外れます。
 <li>下の入力欄に、コミットメッセージを書きます。ここが実は一番大事です。
@@ -378,8 +384,11 @@
 <p>コツは「<strong>何を</strong>どうしたか」を書くこと。3ヶ月後の自分は、絶対に「修正」の中身を覚えていません。</p>
 <ol class="steps" start="10">
 <li>メッセージを書いたら「Commit」ボタンを押します。これでセーブ完了！
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_commit_message.png" alt="コミットメッセージの入力欄">
+<br>※ボタンに「Commit 1 File」と、対象ファイル数が出ます。意図した数になっているか確認してから押しましょう。
 <li>左メニューの「All Commits」（履歴）を見てみましょう。あなたのコミットが、名前とメッセージ付きで一番上に追加されているはずです。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-07_commits.png" alt="コミット履歴の例">
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_history.png" alt="Forkのコミット履歴">
+<br>左端の<strong>カラフルな線が、ブランチの枝分かれ</strong>を表しています。今は意味が分からなくてOK。次々回に分かります。
 <li>【コツ】コミットは細かく、こまめに
 <br>「1日の終わりにまとめて1回」ではなく、「1つの作業が終わるたびに1回」がおすすめです。
 <ul><li>❌ 「今日やったこと全部」（何かあった時に戻る場所が粗い）</li></ul>
@@ -406,15 +415,17 @@ push は「押し出す」、pull は「引っぱる」。自分から見て、�
 </div>
 <ol class="steps" start="4">
 <li>まずプッシュしてみましょう。Forkの上部ツールバーにある「Push」ボタン（↑の矢印アイコン）を押します。
-<div class="placeholder">📷 スクショ：ForkのPushボタン</div>
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-09_fork_toolbar.png" alt="Forkのツールバー">
+<br>※左から Quick Launch / Fetch / <strong>Pull</strong> / <strong>Push</strong> / Stash。今回使うのは3番目と4番目です。
 <li>確認ダイアログが出るので、そのまま「Push」を押せばOK。
 <br>数秒待って、エラーが出なければ納品完了です。
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-09_fork_push_dialog.png" alt="Pushダイアログ">
+<br>※「Create tracking reference」にチェックが入っていればそのままでOK。これは「このブランチをGitHub側と紐づける」という意味です。
 <br>※初回はGitHubのログインを求められることがあります。1-04で連携していれば自動で通ります。
 <li>GitHubのリポジトリページをブラウザで開いて、リロードしてみてください。
 <br>さっきのコミットメッセージが、ちゃんとサイトに反映されているはずです。これでチーム全員があなたの作業を見られる状態になりました。
 <li>次はプル。他のメンバーが納品したものを受け取る操作です。
-<br>Forkの「Pull」ボタン（↓の矢印アイコン）を押すだけ。
-<div class="placeholder">📷 スクショ：ForkのPullボタン</div>
+<br>さっきのツールバーの「Pull」ボタン（↓の矢印アイコン）を押すだけ。こちらも確認ダイアログでそのままOKで大丈夫です。
 <li>【超重要】作業を始める前は、必ずプルする
 <br>これはチーム制作の<strong>鉄の掟</strong>です。理由を絵で説明します。
 <pre>
@@ -465,8 +476,10 @@ push は「押し出す」、pull は「引っぱる」。自分から見て、�
 <ul><li><strong>main</strong> ＝ 清書ノート（きれいな状態を保つ。人に見せられる）</li></ul>
 <ul><li><strong>feature</strong> ＝ 下書きノート（ぐちゃぐちゃに書いてOK。失敗し放題）</li></ul>
 <li>では実際に作ってみましょう。Forkの左メニューに「Branches」という項目があり、今は <code>main</code> だけがあるはずです。
-<li>ブランチを作るには、<code>Repository &gt; New Branch</code>（またはツールバーの「New Branch」ボタン）を押します。
-<div class="placeholder">📷 スクショ：Forkのブランチ作成画面</div>
+<li>ブランチを作るには、画面右上の「Branch」ボタン（またはメニューの <code>Repository &gt; Create Branch</code>）を押します。
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-10_fork_newbranch.png" alt="ブランチ作成ダイアログ">
+<br>※「Create branch at」は「どこから枝分かれさせるか」。今いるブランチが自動で入ります。
+<br>※「Check out after create」にチェックを入れると、作成と同時にそのブランチへ移動します。入れておくと便利です。
 <li>名前を付けます。ここでルールがあります。
 <pre>
    feature/作業内容
@@ -481,9 +494,10 @@ push は「押し出す」、pull は「引っぱる」。自分から見て、�
 ブランチを切り替えること。切り替えると、<strong>フォルダの中身が一瞬でそのブランチの状態に入れ替わります</strong>。魔法みたいですが、Gitが履歴から復元しているだけです。
 </div>
 <li>【重要】今どのブランチにいるか、必ず確認するクセをつける
-<br>Forkの左メニューで、<strong>太字になっているのが現在のブランチ</strong>です。作業を始める前にここをチラ見してください。
+<br>Forkの左メニューで、<strong>チェックマーク（✔）が付いているのが現在のブランチ</strong>です。作業を始める前にここをチラ見してください。
 <br>「mainで作業しちゃった！」は初心者あるあるのミスNo.1です（対処法は1-14の逆引き表に載せます）。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-10_branches.png" alt="ブランチ一覧">
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-10_fork_branches.png" alt="Forkのブランチ一覧">
+<br>※<code>feature</code> の下に枝がぶら下がっているのは、<code>feature/○○</code> という名前の「/」でForkが自動的にフォルダ分けしてくれているからです。
 <li>試しに、ブランチを行ったり来たりしてみましょう。
 <ul><li>featureブランチで何かファイルを追加してコミット</li></ul>
 <ul><li>mainにチェックアウト（ダブルクリックで切り替え）</li></ul>
@@ -588,6 +602,7 @@ push は「押し出す」、pull は「引っぱる」。自分から見て、�
 <pre>
    base: develop  ←  compare: feature/enemy-graphics   ⭕ これが正解
 </pre>
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-12_pr_create.png" alt="PR作成画面（baseがdevelopになっている）">
 <li>タイトルと説明を書きます。
 <ul><li><strong>タイトル</strong>：何をしたか一言（例：「敵キャラのグラフィックを追加」）</li></ul>
 <ul><li><strong>説明</strong>：もう少し詳しく</li></ul>
@@ -612,6 +627,8 @@ push は「押し出す」、pull は「引っぱる」。自分から見て、�
 <ul><li><strong>Commits</strong>：このPRに含まれるコミット一覧</li></ul>
 <ul><li><strong>Files changed</strong>：<strong>変更されたファイルの中身が全部見られる</strong>タブ。画像も変更前後を並べて表示できます</li></ul>
 <br>「Files changed」は、レビューするときのメイン画面です。行にマウスを乗せると「＋」が出て、<strong>ピンポイントでコメント</strong>を付けられます。
+<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-12_pr_files.png" alt="Files changedタブとコメント">
+<br>※このスクショ、実は自動レビューBotが「READMEには敵20体でクリアと書いてあるけど、シーンの設定は1体になってるよ」と指摘してくれているところです。こういう食い違いを、合流前に見つけられるのがPRの価値です。
 <li>PRを出したら、チームに一声かけましょう。
 <br>&gt; 「敵の絵のPR出しました！レビューお願いします 🙏」
 <br>GitHubは通知を出しますが、埋もれがちです。DiscordやSlackで言うのが確実です。

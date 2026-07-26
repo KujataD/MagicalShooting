@@ -53,6 +53,10 @@
    Thumbs.db        ← Windowsが作るサムネイルキャッシュ
    ```
 
+   実物はこんな感じです。100行ほどありますが、全部GitHubが用意してくれたものです。
+
+   ![Unity用の.gitignore](../git_images/1-05_gitignore.png)
+
 8. 【超重要】Unity特有の注意点：.metaファイルは必ず一緒にコミットする
 
    Assetsフォルダを見ると、画像1枚につき「Player.png」と「Player.png.meta」の2つがあるはずです。

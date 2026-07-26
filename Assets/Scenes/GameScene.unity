@@ -371,7 +371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   playerHealth_: {fileID: 1487784775}
   playerDeathAnimation_: {fileID: 1487784776}
-  clearTargetCount_: 1
+  clearTargetCount_: 20
   clearWaitTime_: 1.5
 --- !u!4 &1238622307
 Transform:
