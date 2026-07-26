@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>dev tra 5章</title>
+<style>
+  body {
+    font-family: "Yu Gothic UI", "Meiryo", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 11pt;
+    line-height: 1.7;
+    color: #222;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1.doctitle { font-size: 22pt; margin: 0 0 24px 0; }
+  h1.chapter {
+    font-size: 17pt;
+    line-height: 1.4;
+    margin: 28px 0 14px 0;
+    page-break-before: always;
+  }
+  h1.chapter.first { page-break-before: avoid; }
+  ol.steps { padding-left: 1.6em; }
+  ol.steps > li { margin: 10px 0; }
+  .term {
+    background: #f1f5f9;
+    border-left: 4px solid #94a3b8;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 10.5pt;
+  }
+  .term b { display: block; }
+  .warn { font-size: 10.5pt; }
+  pre {
+    background: #f6f3ee;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    page-break-inside: auto;
+  }
+  .filename { font-size: 10pt; color: #555; margin: 2px 0 12px 2px; }
+  img { max-width: 100%; display: block; margin: 10px auto; border: 1px solid #ddd; }
+  img.small { max-width: 55%; }
+  .placeholder {
+    background: #fff7e6;
+    border: 1px dashed #d4a017;
+    color: #8a6d1a;
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 10pt;
+  }
+  .qa { font-weight: bold; font-size: 13pt; margin: 24px 0; }
+  .caption { font-size: 9.5pt; color: #666; text-align: center; margin-top: -4px; }
+</style>
+</head>
+<body>
+
+<h1 class="doctitle">dev tra　5章：ゲームループ（5-02〜5-05）</h1>
+
+<!-- ================= 5-02 ================= -->
+<h1 class="chapter first">【5-02】GameClearになるようにしよう！【5章：ゲームループ】</h1>
+<ol class="steps">
+<li>クリア条件：敵を20体倒したら、ゲームクリアシーンに移行する</li>
+<li>前回はゲームオーバーを作ったので、今回はその逆、ゲームクリアを作ろう。<br>
+やられたら終わり、だけだと切ないので、ちゃんと「勝ち」も用意してあげよう。<br>
+今回のクリア条件は「敵を20体倒す」です。</li>
+<li>まずはゲームクリアシーンを作りましょう。<br>
+と言っても、ほぼGameOverSceneと同じものなので、ゼロから作る必要はありません。<br>
+ScenesフォルダのGameOverSceneを選択して、Ctrl + D（Macは Command + D）で複製してください。
+<div class="term"><b>用語：複製（Duplicate）</b>
+選択中のものをコピーしてすぐ隣に作ること。ショートカットはCtrl + D。シーンでもスクリプトでもゲームオブジェクトでも使える万能技です。</div></li>
+<li>複製したシーンの名前を「GameClearScene」に変更しましょう。
+<img class="small" src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-02_project_gameclearscene.png" alt="Project">
+</li>
+<li>GameClearSceneをダブルクリックで開いて、
+<ul>
+<li>ヒエラルキーの「GameOver」オブジェクトの名前を「GameClear」に変更</li>
+<li>インスペクターのテキストを「Game Over」から「Game Clear」に変更</li>
+</ul>
+しましょう。
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-02_gameview_gameclear.png" alt="Game Clear">
+</li>
+<li>こうなっていれば、成功です！</li>
+<li>では、GameSceneに戻って「敵を20体倒したらクリア」の仕組みを作っていきます。<br>
+問題です。敵を倒した数は、誰が数えるべきでしょうか？
+<ul>
+<li>敵自身？　→　倒されたら消えちゃうので数えられない</li>
+<li>プレイヤー？　→　できなくはないけど、プレイヤーは「動く・撃つ・やられる」で手一杯</li>
+</ul>
+こういう「ゲーム全体のこと」は、5-01で作ったゲームの監督、GameManagerの出番です。</li>
+<li>GameManager.csを開いて、このコードにしましょう。
+<pre>using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class GameManager : MonoBehaviour
+{
+    // シングルトン化
+    public static GameManager Instance { get; private set; }
+
+    // ゲームの状態
+    public enum GameState
+    {
+        PLAYING,
+        GAMEOVER,
+        GAMECLEAR,
+    }
+
+    // ゲームの状態
+    public GameState gameState_ { get; private set; }
+
+    // プレイヤーの体力
+    [SerializeField] private PlayerHealth playerHealth_;
+
+    // プレイヤーのやられアニメーション
+    [SerializeField] private PlayerDeathAnimation playerDeathAnimation_;
+
+    // クリアに必要な撃破数
+    [SerializeField] private int clearTargetCount_ = 20;
+
+    // クリアしてからシーン切り替えまでの待機時間（秒）
+    [SerializeField] private float clearWaitTime_ = 1.5f;
+
+    // 敵の撃破数
+    private int defeatCount_ = 0;
+
+    void Awake()
+    {
+        // instance元を設定
+        Instance = this;
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        // nullチェック
+        Debug.Assert(playerHealth_ != null, "PlayerHealth が設定されていません");
+        Debug.Assert(playerDeathAnimation_ != null, "PlayerDeathAnimation が設定されていません");
+
+        // 開始時のゲーム状態を設定
+        gameState_ = GameState.PLAYING;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // 各状態の更新
+        switch (gameState_)
+        {
+            case GameState.PLAYING:
+                // プレイヤーが死んだらゲームオーバー
+                if (!playerHealth_.IsAlive())
+                {
+                    gameState_ = GameState.GAMEOVER;
+                }
+
+                // 敵を規定数倒したらゲームクリア
+                if (defeatCount_ &gt;= clearTargetCount_)
+                {
+                    gameState_ = GameState.GAMECLEAR;
+                }
+
+                break;
+            case GameState.GAMEOVER:
+                // ゲームオーバーシーンに切り替え
+                if (playerDeathAnimation_.isAnimationFinished_)
+                {
+                    ChangeGameOverScene();
+                }
+                break;
+
+            case GameState.GAMECLEAR:
+                // 少し待ってからゲームクリアシーンに切り替え
+                clearWaitTime_ -= Time.deltaTime;
+                if (clearWaitTime_ &lt;= 0.0f)
+                {
+                    ChangeGameClearScene();
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// シーン切り替え
+    /// &lt;/summary&gt;
+    void ChangeGameOverScene()
+    {
+        SceneManager.LoadScene("GameOverScene");
+    }
+
+    /// &lt;summary&gt;
+    /// シーン切り替え（ゲームクリア）
+    /// &lt;/summary&gt;
+    void ChangeGameClearScene()
+    {
+        SceneManager.LoadScene("GameClearScene");
+    }
+
+    /// &lt;summary&gt;
+    /// 敵の撃破数を加算
+    /// &lt;/summary&gt;
+    public void AddDefeatCount()
+    {
+        // 撃破数を加算
+        defeatCount_++;
+
+        // わかりやすいようにログを出す
+        Debug.Log("Defeat Count : " + defeatCount_);
+    }
+
+}</pre>
+<div class="filename">GameManager.cs</div></li>
+<li>ポイントは3つ。
+<ul>
+<li>撃破数を数える変数 defeatCount_ と、それを+1する AddDefeatCount() を追加した</li>
+<li>PLAYING中に「撃破数がクリア目標に届いたか」をチェックして、届いたらGAMECLEARに切り替え</li>
+<li>GAMECLEARになったら、少しだけ待ってからゲームクリアシーンへ移動</li>
+</ul>
+すぐにシーンを切り替えず1.5秒待っているのは、20体目の敵が吹っ飛ぶところを見届けてから移動したほうが気持ちいいからです。この辺はお好みで。</li>
+<li>次に、「敵が倒されたよ」とGameManagerに報告する側を作ります。<br>
+敵のHPを管理しているのは誰だったか覚えていますか？そう、EnemyHealthです。<br>
+EnemyHealth.csをこのコードにしましょう。
+<pre>using UnityEngine;
+
+public class EnemyHealth : MonoBehaviour
+{
+    [SerializeField] private int hp_ = 3;
+
+    private EnemyDamageFlash flash_;
+    private EnemyDeathAnimation deathAnimation_;
+    void Start()
+    {
+        flash_ = GetComponent&lt;EnemyDamageFlash&gt;();
+        deathAnimation_ = GetComponent&lt;EnemyDeathAnimation&gt;();
+    }
+
+    public void Damage(int damage)
+    {
+        // ダメージ計算
+        hp_ -= damage;
+
+        // わかりやすいようにログを出す
+        Debug.Log("Enemy HP : " + hp_);
+
+        // 赤色にセット
+        flash_.Flash();
+
+        // hpがゼロ以下ならエネミーを削除
+        if (hp_ &lt;= 0)
+        {
+            // GameManagerに撃破数を報告
+            GameManager.Instance.AddDefeatCount();
+
+            deathAnimation_.StartAnimation();
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// 生きているかどうか
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;&lt;/returns&gt;
+    public bool IsAlive()
+    {
+        return (hp_ &gt; 0);
+    }
+}</pre>
+<div class="filename">EnemyHealth.cs</div></li>
+<li>追加したのは GameManager.Instance.AddDefeatCount(); の1行だけです。<br>
+5-01でGameManagerをシングルトンにしておいたおかげで、敵は「GameManager.Instance」と書くだけで、どこからでも監督に報告できます。仕込みが効いてくると気持ちいいですね。<br><br>
+ちなみに、画面外に逃げられた敵は倒したことにはなりません。あくまで「撃破」した数だけカウントされます。</li>
+<li>最後に、GameClearSceneをUnityに登録します。5-01でやったやつです。<br>
+File &gt; Build Profiles を開いて、Open Scene Listをクリック。<br>
+GameClearSceneを開いた状態で「Add Open Scenes」を押すと、GameClearSceneがリストに追加されます。
+<img class="small" src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-03_scenelist.png" alt="Scene List">
+<div class="caption">※スクショは次回のTitleSceneまで追加済みのものです。この時点ではGameClearSceneが増えていればOK！</div></li>
+<li>では、GameSceneに移行してテストプレイ！敵を20体倒すと。。。ゲームクリアシーンに移動したら完成！<br><br>
+20体倒すのが面倒な人は、ヒエラルキーのGameManagerを選択して、インスペクターの「Clear Target Count」を2とかに変えてテストしましょう。<br>
+2-10でやった[SerializeField]のおかげで、コードを書き換えずに調整できます。テストが終わったら20に戻すのを忘れずに！
+<img class="small" src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-02_gamemanager_inspector.png" alt="GameManager Inspector">
+</li>
+<li class="qa-item"><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
+</ol>
+
+<!-- ================= 5-03 ================= -->
+<h1 class="chapter">【5-03】タイトルから始められるようにしよう！【5章：ゲームループ】</h1>
+<ol class="steps">
+<li>クリア条件：タイトル→ゲーム→ゲームオーバー／ゲームクリア→タイトル　のループを完成させる</li>
+<li>ゲームオーバーとゲームクリアができたので、いよいよ仕上げです。<br>
+世の中のゲームを思い出してみてください。起動したらまずタイトル画面が出て、遊び終わったらまたタイトルに戻ってきますよね。<br>
+この「1周まわる流れ」のことをゲームループと呼びます。これができると、一気に「ゲームらしく」なります。今回で5章のタイトル回収です。</li>
+<li>まずはタイトルシーンを作りましょう。もうお馴染み、GameOverSceneをCtrl + Dで複製して、名前を「TitleScene」にしてください。</li>
+<li>TitleSceneを開いて、テキストをタイトルっぽくします。
+<ul>
+<li>ヒエラルキーの「GameOver」オブジェクトの名前を「Title」に変更</li>
+<li>テキストを「Magical Shooting」に変更（自分のゲーム名にしてもOK！）</li>
+<li>Font Sizeを60に変更</li>
+<li>見切れる場合は、Rect TransformのWidthを600、Heightを100くらいに</li>
+<li>Pos Yを60にして、少し上に配置</li>
+</ul>
+<img class="small" src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-03_title_inspector.png" alt="Title Inspector">
+</li>
+<li>タイトルだけだと寂しいので、「スペースキーで始まるよ」の案内も置きましょう。<br>
+ヒエラルキーのTitleを選択してCtrl + Dで複製し、
+<ul>
+<li>名前を「PressKey」に変更</li>
+<li>テキストを「Press Space to Start」に変更</li>
+<li>Font Sizeを24に変更</li>
+<li>Pos Yを-80にして、タイトルの下に配置</li>
+</ul>
+してください。</li>
+<li>このような画面になっていれば、成功です！
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-03_gameview_title.png" alt="Title Game View">
+</li>
+<li>では、「キーを押したらシーンが切り替わる」スクリプトを作ります。<br>
+Scripts &gt; Sceneフォルダに「SceneChangeOnKey」スクリプトを作成して、このコードを書きましょう。
+<pre>using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class SceneChangeOnKey : MonoBehaviour
+{
+    // 押されたら遷移するキー
+    [SerializeField] private KeyCode key_ = KeyCode.Space;
+
+    // 遷移先のシーン名
+    [SerializeField] private string nextSceneName_ = "";
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        // nullチェック
+        Debug.Assert(nextSceneName_ != "", "nextSceneName_ が設定されていません！");
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // キーが押された瞬間にシーンを切り替える
+        if (Input.GetKeyDown(key_))
+        {
+            SceneManager.LoadScene(nextSceneName_);
+        }
+    }
+}</pre>
+<div class="filename">SceneChangeOnKey.cs</div>
+<div class="term"><b>用語：KeyCode</b>
+キーボードのキー1つ1つに付いている名前。KeyCode.Spaceはスペースキー、KeyCode.Returnはエンターキー。PlayerMoveで使ったKeyCode.UpArrowの仲間です。</div></li>
+<li>このスクリプトのえらいところは、「どのキーで」「どのシーンに」移動するかを[SerializeField]にしてあるところです。<br>
+つまりコードは1個だけ書いて、あとはインスペクターで設定を変えれば、タイトルでもゲームオーバーでもどこでも使い回せます。プログラムは書けば書くほどバグるので、使い回せるものは使い回しましょう。</li>
+<li>TitleSceneのヒエラルキーで「Create Empty」をして、空のゲームオブジェクトを作成しましょう。<br>
+名前は「SceneChanger」です。</li>
+<li>SceneChangerに、Add ComponentでSceneChangeOnKeyを追加して、
+<ul>
+<li>Key：Space</li>
+<li>Next Scene Name：GameScene</li>
+</ul>
+と設定しましょう。<br>
+<span class="warn">※シーン名は1文字でも間違えると動きません！「gamescene」や「Game Scene」はダメです。不安な人はScenesフォルダの名前をコピペしましょう。</span>
+<img class="small" src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-03_hierarchy_scenechanger.png" alt="Hierarchy">
+<img class="small" src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-03_scenechanger_inspector.png" alt="SceneChanger Inspector">
+<div class="caption">※インスペクターのスクショはGameClearSceneに置いたもの（Next Scene NameがTitleSceneになっています）</div></li>
+<li>同じことを、GameOverSceneとGameClearSceneにもやります。<br>
+それぞれのシーンを開いて、SceneChangerオブジェクトを作成し、SceneChangeOnKeyを追加。ただし今度は、
+<ul>
+<li>Key：Space</li>
+<li>Next Scene Name：TitleScene</li>
+</ul>
+です。ゲームが終わったらタイトルに帰ってくるわけですね。</li>
+<li>最後に、TitleSceneをUnityに登録します。File &gt; Build Profiles &gt; Open Scene Listで、TitleSceneを開いた状態で「Add Open Scenes」。</li>
+<li>そして今回はもうひと手間。追加したTitleSceneをドラッグして、Scene Listの一番上に移動してください。<br><br>
+これで、ゲームオーバーシーンに移行できる・・・のは前回までで出来ていましたが。<br>
+書き出した（ビルドした）ゲームは、Scene Listの一番上のシーンから起動するんです。<br>
+エディターでは今開いているシーンからプレイが始まるので気づきませんが、ここを並べ替えておかないと、完成品がいきなりゲーム本編から始まってしまいます。
+<img class="small" src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-03_scenelist.png" alt="Scene List">
+</li>
+<li>では、TitleSceneを開いてテストプレイ！<br>
+タイトル → スペースでゲーム開始 → やられたらゲームオーバー → スペースでタイトル → もう一回遊んで今度はクリア → スペースでタイトル。<br>
+ぐるぐる回れたら、ゲームループ完成です！！</li>
+<li>ちなみに「タイトルでスペースを押したら、ゲーム開始と同時に弾が出ちゃわない？」と思った人、鋭い。<br>
+GetKeyDownは「押しっぱなし」には反応せず、「押した瞬間」だけ反応するので、シーンが切り替わった後に押し直さない限り弾は出ません。安心してください。</li>
+<li class="qa-item"><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
+</ol>
+
+<!-- ================= 5-04 ================= -->
+<h1 class="chapter">【5-04】ゲームを書きだそう！【5章：ゲームループ】</h1>
+<ol class="steps">
+<li>クリア条件：自分のPC向けにゲームをビルドして、Unityがなくても遊べる状態にする</li>
+<li>ゲームループが完成したので、いよいよゲームを「書き出し」ます。
+<div class="term"><b>用語：ビルド</b>
+Unityのプロジェクトを、Unityを持っていない人でも遊べる形に変換すること。今まではUnityエディターの中でしか動かせませんでしたが、ビルドすると単体のゲームとして動くようになります。</div></li>
+<li>書き出す先はWindowsアプリ、Macアプリ、スマホ、Web、いろいろ選べます。<br>
+今回はまず、一番シンプルな「自分のPC向け」に書き出します。
+<ul>
+<li>Windowsの人　→　exeファイル</li>
+<li>Macの人　→　アプリ（.app）</li>
+</ul>
+ブラウザで遊べるWeb向けの書き出しは、次回unityroomに投稿するときにやります。</li>
+<li>その前に、ビルド前の下ごしらえがあります。<br>
+実は、このままビルドすると赤いエラーが出て失敗する人が多いはずです。犯人はスクリプトの先頭にいる、こういうやつら。
+<pre>using UnityEditor.Analytics;
+using NUnit.Framework;</pre>
+「UnityEditor」で始まるものは、Unityエディターの中でだけ使える機能です。ビルドしたゲームにはエディターは入っていないので、「そんなものは無い！」とエラーになります。NUnitも同じくテスト用なのでビルドには入りません。<br><br>
+これ、自分で書いた覚えがないと思います。VSCodeやVisual Studioが入力補完のついでに勝手に追加してくるんです。ひどい話ですね。</li>
+<li>対処は簡単で、使っていないusingを消すだけです。<br>
+自分のスクリプトを見て、「UnityEditor」「NUnit」で始まるusingがあったら削除して保存しましょう。<br>
+僕の環境では、PlayerMove.csに「using UnityEditor.Analytics;」、EnemyDeathAnimation.csに「using NUnit.Framework;」などが紛れ込んでいました。<br><br>
+消していいのか不安なusingは、試しに消してみてConsoleにエラーが出なければ不要だったということです。エラーが出たら戻せばOK。</li>
+<li>下ごしらえができたら、File &gt; Build Profiles を開きましょう。<br>
+Platformsで、Windowsの人は「Windows」に緑の「Active」が付いていることを確認してください。Macの人は「macOS」がActiveのはずです。<br>
+<span class="warn">※Activeになっていない場合は、自分のOSを選択して「Switch Platform」を押しましょう。</span>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-04_build_profiles.png" alt="Build Profiles">
+ちなみに、WindowsでMac向けをビルド（またはその逆）もできなくはないのですが、署名などの面倒な問題があるので、基本は「自分のOS向け」でOKです。</li>
+<li>Scene Listに4つのシーンが入っていて、TitleSceneが一番上にあることも、前回の復習がてら確認しておきましょう。</li>
+<li>では、「Build」ボタンを押しましょう。<br>
+書き出し先のフォルダを聞かれるので、プロジェクトの外にフォルダを作って選択してください。<br>
+僕は「C:\Users\ユーザー名\Builds\MagicalShooting\Windows」というフォルダを作りました。<br>
+<span class="warn">※フォルダのパスに日本語が入らない場所が安全です。</span></li>
+<li>あとは待つだけ。初回は数分かかります。お茶でも飲みながら、完成に思いを馳せましょう。<br>
+<span class="warn">※途中でエラーが出て止まった場合は、Consoleの赤いエラーを読んでみましょう。だいたいはさっきのusingの消し忘れです。</span></li>
+<li>ビルドが終わると、フォルダの中にこんなものができています。<br><br>
+Windowsの人：
+<ul>
+<li>MagicalShooting.exe　←　これがゲーム本体！</li>
+<li>UnityPlayer.dll など、いくつかのファイルとフォルダ</li>
+</ul>
+Macの人：
+<ul>
+<li>MagicalShooting.app　←　これがゲーム本体！</li>
+</ul>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-04_build_output.png" alt="Build output">
+</li>
+<li>では、MagicalShooting.exe（Macの人は.app）をダブルクリック！<br>
+Unityエディターを介さずに、ゲームが単体で起動したら大成功です！自分のゲームが「製品」になった瞬間です。<br>
+<span class="warn">※Macの人は「開発元が未確認のため開けません」と出ることがあります。その場合は.appを右クリック→「開く」で起動できます。</span>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-04_standalone_title.png" alt="Standalone title">
+もちろんゲームループもまるごと動きます。フルスクリーンで遊ぶ自分のゲームは感慨深いですよ。
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-04_standalone_gameplay.png" alt="Standalone gameplay">
+</li>
+<li>このフォルダをまるごとzipに圧縮して渡せば、友達のPCでも遊んでもらえます（Windows向けビルドはWindowsの人に、Mac向けはMacの人に）。<br>
+<span class="warn">※初回起動時に「WindowsによってPCが保護されました」と青い画面が出ることがあります。「詳細情報」→「実行」で起動できます。知らない発行元のアプリに出る警告なので、慌てなくて大丈夫。</span></li>
+<li>ゲームが単体で動いたら、今回は完成です！<br>
+次回はいよいよ最終回、Web向けにビルドしてunityroomに投稿します！</li>
+<li class="qa-item"><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
+</ol>
+
+<!-- ================= 5-05 ================= -->
+<h1 class="chapter">【5-05】UnityRoomに投稿しよう！【5章：ゲームループ】</h1>
+<ol class="steps">
+<li>クリア条件：Web向けにビルドして、unityroomに投稿し、ブラウザで遊べる状態にする</li>
+<li>ついに最終回です。前回は自分のPC向けに書き出しましたが、今回はWeb（ブラウザ）向けに書き出して、世界に公開しましょう。<br>
+投稿先はunityroom。無料でUnity製ゲームを投稿・プレイできる、日本最大級のサイトです。<br>
+https://unityroom.com/<br><br>
+眺めているだけでも「これ、自分が作ったのと同じ仕組みで動いてるのか」と思えるゲームがたくさんあるので、遊んでみてください。
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-05_unityroom_top.png" alt="unityroom">
+</li>
+<li>まずはWeb向けのビルドの準備から。File &gt; Build Profiles を開いて、Platformsから「Web」を選択してください。</li>
+<li>このとき、「No Web module loaded.」と表示された人もいると思います。
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-04_web_no_module.png" alt="No Web module">
+これはWeb Build Support（Web向けに書き出す部品）が入っていない状態です。ちなみに僕も入っていませんでした。<br>
+「Install with Unity Hub」を押すか、1-03を見ながらUnityHubのInstallsからWeb Build Supportを追加してください。<br>
+<span class="warn">※インストール後はUnityの再起動が必要です。再起動したらまたBuild Profilesに戻ってきましょう。</span></li>
+<li>Webを選択して「Switch Platform」を押しましょう。<br>
+Unityが素材をWeb用に変換し直すので、数分かかります。終わるとWebに緑の「Active」が付きます。<br>
+※WindowsでもMacでも、ここから先の手順は同じです。
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-05_web_active.png" alt="Web Active">
+</li>
+<li>次に、ビルドの設定を2か所いじります。Build Profiles右上の「Player Settings」を開いてください。<br>
+（Edit &gt; Project Settings &gt; Player でも同じ画面が開きます）</li>
+<li>1か所目。Resolution and Presentation を開いて、
+<ul>
+<li>Default Canvas Width：960</li>
+<li>Default Canvas Height：540</li>
+</ul>
+に設定しましょう。unityroomの標準サイズです。今まで作ってきた16:9の画面比率とも一致しています。1-05で16:9にしておいたのはこのためでした。
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-05_resolution_settings.png" alt="Resolution">
+</li>
+<li>2か所目。Publishing Settings を開いて、
+<ul>
+<li>Compression Format：Gzip</li>
+<li>Decompression Fallback：チェックが入っていたら外す</li>
+</ul>
+に設定しましょう。
+<div class="term"><b>用語：Gzip</b>
+ファイルを小さく圧縮する形式。zipの親戚です。ゲーム本体はけっこう大きいので、圧縮しないと遊ぶ人のロード時間が長くなってしまいます。ブラウザはGzipを標準で解凍できるので、遊ぶ側は何も意識しません。</div>
+Decompression Fallbackは「解凍できない環境向けに、解凍プログラムをゲームに同梱する」保険のような設定ですが、今のunityroomでは不要どころか、公式が「チェックを外す」を指定しています。<br>
+<span class="warn">ここの設定を間違えると、unityroomにアップロードしてもゲームが動きません！要注意！</span>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-05_publishing_settings.png" alt="Publishing">
+</li>
+<li>設定ができたら、Build Profilesに戻って「Build」ボタンを押しましょう。<br>
+前回と同じように書き出し先を聞かれるので、今度は「Web」用のフォルダを作って選択してください。<br>
+僕は「C:\Users\ユーザー名\Builds\MagicalShooting\Web」にしました。</li>
+<li>Webビルドは、PC向けよりだいぶ時間がかかります。初回は10分以上かかることも。<br>
+ブラウザで動く形式に全部変換し直しているので、気長に待ちましょう。</li>
+<li>ビルドが終わると、フォルダの中にこんなものができています。
+<ul>
+<li>index.html</li>
+<li>Buildフォルダ</li>
+<li>TemplateDataフォルダ</li>
+</ul>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-05_web_output.png" alt="Web output">
+さらにBuildフォルダの中を見ると、4つのファイルがあります。
+<ul>
+<li>〇〇.loader.js</li>
+<li>〇〇.data.gz</li>
+<li>〇〇.framework.js.gz</li>
+<li>〇〇.wasm.gz</li>
+</ul>
+この4つが入った「Buildフォルダ」を、あとでunityroomにアップロードします。場所を覚えておいてください。<br>
+※ファイル名の「〇〇」部分は、書き出し先のフォルダ名になります。僕の場合は「Web」フォルダに書き出したので「Web.loader.js」などになっていました。<br>
+<span class="warn">※拡張子が「.gz」ではなく「.unityweb」になっている人は、Decompression Fallbackのチェックが外れていません。外してもう一度ビルドしましょう。</span>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/images/5-05_web_build_files.png" alt="Web build files">
+ちなみに「index.htmlをダブルクリックすれば遊べるのでは？」と思った人、鋭い。しかし残念、ブラウザのセキュリティ制限で、手元のファイルから直接は起動できません。動作確認はunityroomにアップしてから！</li>
+<li>ここからはunityroomでの作業です。まずはアカウント作成。unityroomのトップページ右上の「ログイン」からユーザー登録をしましょう。</li>
+<li>ログインしたら、「ゲーム投稿」からゲームの基本情報を入力します。
+<ul>
+<li>タイトル：ゲームの名前。「Magical Shooting」でも、自分で考えた名前でもOK！</li>
+<li>ゲームID：ゲームページのURLの一部になります。半角英数で。あとから変更できないので慎重に！</li>
+<li>紹介文：どんなゲームか。「魔女っ子が魔法弾で敵を撃ちまくるシューティング！」とか</li>
+<li>操作方法：矢印キーで移動、スペースキーでショット。書いておかないと誰も操作がわかりません</li>
+</ul>
+<div class="placeholder">📷 スクショ：ゲーム投稿フォーム（ログイン後に撮影）</div></li>
+<li>次に、WebGL設定でUnityのバージョン（6000.3.〇〇）を選択し、画面サイズを960×540に設定しましょう。<br>
+さっきビルド設定した数字と同じです。</li>
+<li>いよいよアップロードです。「Webビルドアップロード」の画面に、書き出した「Build」フォルダを、フォルダごとドラッグ＆ドロップしましょう。<br>
+中の4つのファイルが自動でアップロードされて、「ファイルアップロード状況」が全部「完了」になればOKです。<br><br>
+※アップロード画面にも「Compression Format：Gzip」「Decompression Fallbackのチェックを外す」と注意書きがあります。さっきUnityで設定したやつですね。ここでエラーが出た人は、設定を見直してもう一度ビルドしましょう。
+<div class="placeholder">📷 スクショ：WebGLアップロード画面（ログイン後に撮影）</div></li>
+<li>アイコン（サムネイル画像）も設定しましょう。<br>
+ゲーム画面のスクショでOKです。Gameビューを撮って設定しましょう。一覧ページで最初に見られるのはサムネなので、ゲームの顔だと思って選んでください。</li>
+<li>公開設定は、最初は「限定公開」がおすすめです。<br>
+限定公開はURLを知っている人だけが遊べる状態。まず自分でこっそり動作確認してから、堂々と公開しましょう。</li>
+<li>保存したら、自分のゲームページを開いて動作確認です！
+<ul>
+<li>タイトルが表示されるか</li>
+<li>スペースでゲームが始まるか</li>
+<li>敵を倒せるか、やられたらゲームオーバーになるか</li>
+<li>20体倒したらゲームクリアになるか</li>
+<li>ちゃんとタイトルに戻ってくるか</li>
+</ul>
+最初の読み込みには少し時間がかかります。画面が変わらなくても、慌てずに待ってください。</li>
+<li>動作確認ができたら、公開設定を「公開」に変更！これであなたも、ゲームを世に出したゲーム開発者です。
+<div class="placeholder">📷 スクショ：公開されたゲームページ（公開後に撮影）</div></li>
+<li>完成！！そしてこれで、全チュートリアル完了です！！<br>
+Unityのインストールから始めて、キャラを動かし、弾を撃ち、敵を出し、ゲームループを組んで、公開までたどり着きました。本当にお疲れ様でした。<br><br>
+ゲームのURLは、ぜひこのスレに貼って自慢してください。全員分遊びに行きます。</li>
+<li>ここから先は自由です。敵の種類を増やすもよし、スコアを付けるもよし、BGMを鳴らすもよし。<br>
+「こうしたら面白いかも」を試しては壊すのが、ゲーム開発の一番楽しいところです。良い開発ライフを！</li>
+<li class="qa-item"><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
+</ol>
+
+</body>
+</html>
