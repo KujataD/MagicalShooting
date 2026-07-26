@@ -1,826 +1,566 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
 <meta charset="utf-8">
 <title>dev tra　Git編</title>
 <style>
-  body { font-family: "Yu Gothic UI","Meiryo",sans-serif; font-size: 11pt; line-height: 1.75; color: #222; max-width: 720px; margin: 0 auto; }
+  body { font-family: "Yu Gothic UI","Meiryo","Hiragino Kaku Gothic ProN",sans-serif; font-size: 11pt; line-height: 1.75; color: #222; max-width: 720px; margin: 0 auto; }
   h1.doctitle { font-size: 22pt; margin: 0 0 10px 0; }
-  p.lead { font-size: 10.5pt; color: #555; margin: 0 0 20px 0; }
-  h1.chapter { font-size: 16.5pt; line-height: 1.45; margin: 26px 0 14px 0; padding-bottom: 6px; border-bottom: 2px solid #4a6fa5; page-break-before: always; }
+  .lead { color: #555; font-size: 10.5pt; margin-bottom: 24px; }
+  h1.chapter { font-size: 16.5pt; line-height: 1.45; margin: 26px 0 14px 0; padding-bottom: 6px; border-bottom: 2px solid #444; page-break-before: always; }
   h1.chapter.first { page-break-before: avoid; }
-  ol.steps { padding-left: 1.7em; }
-  ol.steps > li { margin: 11px 0; }
-  ul { margin: 6px 0; }
-  .term { background: #f1f5f9; border-left: 4px solid #7d9bc1; padding: 9px 13px; margin: 9px 0; font-size: 10.5pt; }
+  h2 { font-size: 13pt; margin: 22px 0 10px 0; }
+  ol.steps { padding-left: 1.6em; }
+  ol.steps > li { margin: 12px 0; }
+  ul { margin: 6px 0; padding-left: 1.4em; }
+  li { margin: 3px 0; }
+  p { margin: 6px 0; }
+  p.warn { font-size: 10pt; color: #555; }
+  .term { background: #f1f5f9; border-left: 4px solid #94a3b8; padding: 8px 12px; margin: 10px 0; font-size: 10.5pt; }
   .term b { display: block; margin-bottom: 2px; }
-  pre { background: #f6f3ee; padding: 11px 14px; border-radius: 6px; font-family: "Consolas","Courier New",monospace; font-size: 9pt; line-height: 1.5; white-space: pre-wrap; }
-  code { background: #f0ede8; padding: 1px 4px; border-radius: 3px; font-family: "Consolas",monospace; font-size: 9.5pt; }
-  pre code { background: none; padding: 0; font-size: 9pt; }
-  table { border-collapse: collapse; margin: 10px 0; font-size: 10pt; width: 100%; }
-  th, td { border: 1px solid #ccc; padding: 5px 9px; text-align: left; vertical-align: top; }
-  th { background: #eef2f7; }
-  img { max-width: 92%; display: block; margin: 10px auto; border: 1px solid #ddd; }
-  .placeholder { background: #fff7e6; border: 1px dashed #d4a017; color: #8a6d1a; padding: 8px 12px; margin: 10px 0; font-size: 10pt; }
-  .qa { font-weight: bold; font-size: 12.5pt; margin: 20px 0; }
-  hr { border: none; border-top: 1px solid #ccc; margin: 18px 0; }
-  h2.sec { font-size: 13pt; margin: 20px 0 8px 0; color: #2c4a70; }
+  pre { background: #f6f3ee; padding: 11px 13px; border-radius: 6px; font-family: "Consolas","Courier New",monospace; font-size: 8.8pt; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+  code { background: #f1efe9; padding: 1px 4px; border-radius: 3px; font-family: "Consolas","Courier New",monospace; font-size: 9.5pt; }
+  img { max-width: 100%; display: block; margin: 10px auto 2px; border: 1px solid #ddd; }
+  .caption { font-size: 9pt; color: #777; text-align: center; margin-bottom: 10px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 10pt; }
+  th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+  ul.checklist { list-style: none; padding-left: 0.3em; }
+  li.check::before { content: "☐ "; }
 </style>
-</head>
-<body>
 <h1 class="doctitle">dev tra　Git編</h1>
-<p class="lead">チーム制作のためのGit入門（全14回）</p>
+<div class="lead">チーム制作のためのGit入門（全14回）</div>
 <h1 class="chapter first">【1-01】Gitってなに？なんで必要？【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：Gitが何をしてくれる道具なのか、人に説明できるようになる
-<li>ここからは別巻、チーム制作のためのGit編です。
-<br>今回は手を動かしません。まず「なんでこんなもの覚えるの？」をハッキリさせておきましょう。ここが分かっていないと、この先の操作がぜんぶ意味不明な呪文になってしまうので。
-<li>まず、こんな経験ありませんか？
-<pre>
-   キャラ絵_最終.psd
-   キャラ絵_最終2.psd
-   キャラ絵_最終_修正版.psd
-   キャラ絵_ほんとの最終.psd
-   キャラ絵_ほんとの最終_これで決定.psd
-</pre>
-<br>あるあるですね。これ、実は自分ひとりで手動バージョン管理をやっている状態です。
-<br>そして大体、3日後には「あれ、どれが最新？」「あの時の色に戻したいけど、どのファイルだっけ？」となります。
-<li>Gitは、この「名前で管理する地獄」から解放してくれる道具です。
-<br>ファイルは常に「キャラ絵.psd」1つだけ。そのかわり、変更するたびに<strong>セーブポイント</strong>を刻んでいきます。
-<br>「いつ」「誰が」「どこを」変えたのかが全部記録されるので、いつでも好きな時点に戻れます。
-<div class="term"><b>用語：Git（ギット）</b>
-ファイルの変更履歴を記録・管理してくれる道具。ゲームで言うところの<strong>セーブ&amp;ロード機能</strong>。しかも上書きセーブではなく、全部のセーブデータが残る親切設計。
-</div>
-<li>でも、Gitの本当の価値はチーム制作で出ます。
-<br>たとえば、あなたが敵キャラの絵を描いて、プログラマーがスクリプトを書いているとします。GitなしでUnityプロジェクトを共有すると、どうなるか？
-<ul><li>Aさん「プロジェクトフォルダzipで送るね」</li></ul>
-<ul><li>Bさん「ありがとう。こっちも直したから送り返すね」</li></ul>
-<ul><li>Aさん「え、その間にこっちも直しちゃった。どっちが正しいの？」</li></ul>
-<ul><li>二人「……」</li></ul>
-<br>よくある事故です。zipを送り合う運用は、必ずどこかで誰かの作業が消えます。
-<li>Gitを使うと、こうなります。
-<ul><li>全員が同じ「倉庫」を見る</li></ul>
-<ul><li>各自が自分の作業をして、終わったら倉庫に納品する</li></ul>
-<ul><li>Gitが「Aさんは絵を、Bさんはスクリプトを変えたんだな」と判断して、<strong>自動で合体</strong>してくれる</li></ul>
-<br>この「自動で合体」がGitの真骨頂です。違うファイルを触っている限り、二人の作業は勝手に混ざって1つになります。
-<div class="term"><b>用語：マージ</b>
-別々に進めた作業を合体させること。Gitがほぼ自動でやってくれる、いちばんありがたい機能。
-</div>
-<li>まとめると、Gitはこの3つをやってくれます。
-</ol>
-<table>
-<tr><th>できること</th><th>たとえるなら</th></tr>
-<tr><td>変更履歴を全部残す</td><td>いつでも戻れるタイムマシン</td></tr>
-<tr><td>複数人の作業を合体する</td><td>全員の作業が合流する共有セーブデータ</td></tr>
-<tr><td>誰が何をしたか記録する</td><td>作業ログ付きの制作日誌</td></tr>
-</table>
-<ol class="steps" start="8">
-<li>「デザイナーだからプログラマーに任せればいいのでは？」と思った人、鋭い。でも残念、無理です。
-<br>Unityプロジェクトでは、絵を1枚追加するだけでもプロジェクトのファイルが変わります。絵もアニメも音も、全部Gitの管理下に入ります。
-<br>つまりチーム制作をする以上、<strong>職種に関係なく全員が使う</strong>のがGitです。逆に言えば、これさえ覚えれば「素材を渡してからの反映待ち」がなくなり、自分のペースで作業を進められるようになります。
-<li>最後に、心構えをひとつ。
-<br>Gitは最初、絶対に意味不明です。カタカナ用語（コミット、プッシュ、ブランチ、マージ...）が大量に出てきて、たぶん3回くらい「無理」と思います。
-<br>でも安心してください。この先で覚える操作は、実質<strong>4つだけ</strong>です。
-<ul><li><strong>コミット</strong>（セーブする）</li></ul>
-<ul><li><strong>プッシュ</strong>（倉庫に送る）</li></ul>
-<ul><li><strong>プル</strong>（倉庫から取ってくる）</li></ul>
-<ul><li><strong>ブランチ</strong>（作業場所を分ける）</li></ul>
-<br>残りは全部この応用です。しかも今回は黒い画面（コマンド）は一切使いません。ボタンをポチポチするだけのアプリでやります。
-<li>Gitが「タイムマシン付きの共有倉庫」だとイメージできたら、今回は完成です！
-<br>次回はその倉庫を借りにいきます。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+<ol class="steps"><li><p>クリア条件：Gitが何をしてくれるものか、ざっくり分かればOK！</p></li>
+<li><p>ここからは別巻、チーム制作のためのGit編です。<br>今回は手を動かしません。まず「なんでこれを覚えるの？」をハッキリさせておきましょう。ここが分かっていないと、この先の操作が意味不明な暗記になってしまうので。</p></li>
+<li><p>まず、こんな経験ありませんか？</p>
+<pre>キャラ絵_最終.psd
+キャラ絵_最終2.psd
+キャラ絵_最終_修正版.psd
+キャラ絵_ほんとの最終.psd
+キャラ絵_ほんとの最終_これで決定.psd</pre>
+<p>あるあるですね。これは、ファイル名で変更履歴を管理している状態です。<br>そして大体、3日後には「どれが最新？」「あの時の色に戻したいけど、どのファイルだっけ？」となります。</p></li>
+<li><p>Gitを使うと、ファイルは「キャラ絵.psd」1つだけになります。<br>そのかわり、キリのいいところで<strong>その時点の状態を記録</strong>していきます。この記録が積み重なって履歴になります。</p>
+<div class="term"><b>用語：Git（ギット）</b>ファイルの変更履歴を記録・管理するソフト。ゲームのセーブに近く、<strong>上書きではなく、記録するたびにセーブデータが1つずつ増えていきます</strong>。だから、いつでも好きな時点の状態に戻せます。</div></li>
+<li><p>でも、Gitが本当に効いてくるのはチーム制作のときです。<br>たとえば、AさんがタイトルUIを作り、Bさんが敵の動きのスクリプトを書いているとします。Gitを使わずにUnityプロジェクトを共有すると、どうなるか。</p>
+<ul><li>Aさん「プロジェクトフォルダをzipで送るね」</li><li>Bさん「ありがとう。こっちも直したから送り返すね」</li><li>Aさん「その間にこっちも直しちゃった。どっちが正しいの？」</li><li>二人「……」</li></ul>
+<p>zipを送り合う運用は、必ずどこかで誰かの作業が消えます。</p></li>
+<li><p>Gitを使うと、こうなります。</p>
+<ul><li>全員が同じ場所（GitHub上のリポジトリ）のデータを見る</li><li>各自が自分の作業をして、終わったらそこに送る</li><li>Gitが「AさんはUIのファイル、Bさんはスクリプトのファイルを変えたんだな」と判断して、<strong>自動で1つにまとめてくれる</strong></li></ul>
+<p>触っているファイルが違う限り、2人の作業は自動的に1つにまとまります。ここがGitの一番の強みです。</p>
+<div class="term"><b>用語：マージ</b>別々に進めた作業を1つにまとめること。ほとんどの場合、Gitが自動でやってくれます。</div></li>
+<li><p>まとめると、Gitがやってくれるのはこの3つです。</p>
+<ul><li><strong>変更履歴を全部残す</strong>（いつでも過去の状態に戻せる）</li><li><strong>複数人の作業を1つにまとめる</strong>（zipの送り合いが不要になる）</li><li><strong>誰がいつ何を変えたかを記録する</strong>（作業ログが自動で残る）</li></ul></li>
+<li><p>「絵や音を作るだけなら関係ないのでは？」と思うかもしれませんが、Unityではそうもいきません。<br>画像を1枚追加するだけでもプロジェクトのファイルが増えますし、シーンの設定も書き換わります。絵もアニメも音もスクリプトも、全部まとめてGitの管理下に入ります。<br>このサークルでは全員が同じプロジェクトを触るので、<strong>全員が使えるようになっておく</strong>必要があります。</p></li>
+<li><p>最後に、心構えをひとつ。<br>Gitは最初、用語が多くて戸惑うと思います。コミット、プッシュ、ブランチ、マージ……たぶん何度か「わからん」となります。</p>
+<p>でも安心してください。実際に毎日使う操作は、この4つだけです。</p>
+<ul><li><strong>コミット</strong>（変更を記録する）</li><li><strong>プッシュ</strong>（記録をGitHubに送る）</li><li><strong>プル</strong>（GitHubから最新を取ってくる）</li><li><strong>ブランチ</strong>（作業する場所を分ける）</li></ul>
+<p>残りは全部この応用です。操作はすべて、マウスで使えるアプリ（1-04で入れます）から行います。</p></li>
+<li><p>Gitが「履歴が全部残る、みんなで使える保存場所」だとイメージできたら、今回は完成です！<br>次回は、その保存場所を用意するところから始めます。</p></li></ol>
 <h1 class="chapter">【1-02】GitHubアカウントを作ろう【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：GitHubのアカウントを作って、ログインできる状態にする
-<li>前回、Gitは「タイムマシン付きの共有倉庫」だと説明しました。
-<br>では、その倉庫はどこにあるのか？——それが今回のGitHub（ギットハブ）です。
-<div class="term"><b>用語：GitとGitHubの違い</b>
-よく混同されるので最初にハッキリさせておきます。
-</div>
-<ul><li><strong>Git</strong>　＝　道具（あなたのPCに入れる、履歴を管理するソフト）</li></ul>
-<ul><li><strong>GitHub</strong>　＝　場所（ネット上にある、みんなでファイルを置いておく倉庫サービス）</li></ul>
-<br>Photoshopが「Git」で、Google Driveが「GitHub」みたいな関係だと思ってください。片方だけでは成立しません。
-<li>ちなみにGitHubは黒い猫（正確にはタコと猫を合体させた「Octocat」というマスコット）が目印のサイトです。世界中のプログラマーが使っていて、無料で使えます。
-<li>では作りましょう。ブラウザで下のURLを開いてください。
-<br><a href="https://github.com/signup">https://github.com/signup</a>
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-02_github_signup.png" alt="GitHubの登録ページ">
-<li>入力するのは3つだけです。
-<ul><li><strong>Email</strong>：普段使っているメールアドレス</li></ul>
-<ul><li><strong>Password</strong>：15文字以上、または8文字以上＋数字と小文字を含む</li></ul>
-<ul><li><strong>Username</strong>：あなたのID。<strong>チームメンバーに見える名前</strong>なので、あだ名など呼ばれ慣れた名前がおすすめ</li></ul>
-<br>※Usernameはあとから変更できますが、URLが変わって面倒なので、最初に決め打ちしましょう。半角英数とハイフンのみ使えます。
-<li>「Country/Region」は Japan を選択。メール配信の希望は好みでどうぞ（チェックしなくてOK）。
-<li>「Create account」を押すと、メールに6桁の確認コードが届きます。入力すれば完了です。
-<br>※届かない人は迷惑メールフォルダを確認してください。
-<li>その後、「What do you want to do first?」みたいなアンケート画面が出てきますが、全部スキップして大丈夫です。右下の「Skip personalization」や「Continue for free」を選びましょう。
-<br>※有料プランを勧められますが、<strong>Freeで十分</strong>です。
-<li>ログインした状態で、自分のトップページが表示されたら成功です！
-<br>まだ何もない真っさらな状態ですが、これであなたの倉庫を借りる権利が手に入りました。
-<li>最後に、<strong>Usernameをチームのリーダーに伝えておきましょう</strong>。
-<br>リーダーがあなたを「このプロジェクトの共同編集者」として招待するのに必要です。招待されないと、倉庫に納品する権限がもらえません。
-<br>※Discordなどで「GitHubのIDは○○です」と一言送っておけばOK。
-<li>GitHubにログインできて、IDをチームに伝えたら、今回は完成です！
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+<ol class="steps"><li><p>クリア条件：GitHubのアカウントを作って、ログインできればOK！</p></li>
+<li><p>前回、Gitは「履歴が全部残る保存場所」だと説明しました。<br>では、その保存場所をチーム全員でどう共有するのか？　そこで使うのがGitHub（ギットハブ）です。</p>
+<div class="term"><b>用語：GitとGitHubの違い</b>よく混同されるので、最初にハッキリさせておきます。<br><strong>Git</strong>　＝　自分のPCで動くソフト。手元のファイルの変更履歴を記録する<br><strong>GitHub</strong>　＝　インターネット上のサービス。Gitで記録した履歴を置いて、チームで共有する</div>
+<p>つまり、<strong>手元で記録するのがGit、それを全員で共有する場所がGitHub</strong>です。両方そろって初めてチーム制作に使えます。</p></li>
+<li><p>GitHubは無料で使えて、世界中の開発現場で使われています。マスコットは猫とタコを合体させた「Octocat」で、サイトのあちこちに出てきます。</p></li>
+<li><p>では作りましょう。ブラウザで下のURLを開いてください。</p>
+<p>https://github.com/signup</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-02_github_signup.png" alt="GitHubの登録ページ">
+<div class="caption">GitHubの登録ページ</div></li>
+<li><p>入力するのは3つだけです。</p>
+<ul><li><strong>Email</strong>：普段使っているメールアドレス</li><li><strong>Password</strong>：15文字以上、または8文字以上＋数字と小文字を含む</li><li><strong>Username</strong>：あなたのID。<strong>チームメンバーの画面にも表示される名前</strong>なので、普段呼ばれている名前がおすすめ</li></ul>
+<p class="warn">※Usernameはあとから変更できますが、URLが変わって面倒なので最初に決めてしまいましょう。半角英数とハイフンのみ使えます。</p></li>
+<li><p>「Country/Region」は Japan を選択。メール配信の希望はチェックしなくてOKです。</p></li>
+<li><p>「Create account」を押すと、メールに6桁の確認コードが届きます。入力すれば完了です。<br>※届かないときは迷惑メールフォルダを確認してください。</p></li>
+<li><p>そのあと「What do you want to do first?」のようなアンケート画面が出ますが、全部スキップして大丈夫です。「Skip personalization」や「Continue for free」を選びましょう。<br>※有料プランを勧められますが、<strong>Freeで十分</strong>です。</p></li>
+<li><p>ログインして自分のトップページが表示されたら成功です！<br>まだ中身は空っぽですが、これでチームのプロジェクトに参加する準備ができました。</p></li>
+<li><p>最後に、<strong>自分のUsernameをチームの代表の人に伝えておきましょう</strong>。<br>代表の人が、あなたを「このプロジェクトを編集できる人」として招待するのに必要です。招待されないと、GitHubにデータを送る権限がもらえません。</p>
+<p class="warn">※Discordなどで「GitHubのIDは○○です」と送っておけばOKです。</p></li>
+<li><p>GitHubにログインできて、IDをチームに伝えたら、今回は完成です！</p></li></ol>
 <h1 class="chapter">【1-03】Gitをインストールしよう【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：自分のPCにGit本体を入れる
-<li>前回は「倉庫」を借りました。今回は「道具」であるGit本体をPCに入れます。
-<br>これは<strong>エンジン</strong>みたいなものです。この後で入れるアプリ（Fork）は、いわばハンドルとメーター。エンジンがないと動きません。
-<li>まずは、すでに入っていないか確認しましょう。実はUnityやVisual Studioを入れたときに、一緒に入っていることがあります。
-<br>Windowsの人：スタートメニューで「Git Bash」と検索してみてください。出てきたら、もう入っています。→ 手順8へ
-<br>Macの人：後述の手順7を見てください。
-<li>入っていなかった人は、公式サイトからダウンロードします。
-<br><a href="https://git-scm.com/downloads">https://git-scm.com/downloads</a>
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-03_gitscm.png" alt="Gitの公式ダウンロードページ">
-<br>※黒背景に赤いロゴの、ちょっと無骨なサイトです。合っています。
-<li>【Windowsの人】「Windows」を選び、「Click here to download」から最新版をダウンロード。
-<br>ダウンロードした .exe をダブルクリックして進めます。
-<li>【Windowsの人】インストーラーの設定項目がやたら多くて心が折れそうになりますが、<strong>全部そのまま「Next」で大丈夫</strong>です。デフォルト設定がちゃんと考えられているので、いじる必要はありません。
-<br>最後に「Install」→「Finish」で完了。
-<br>※途中で「デフォルトのエディタを選べ」という画面が出ます。ここもそのまま（Vim）で問題ありません。今回は使いませんので。
-<li>【Macの人】Macは少し楽です。「ターミナル」アプリを開いて、<code>git --version</code> と打ってEnter。
-<br>入っていなければ「開発者ツールをインストールしますか？」というダイアログが出るので、「インストール」を押すだけで入ります。
-<br>※Homebrewを使っている人は <code>brew install git</code> でもOKです。
-<li>入ったかどうか確認しましょう。
-<br>Windowsは「Git Bash」、Macは「ターミナル」を開いて、こう打ちます。
-<pre>
-   git --version
-</pre>
-<br><code>git version 2.55.0</code> のようにバージョン番号が返ってきたら成功です！
-<br>※ここだけ黒い画面を使いますが、確認のためだけです。<strong>この先はもう黒い画面は出てきません</strong>。安心してください。
-<li>最後に、あなたの「署名」を設定します。
-<br>Gitは変更履歴に「誰がやったか」を記録するので、名前とメールアドレスを教えてあげる必要があります。これをやらないと、後でコミットするときに怒られます。
-<br>同じ黒い画面で、下の2行をそれぞれ実行してください（<code>""</code>の中は自分のものに書き換え）。
-<pre>
-   git config --global user.name "あなたの名前"
-</pre>
-<pre>
-   git config --global user.email "GitHubに登録したメールアドレス"
-</pre>
-<br>※名前は日本語でも大丈夫ですが、ローマ字やGitHubのIDにしておくと後々見やすいです。
-<br>※メールアドレスは<strong>1-02でGitHubに登録したもの</strong>にしてください。ここが違うと、GitHub上で「誰の作業か」が紐づきません。
-<li><code>git --version</code> が表示されて、署名の設定ができたら、今回は完成です！
-<br>次回は、これをマウス操作で使えるようにするアプリを入れます。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
-<h1 class="chapter">【1-04】Forkを入れよう（黒い画面とお別れ）【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：GitのGUIアプリ「Fork」を入れて、GitHubアカウントと連携する
-<li>前回入れたGit本体は、実は<strong>エンジン単体</strong>なので、そのままだと黒い画面にコマンドを打って操作することになります。
-<br><code>git commit -m "..."</code> とか <code>git push origin feature/hoge</code> とか。……正直、これを毎日打ちたい人はいませんよね。
-<li>そこで、Gitをマウス操作で使えるようにするアプリを入れます。これをGUIクライアントと呼びます。
-<div class="term"><b>用語：GUIクライアント</b>
-黒い画面（コマンド）の代わりに、ボタンやアイコンでGitを操作できるアプリ。中身は同じGitを動かしているだけなので、できることは全く同じです。<strong>Photoshopで言えば、コマンドが「スクリプト」、GUIが「ツールパネル」</strong>の関係です。
-</div>
-<li>今回使うのは <strong>Fork</strong> というアプリです。理由は3つ。
-<ul><li>変更履歴が<strong>枝分かれの図</strong>で見える（これが直感的に分かりやすい）</li></ul>
-<ul><li>どのファイルが変わったか、画像もサムネイルで確認できる</li></ul>
-<ul><li>動作が軽い</li></ul>
-<br>※Mac版・Windows版の両方があり、<strong>画面がほぼ同じ</strong>なのも採用理由です。チームでOSが混ざっていても、同じ説明が通じます。
-<li>では入れましょう。下のURLを開いてください。
-<br><a href="https://git-fork.com/">https://git-fork.com/</a>
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-04_fork_site.png" alt="Forkの公式サイト">
-<br>自分のOSのボタン（Download for Windows / Download for Mac）を押してダウンロード、インストールします。
-<br>※Forkは「無期限で試用できる有料アプリ」です。起動のたびに購入案内が出ますが、機能制限なく使い続けられます。気に入ったら買ってあげてください（買い切り $59.99）。
-<li>初回起動すると、名前とメールアドレスを聞かれます。1-03で設定したものと同じものを入れましょう。
-<br>（すでにGitに設定済みなら、自動で入っているはずです）
-<div class="placeholder">📷 スクショ：Forkの初回設定画面</div>
-<li>次に、GitHubアカウントと連携します。これをやっておくと、毎回パスワードを聞かれずに済みます。
-<ul><li>Windows：File &gt; Preferences</li></ul>
-<ul><li>Mac：Fork &gt; Preferences（またはSettings）</li></ul>
-<br>を開いて、「Integration」（または「Accounts」）タブへ。
-<li>「GitHub」の欄で「Add account」または「Sign in」を押すと、ブラウザが開いてGitHubの認証画面が出ます。
-<br>「Authorize fork」（緑のボタン）を押せば連携完了です。
-<div class="placeholder">📷 スクショ：ForkのGitHub連携設定</div>
-<li>連携できると、Forkに自分のGitHubアカウント名が表示されます。ここまでで環境構築は完了です！
-<li>【補足】チームでVSCodeを使っている人へ
-<br>Visual Studio Code にも、実はGit機能が最初から入っています（左端の枝分かれアイコン）。
-<br>コードを書きながらそのままコミットできるので便利ですが、<strong>履歴の枝分かれが見づらい</strong>のが難点です。
-<br>おすすめは併用です。「日々のコミットはVSCode、ブランチ操作や履歴確認はFork」という使い分けをしている人が多いです。もちろん、全部Forkでも構いません。
-<li>Forkが起動して、GitHubと連携できたら、今回は完成です！
-<br>次回からいよいよ実際のプロジェクトを触ります。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+<ol class="steps"><li><p>クリア条件：自分のPCにGit本体が入って、名前とメールアドレスの設定ができればOK！</p></li>
+<li><p>前回はGitHub（インターネット側）の準備をしました。今回は自分のPCにGit本体を入れます。</p>
+<p>Git本体は、変更履歴を記録する処理そのものを担当します。次回入れるアプリ（Fork）は、このGit本体を裏側で呼び出して動く<strong>操作画面</strong>です。<br>つまり、<strong>Git本体が入っていないとForkは動きません</strong>。順番として、先にこちらを入れます。</p></li>
+<li><p>まずは、すでに入っていないか確認しましょう。UnityやVisual Studioを入れたときに、一緒に入っていることがあります。</p>
+<p><strong>Windowsの人</strong>：スタートメニューを開いて「Git Bash」と検索してください。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-03_startmenu_gitbash.png" alt="スタートメニューでGit Bashを検索">
+<div class="caption">スタートメニューでGit Bashを検索</div>
+<p>このように「Git Bash」というアプリが出てきたら、すでに入っています。→ 手順8へ進んでください。<br>何も出てこなければ、まだ入っていません。→ 手順4へ。</p>
+<p><strong>Macの人</strong>：手順7を見てください。</p>
+<div class="term"><b>用語：Git Bash</b>Gitを入れると一緒に付いてくる、<strong>文字を打ってPCに命令するためのアプリ</strong>です。Windowsの「コマンドプロンプト」の仲間だと思ってください。<br>このチュートリアルでGit Bashを使うのは、<strong>今回の確認と設定だけ</strong>です。次回以降の作業は全部マウス操作でやります。</div></li>
+<li><p>入っていなかった人は、公式サイトからダウンロードします。</p>
+<p>https://git-scm.com/downloads</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-03_gitscm.png" alt="Gitの公式ダウンロードページ">
+<div class="caption">Gitの公式ダウンロードページ</div>
+<p class="warn">※黒背景に赤いロゴの、ちょっと無骨なサイトです。合っています。</p></li>
+<li><p>【Windowsの人】「Windows」を選び、「Click here to download」から最新版をダウンロード。<br>ダウンロードした .exe をダブルクリックして進めます。</p></li>
+<li><p>【Windowsの人】インストーラーの設定項目がたくさん出てきますが、<strong>全部そのまま「Next」で大丈夫</strong>です。標準の設定で問題なく動きます。<br>最後に「Install」→「Finish」で完了。</p>
+<p class="warn">※途中で「デフォルトのエディタを選べ」という画面が出ます。ここもそのまま（Vim）で問題ありません。今回は使いません。</p></li>
+<li><p>【Macの人】Macは少し簡単です。「ターミナル」アプリを開いて、<code>git --version</code> と打ってEnterを押してください。<br>入っていなければ「開発者ツールをインストールしますか？」というダイアログが出るので、「インストール」を押すだけで入ります。<br>※Homebrewを使っている人は <code>brew install git</code> でもOKです。</p></li>
+<li><p>入ったかどうか確認しましょう。<br>Windowsは「Git Bash」、Macは「ターミナル」を開いて、下の1行を打ってEnterを押します。</p>
+<pre>git --version</pre>
+<p><code>git version 2.55.0</code> のようにバージョン番号が表示されたら成功です！</p></li>
+<li><p>続けて、あなたの名前とメールアドレスを設定します。<br>Gitは変更履歴に「誰が記録したか」を残すので、この2つを最初に教えておく必要があります。設定しないと、あとで記録するときにエラーになります。</p>
+<p>同じ画面で、下の2行を1行ずつ実行してください（<code>""</code> の中は自分のものに書き換え）。</p>
+<pre>git config --global user.name "あなたの名前"</pre>
+<pre>git config --global user.email "GitHubに登録したメールアドレス"</pre>
+<p class="warn">※名前は日本語でも動きますが、ローマ字かGitHubのIDにしておくと、あとで履歴を見たときに読みやすいです。<br>※メールアドレスは<strong>1-02でGitHubに登録したもの</strong>にしてください。ここが違うと、GitHub上で「誰の作業か」が正しく表示されません。</p></li>
+<li><p>設定できたか確認するには、下の1行を打ちます。設定した名前とメールアドレスが表示されればOKです。</p>
+<pre>git config --global --list</pre></li>
+<li><p>お疲れさまでした。<strong>文字を打つ操作はここまでです。</strong><br>次回、マウス操作でGitを使うアプリを入れたら、そこから先はボタン操作だけで進みます。</p></li>
+<li><p>バージョン番号が表示されて、名前とメールアドレスの設定ができたら、今回は完成です！</p></li></ol>
+<h1 class="chapter">【1-04】Forkを入れよう（マウスでGitを使う）【1章：Git導入編】</h1>
+<ol class="steps"><li><p>クリア条件：GitのアプリForkを入れて、GitHubアカウントと連携できればOK！</p></li>
+<li><p>前回入れたGit本体だけだと、記録や送信のたびに文字を打つことになります。毎日やるには大変なので、<strong>マウスで操作できるアプリ</strong>を入れます。</p>
+<div class="term"><b>用語：Gitクライアント</b>Gitの操作をボタンやアイコンでできるようにしたアプリのこと。裏でやっていることはGit本体と同じなので、<strong>できることも結果も文字入力の場合と全く同じ</strong>です。</div></li>
+<li><p>今回使うのは <strong>Fork</strong> というアプリです。理由は3つ。</p>
+<ul><li>変更履歴が<strong>枝分かれの図</strong>で表示されるので、誰がどこで何をしたか目で追える</li><li>変更されたファイルの中身を、画像はサムネイル付きで確認できる</li><li>動作が軽い</li></ul>
+<p class="warn">※Windows版とMac版があり、<strong>画面の作りがほぼ同じ</strong>なのも採用理由です。チーム内でOSが混ざっていても、同じ説明が通じます。</p></li>
+<li><p>では入れましょう。下のURLを開いてください。</p>
+<p>https://git-fork.com/</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-04_fork_site.png" alt="Forkの公式サイト">
+<div class="caption">Forkの公式サイト</div>
+<p>自分のOSのボタン（Download for Windows / Download for Mac）を押してダウンロード、インストールします。</p>
+<p class="warn">※Forkは「期限なしで試用できる有料アプリ」です。起動のたびに購入案内が出ますが、機能制限なく使い続けられます。気に入ったら購入を検討してください（買い切り $59.99）。</p></li>
+<li><p>初回起動時に、名前とメールアドレスを聞かれます。1-03で設定したものと同じものを入れてください。<br>（1-03で設定済みなら、自動で入っているはずです）</p>
+<p>あとから確認・変更するときは、<code>File &gt; Preferences</code> を開いて「Git」タブを見ます。ここの「Global User Information」が、1-03で設定した内容です。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-04_fork_userinfo.png" alt="Forkの名前・メールアドレス設定">
+<div class="caption">Forkの名前・メールアドレス設定</div></li>
+<li><p>次に、GitHubアカウントと連携します。連携しておくと、GitHubにデータを送るたびにパスワードを聞かれずに済みます。</p>
+<ul><li>Windows：<code>File &gt; Accounts...</code></li><li>Mac：<code>Fork &gt; Accounts...</code></li></ul>
+<p>を開いてください。</p></li>
+<li><p>左下の「＋」ボタンを押すと、サービスの一覧が出ます。<strong>GitHub</strong>を選んで「Log in」を押しましょう。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-04_fork_addaccount.png" alt="ForkのAdd Account画面">
+<div class="caption">ForkのAdd Account画面</div></li>
+<li><p>ブラウザが開いてGitHubの認証画面が表示されるので、緑色の「Authorize fork」ボタンを押せば連携完了です。<br>Forkの画面に自分のGitHubアカウント名が表示されていれば成功です。</p></li>
+<li><p>【補足】VSCodeを使っている人へ<br>Visual Studio Code にも、Gitの機能が最初から入っています（左端の枝分かれアイコン）。<br>スクリプトを書きながらそのまま記録できるので便利ですが、<strong>履歴の枝分かれが確認しづらい</strong>のが弱点です。<br>おすすめは併用です。「日々の記録はVSCode、ブランチ操作や履歴の確認はFork」という使い分けをしている人が多いです。もちろん全部Forkでも構いません。</p></li>
+<li><p>Forkが起動して、GitHubと連携できたら、今回は完成です！<br>これで環境の準備は終わりです。次回からは実際のプロジェクトを触っていきます。</p></li></ol>
 <h1 class="chapter">【1-05】Unity用の.gitignoreを知ろう【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：.gitignoreが何のためにあるか説明できて、Unity用のものを用意できる
-<li>今回もちょっと座学寄りですが、<strong>ここを飛ばすとチーム制作が確実に事故ります</strong>。5分だけお付き合いください。
-<li>まず前提として、Unityのプロジェクトフォルダを開いてみてください。こんなフォルダが並んでいます。
-<pre>
-   Assets/          ← 自分で作った素材・スクリプト
-   ProjectSettings/ ← プロジェクトの設定
-   Packages/        ← 使っている機能のリスト
-   Library/         ← ★
-   Temp/            ← ★
-   Logs/            ← ★
-   obj/             ← ★
-</pre>
-<li>このうち★の付いたフォルダ、実は<strong>Unityが勝手に作る一時ファイル</strong>です。特にLibraryは、あなたが入れた画像や音を、Unityが内部用に変換したデータの置き場。数GBになることもあります。
-<li>ここで問題です。このLibraryフォルダ、チームで共有すべきでしょうか？
-<br>答えは<strong>NO</strong>です。理由は3つ。
-<ul><li><strong>重すぎる</strong>：数GBを毎回アップロード・ダウンロードすることになる</li></ul>
-<ul><li><strong>意味がない</strong>：Assetsさえあれば、Unityが各自のPCで自動生成してくれる</li></ul>
-<ul><li><strong>確実に喧嘩する</strong>：全員のPCで中身が微妙に違うので、毎回「変更あり」と判定されて競合しまくる</li></ul>
-<br>たとえるなら、<strong>レシピと作り置きの関係</strong>です。共有すべきなのはレシピ（Assets）だけ。作り置き（Library）は、各自のキッチンで同じレシピから作れるので、送り合う必要がありません。むしろ冷蔵庫を圧迫します。
-<li>そこで登場するのが .gitignore（ギット・イグノア）です。
-<div class="term"><b>用語：.gitignore</b>
-「このファイルたちはGitで管理しなくていいよ」というリストを書いた設定ファイル。名前の通り ignore（無視）するものを指定します。ファイル名がドットから始まるので、フォルダ内で先頭に表示されます。
-</div>
-<li>Unity用の.gitignoreは、ありがたいことに<strong>GitHubが公式のテンプレートを用意してくれています</strong>。自分で書く必要はありません。
-<br>次回リポジトリを作るときに、選択肢から「Unity」を選ぶだけで自動生成されます。今回は中身を眺めるだけでOKです。
-<pre>
-   # Unityが自動生成するフォルダ（共有しない）
-   [Ll]ibrary/
-   [Tt]emp/
-   [Oo]bj/
-   [Bb]uild/
-   [Ll]ogs/
+<ol class="steps"><li><p>クリア条件：Gitで共有しないファイルがあることが分かって、Unity用の設定を用意できればOK！</p></li>
+<li><p>今回は操作より説明が多めですが、<strong>ここを飛ばすとチーム制作でほぼ確実に事故ります</strong>。5分だけお付き合いください。</p></li>
+<li><p>まず、Unityのプロジェクトフォルダを開いてみてください。こんなフォルダが並んでいます。</p>
+<pre>Assets/          ← 自分で作った素材・スクリプト
+ProjectSettings/ ← プロジェクトの設定
+Packages/        ← 使っている機能のリスト
+Library/         ← ★
+Temp/            ← ★
+Logs/            ← ★
+obj/             ← ★</pre></li>
+<li><p>★の付いたフォルダは、<strong>Unityが自動で作る一時ファイル</strong>の置き場です。<br>特にLibraryは、Assetsに入れた画像や音をUnityが内部用に変換したデータが入っていて、数GBになることもあります。</p></li>
+<li><p>ここで問題です。このLibraryフォルダは、チームで共有すべきでしょうか？</p>
+<p>答えは<strong>共有しない</strong>です。理由は3つ。</p>
+<ul><li><strong>サイズが大きい</strong>：数GBを毎回アップロード・ダウンロードすることになる</li><li><strong>共有する意味がない</strong>：Assetsさえあれば、Unityが各自のPCで自動的に作り直してくれる</li><li><strong>必ず食い違う</strong>：全員のPCで中身が微妙に違うため、毎回「変更あり」と判定されて衝突の原因になる</li></ul>
+<p>つまり、<strong>共有するのは自分で作ったもの（Assets、ProjectSettings、Packages）だけ</strong>。Unityが自動生成するものは各自のPCで作らせる、が基本方針です。</p></li>
+<li><p>そこで使うのが .gitignore（ギット・イグノア）です。</p>
+<div class="term"><b>用語：.gitignore</b>「このファイルはGitで記録しなくていい」というリストを書いた設定ファイル。ignore（無視する）ものを指定します。ファイル名がドットから始まるので、フォルダ内で先頭のほうに表示されます。</div></li>
+<li><p>Unity用の.gitignoreは、<strong>GitHubが公式のテンプレートを用意してくれています</strong>。自分で書く必要はありません。<br>次回リポジトリを作るときに、選択肢から「Unity」を選ぶだけで自動生成されます。今回は中身を眺めるだけでOKです。</p>
+<pre># Unityが自動生成するフォルダ（共有しない）
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Ll]ogs/
 
-   # ビルドの成果物（共有しない）
-   *.apk
-   *.unitypackage
+# ビルドの成果物（共有しない）
+*.apk
+*.unitypackage
 
-   # OSが勝手に作るゴミファイル
-   .DS_Store        ← Macが作る隠しファイル
-   Thumbs.db        ← Windowsが作るサムネイルキャッシュ
-</pre>
-<br>実物はこんな感じです。100行ほどありますが、全部GitHubが用意してくれたものです。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-05_gitignore.png" alt="Unity用の.gitignore">
-<li>【超重要】Unity特有の注意点：.metaファイルは必ず一緒にコミットする
-<br>Assetsフォルダを見ると、画像1枚につき「Player.png」と「Player.png.meta」の2つがあるはずです。
-<br>この.metaファイルには、<strong>その素材の設定（Pixels Per Unit、Sprite Modeなど）と、Unity内部での通し番号（GUID）</strong>が書かれています。
-<br>もし.metaを共有し忘れると、こうなります。
-<ul><li>あなたのPCでは、Playerオブジェクトに絵がちゃんと付いている</li></ul>
-<ul><li>相手のPCでは、<strong>絵が外れて白い四角（Missing）になる</strong></li></ul>
-<br>Unityあるあるの事故です。「なんか相手の環境だけ絵が消える」の犯人はだいたいこれ。
-<br>Forkを使っていれば.metaも普通に表示されるので、<strong>変更されたファイルは全部まとめてコミットする</strong>と覚えておけば大丈夫です。
-<li>【もうひとつ重要】シーンとプレハブは同時に触らない
-<br>.gitignoreの話とセットで覚えてほしいのがこれです。
-<br>Gitは、テキストファイルなら「Aさんは3行目、Bさんは50行目を変えたな」と判断して自動合体できます。
-<br>でもUnityのシーンファイル（.unity）やプレハブ（.prefab）は、中身が複雑なテキストなので、<strong>同じシーンを2人が同時に編集すると、ほぼ確実に合体に失敗します</strong>（コンフリクト）。
-<br>なので、チームでの鉄則はこれです。
-<ul><li><strong>同じシーン・同じプレハブを、同時に2人で触らない</strong></li></ul>
-<ul><li>誰がどのシーンを触るか、作業前にDiscordで宣言する</li></ul>
-<ul><li>大きなシーンは、機能ごとにプレハブに分けて分担する</li></ul>
-<br>※これは1-14の作業マニュアルにも再掲します。忘れてもそっちを見ればOK。
-<li>「Libraryは共有しない」「.metaは一緒にコミットする」「同じシーンを同時に触らない」の3つが頭に入ったら、今回は完成です！
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+# OSが自動で作るファイル（共有しない）
+.DS_Store        ← Macが作る隠しファイル
+Thumbs.db        ← Windowsが作るサムネイルの一時ファイル</pre>
+<p>実物はこんな感じです。100行ほどありますが、全部GitHubが用意してくれたものです。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-05_gitignore.png" alt="Unity用の.gitignore">
+<div class="caption">Unity用の.gitignore</div></li>
+<li><p>【超重要】Unity特有の注意点：.metaファイルは必ず一緒に記録する</p>
+<p>Assetsフォルダを見ると、画像1枚につき「Player.png」と「Player.png.meta」の2つがあるはずです。<br>この.metaファイルには、<strong>その素材の設定（Pixels Per Unit、Sprite Modeなど）と、Unity内部での識別番号（GUID）</strong>が書かれています。</p>
+<p>もし.metaを共有し忘れると、こうなります。</p>
+<ul><li>自分のPCでは、Playerオブジェクトに絵がちゃんと付いている</li><li>相手のPCでは、<strong>絵が外れて白い四角（Missing）になる</strong></li></ul>
+<p>Unityでよくある事故です。「相手の環境だけ絵が消える」の原因は、だいたいこれ。<br>Forkを使っていれば.metaも一覧に表示されるので、<strong>変更されたファイルは全部まとめて記録する</strong>と覚えておけば大丈夫です。</p></li>
+<li><p>【もうひとつ重要】シーンとプレハブは同時に触らない</p>
+<p>.gitignoreの話とセットで覚えてほしいのがこれです。<br>Gitは、テキストファイルなら「Aさんは3行目、Bさんは50行目を変えた」と判断して自動でまとめられます。<br>でもUnityのシーンファイル（.unity）やプレハブ（.prefab）は中身が複雑なテキストなので、<strong>同じシーンを2人が同時に編集すると、ほぼ確実に自動でまとめられなくなります</strong>（これをコンフリクトと呼びます。1-13で扱います）。</p>
+<p>なので、チームでの決めごとはこの3つです。</p>
+<ul><li><strong>同じシーン・同じプレハブを、同時に2人で触らない</strong></li><li>誰がどのシーンを触るか、作業前にDiscordで宣言する</li><li>大きなシーンは、機能ごとにプレハブに分けて分担する</li></ul>
+<p class="warn">※これは1-14の作業マニュアルにも載せます。忘れてもそちらを見ればOKです。</p></li>
+<li><p>「Libraryは共有しない」「.metaは一緒に記録する」「同じシーンを同時に触らない」の3つが頭に入ったら、今回は完成です！</p></li></ol>
 <h1 class="chapter">【1-06】リポジトリを作ろう【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：GitHubにチーム用のリポジトリを作り、メンバーを招待する
-<li>いよいよ倉庫を1つ借ります。この倉庫のことを、Gitの世界ではリポジトリと呼びます。
-<div class="term"><b>用語：リポジトリ（repository）</b>
-直訳すると「貯蔵庫」。プロジェクト1つにつき倉庫1つ、と思ってください。中にはファイルだけでなく、<strong>これまでの全変更履歴</strong>も一緒に保管されています。
-</div>
-<li>※この作業は<strong>チームで1人（リーダー）だけ</strong>がやればOKです。他のメンバーは眺めるだけで大丈夫。自分がリーダーでない人は、次回の「クローン」から参加になります。
-<li>GitHubにログインした状態で、右上の「＋」→「New repository」を選びましょう。
-<li>設定項目を埋めていきます。
-<ul><li><strong>Repository name</strong>：プロジェクト名（例：MagicalShooting）。半角英数とハイフン推奨</li></ul>
-<ul><li><strong>Description</strong>：どんなゲームか一言（任意）</li></ul>
-<ul><li><strong>Public / Private</strong>：</li></ul>
-<ul><li>Public＝世界中の誰でも見られる</li></ul>
-<ul><li>Private＝招待した人だけ見られる</li></ul>
-<br>チーム制作の練習ならどちらでもOK。素材の権利が気になるならPrivateが安全です
-<li>下にスクロールして、ここが<strong>今回いちばん大事なところ</strong>です。
-<ul><li><strong>Add a README file</strong>：チェックを入れる（プロジェクトの説明書。あとで書けます）</li></ul>
-<ul><li><strong>Add .gitignore</strong>：ドロップダウンから <strong>Unity</strong> を選ぶ ← 前回勉強したやつ！</li></ul>
-<ul><li><strong>Choose a license</strong>：チーム内制作なら「None」でOK</li></ul>
-<br>.gitignoreで「Unity」を選び忘れると、Libraryフォルダが丸ごと共有される地獄が始まります。ここだけは絶対に確認してください。
-<li>「Create repository」を押すと、あなたの倉庫が完成します！
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-06_repo_top.png" alt="作成されたリポジトリ">
-<br>※このスクショは、すでに中身が入った状態のものです。作りたてはREADME.mdと.gitignoreだけが入っています。
-<li>次に、チームメンバーを招待します。これをやらないと、メンバーは中身を見られても<strong>納品（プッシュ）ができません</strong>。
-<ul><li>リポジトリの上部メニューから「Settings」を開く</li></ul>
-<ul><li>左メニューの「Collaborators」（共同編集者）を選ぶ</li></ul>
-<ul><li>「Add people」を押して、メンバーのGitHub IDを入力</li></ul>
-<br>1-02でメンバーに「IDを教えてね」と言っておいたのは、このためでした。
-<li>招待されたメンバーには、GitHubからメールが届きます。中の「Accept invitation」を押してもらえば、参加完了です。
-<br>※招待は7日で期限切れになるので、メンバーには「招待送ったから見てね」と一声かけましょう。
-<li>最後に、<strong>リポジトリのURLをチーム全員に共有</strong>しましょう。次回、全員がこのURLを使います。
-<pre>
-    https://github.com/ユーザー名/リポジトリ名
-</pre>
-<li>リポジトリができて、メンバーが参加できたら、今回は完成です！
-<br>次回は、この倉庫の中身を自分のPCに持ってきます。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+<ol class="steps"><li><p>クリア条件：GitHubにチーム用のリポジトリを作って、メンバーを招待できればOK！</p></li>
+<li><p>いよいよプロジェクト用の置き場をGitHubに作ります。この置き場をリポジトリと呼びます。</p>
+<div class="term"><b>用語：リポジトリ（repository）</b>プロジェクト1つ分のファイルと、<strong>その全変更履歴</strong>が入っている置き場。プロジェクト1つにつきリポジトリ1つ、と考えてください。</div></li>
+<li><p class="warn">※この作業は<strong>チームで1人（代表の人）だけ</strong>がやればOKです。他のメンバーは眺めるだけで大丈夫。自分が代表でない人は、次回の「クローン」から参加になります。</p></li>
+<li><p>GitHubにログインした状態で、右上の「＋」→「New repository」を選びましょう。</p></li>
+<li><p>設定項目を埋めていきます。</p>
+<ul><li><strong>Repository name</strong>：プロジェクト名（例：MagicalShooting）。半角英数とハイフン推奨</li><li><strong>Description</strong>：どんなゲームか一言（任意）</li><li><strong>Public / Private</strong>：</li><li>Public＝インターネット上の誰でも見られる</li><li>Private＝招待した人だけ見られる</li></ul>
+<p>練習ならどちらでもOK。素材の権利が気になるならPrivateが安全です</p></li>
+<li><p>下にスクロールして、ここが<strong>今回いちばん大事なところ</strong>です。</p>
+<ul><li><strong>Add a README file</strong>：チェックを入れる（プロジェクトの説明書。あとで書けます）</li><li><strong>Add .gitignore</strong>：ドロップダウンから <strong>Unity</strong> を選ぶ ← 前回説明したものです</li><li><strong>Choose a license</strong>：チーム内制作なら「None」でOK</li></ul>
+<p>.gitignoreで「Unity」を選び忘れると、Libraryフォルダまで全部共有されてしまい、前回説明した問題がそのまま起きます。ここだけは必ず確認してください。</p></li>
+<li><p>「Create repository」を押すと、リポジトリが作成されます！</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-06_repo_top.png" alt="作成されたリポジトリ">
+<div class="caption">作成されたリポジトリ</div>
+<p class="warn">※このスクショは、すでに中身が入った状態のものです。作りたてはREADME.mdと.gitignoreだけが入っています。</p></li>
+<li><p>次に、チームメンバーを招待します。これをやらないと、メンバーは中身を見られても<strong>データを送れません（プッシュできません）</strong>。</p>
+<ul><li>リポジトリの上部メニューから「Settings」を開く</li><li>左メニューの「Collaborators」（共同編集者）を選ぶ</li><li>「Add people」を押して、メンバーのGitHub IDを入力</li></ul>
+<p>1-02でメンバーに「IDを教えてね」と伝えておいたのは、このためでした。</p></li>
+<li><p>招待されたメンバーには、GitHubからメールが届きます。中の「Accept invitation」を押してもらえば参加完了です。<br>※招待は7日で期限切れになるので、メンバーには「招待を送ったので確認してね」と一声かけましょう。</p></li>
+<li><p>最後に、<strong>リポジトリのURLをチーム全員に共有</strong>しましょう。次回、全員がこのURLを使います。</p>
+<pre>https://github.com/ユーザー名/リポジトリ名</pre></li>
+<li><p>リポジトリができて、メンバーが参加できたら、今回は完成です！<br>次回は、このリポジトリの中身を自分のPCに持ってきます。</p></li></ol>
 <h1 class="chapter">【1-07】クローンしよう（手元に持ってくる）【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：GitHubのリポジトリを自分のPCにコピーして、Unityで開ける状態にする
-<li>倉庫はできましたが、まだネットの向こう側にあります。作業するには手元に持ってこないといけません。
-<br>この「持ってくる」操作をクローンと呼びます。
-<div class="term"><b>用語：クローン（clone）</b>
-リポジトリを丸ごと自分のPCにコピーすること。<strong>ダウンロードとの違いは、履歴も一緒に付いてくること</strong>。単にファイルをもらうのではなく、倉庫ごと複製して、GitHubと繋がった状態にします。
-</div>
-<li>※ここからは<strong>チーム全員がやる作業</strong>です。リーダーも含めて全員、自分のPCに持ってきましょう。
-<li>まず、GitHubのリポジトリページを開いて、緑色の「Code」ボタンを押します。
-<br>出てきたURL（<code><a href="https://github.com/...">https://github.com/...</a></code> で終わるやつ）の右にあるコピーアイコンを押して、URLをコピーします。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-06_repo_top.png" alt="リポジトリのCodeボタン">
-<li>次にForkを開いて、<code>File &gt; Clone</code> を選びます。
-<div class="placeholder">📷 スクショ：ForkのCloneダイアログ</div>
-<li>ダイアログに入力するのは2つ。
-<ul><li><strong>Repository URL</strong>：さっきコピーしたURLを貼り付け</li></ul>
-<ul><li><strong>Parent Folder</strong>：どこに置くか（例：<code>C:\Users\自分の名前\source\repos</code>）</li></ul>
-<br>※「Parent Folder」に指定したフォルダの<strong>中に、リポジトリ名のフォルダが自動で作られます</strong>。あらかじめ空フォルダを作っておく必要はありません。
-<li>【重要】置き場所の注意
-<br>ここで指定するフォルダは、次の条件を守ってください。守らないと後で泣きます。
-<ul><li><strong>パスに日本語やスペースを含めない</strong>（<code>C:\Users\山田\デスクトップ</code> などはNG）</li></ul>
-<ul><li><strong>OneDriveやGoogle Driveの同期フォルダの中に置かない</strong> ← これ超重要！</li></ul>
-<br>後者が特に事故ります。GitとOneDriveが同時に同じファイルをいじろうとして、両方が壊れます。<strong>バックアップはGitHubがやってくれるので、クラウド同期は不要</strong>です。おすすめは <code>C:\Users\自分の名前\source\repos</code> あたり。
-<li>「Clone」ボタンを押すと、ダウンロードが始まります。プロジェクトの大きさによっては数分かかります。
-<li>完了したら、Forkの画面に履歴が表示されます。これがあなたの作業場所です。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-07_fork_main.png" alt="Forkのメイン画面">
-<br>左に<strong>ブランチ一覧</strong>、中央に<strong>変更履歴</strong>、下に<strong>選択したコミットの中身</strong>。この3ブロックだけ覚えておけば大丈夫です。
-<li>では、UnityHubからこのプロジェクトを開いてみましょう。
-<ul><li>UnityHubの「Add」→「Add project from disk」</li></ul>
-<ul><li>さっきクローンしたフォルダを選択</li></ul>
-<br>初回はLibraryフォルダを一から生成するので、<strong>5〜15分ほどかかります</strong>。これが1-05で話した「作り置きを各自のキッチンで作る」作業です。お茶でも飲んで待ちましょう。
-<li>Unityでプロジェクトが開けたら、今回は完成です！
-<br>ここまでで準備完了。次回からいよいよ、作業してGitに記録していきます。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
-<h1 class="chapter">【1-08】コミットしよう（セーブポイントを刻む）【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：ファイルを変更して、コミットを1回作る
-<li>いよいよGitの基本動作、コミットです。これはゲームで言う<strong>セーブ</strong>にあたります。
-<div class="term"><b>用語：コミット（commit）</b>
-その時点のファイルの状態を、履歴として記録すること。<strong>上書きセーブではなく、セーブデータが毎回増えていくタイプのセーブ</strong>。だから何度でも過去に戻れます。
-</div>
-<li>まずは何か変更を作りましょう。何でもいいのですが、練習ならUnityで簡単な変更を1つしてみてください。
-<br>（例：シーンにテキストを1つ追加して保存、画像を1枚Assetsに追加、など）
-<br>※必ず<strong>Unity側でCtrl+Sして保存</strong>してから、Forkに戻ってください。保存していない変更はGitからは見えません。
-<li>Forkを開くと、左メニューの一番上に「Local Changes」という項目があり、数字が付いているはずです。この数字が「変更されたファイルの数」です。クリックしてみましょう。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_localchanges_image.png" alt="ForkのLocal Changes画面">
-<br>ちなみにこのスクショ、<strong>画像ファイルを選ぶとプレビューまで出る</strong>ところを写しています。デザイナーさんには嬉しい機能ですね。
-<li>画面が上下2つに分かれています。ここがコミットの操作盤です。
-<ul><li><strong>上（Unstaged）</strong>：変更されたけど、まだセーブ対象に選んでいないファイル</li></ul>
-<ul><li><strong>下（Staged）</strong>：セーブ対象に選んだファイル</li></ul>
-<div class="term"><b>用語：ステージング</b>
-「この変更をセーブに含める」と選ぶ作業。<strong>カメラのファインダーを覗いて、写す範囲を決める作業</strong>だと思ってください。全部写す必要はなく、今回の作業に関係するものだけ選べます。
-</div>
-<li>ファイルを選んで「Stage」ボタン（または右クリック→Stage）を押すと、下に移動します。
-<br>全部まとめて送るなら「Stage」でOK。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_stage_area.png" alt="StagedとUnstaged">
-<br>※このとき、右側にそのファイルの変更内容が表示されます。テキストファイルなら、<strong>追加した行が緑色</strong>でハイライトされます。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_diff_text.png" alt="テキストの差分表示">
-<li>【1-05の復習】.metaファイルも一緒にステージしてください。
-<br>画像を1枚追加すると「Player.png」と「Player.png.meta」の2つが出てくるはずです。<strong>必ずセット</strong>で。片方だけコミットすると、相手の環境で絵が外れます。
-<li>下の入力欄に、コミットメッセージを書きます。ここが実は一番大事です。
-<div class="term"><b>用語：コミットメッセージ</b>
-「この変更で何をしたか」の一言メモ。<strong>未来の自分とチームメンバーへの手紙</strong>です。
-</div>
-<li>良いメッセージと悪いメッセージの例を挙げます。
-</ol>
-<table>
+<ol class="steps"><li><p>クリア条件：GitHubのリポジトリを自分のPCにコピーして、Unityで開ければOK！</p></li>
+<li><p>リポジトリはできましたが、まだGitHub上にあるだけです。作業するには自分のPCに持ってくる必要があります。<br>この操作をクローンと呼びます。</p>
+<div class="term"><b>用語：クローン（clone）</b>GitHub上のリポジトリを、まるごと自分のPCにコピーすること。<strong>ファイルをダウンロードするのとの違いは、変更履歴も一緒にコピーされて、GitHubとつながった状態になること</strong>です。</div></li>
+<li><p class="warn">※ここからは<strong>チーム全員がやる作業</strong>です。代表の人も含めて全員、自分のPCに持ってきましょう。</p></li>
+<li><p>まず、GitHubのリポジトリページを開いて、緑色の「Code」ボタンを押します。<br>出てきたURL（<code>https://github.com/...</code> で終わるもの）の右にあるコピーアイコンを押して、URLをコピーします。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-06_repo_top.png" alt="リポジトリのCodeボタン">
+<div class="caption">リポジトリのCodeボタン</div></li>
+<li><p>次にForkを開いて、<code>File &gt; Clone</code> を選びます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-07_fork_clone_dialog.png" alt="ForkのCloneダイアログ">
+<div class="caption">ForkのCloneダイアログ</div></li>
+<li><p>入力するのは2つです。</p>
+<ul><li><strong>Repository Url</strong>：さっきコピーしたURLを貼り付け</li><li><strong>Parent Folder</strong>：どのフォルダの中に置くか（例：<code>C:\Users\自分の名前\source\repos</code>）</li></ul>
+<p class="warn">※Nameは自動で入ります。<strong>Parent Folderに指定したフォルダの中に、リポジトリ名のフォルダが自動で作られます</strong>。あらかじめ空フォルダを作っておく必要はありません。</p></li>
+<li><p>【重要】置き場所の注意<br>Parent Folderに指定するフォルダは、次の条件を守ってください。</p>
+<ul><li><strong>パスに日本語やスペースを含めない</strong>（<code>C:\Users\山田\デスクトップ</code> などはNG）</li><li><strong>OneDriveやGoogle Driveの同期フォルダの中に置かない</strong> ← これが特に重要！</li></ul>
+<p>後者は事故が多いです。GitとOneDriveが同時に同じファイルを書き換えようとして、両方おかしくなります。<strong>バックアップはGitHub側で取れているので、クラウド同期は不要</strong>です。おすすめは <code>C:\Users\自分の名前\source\repos</code> あたりです。</p></li>
+<li><p>「Clone」ボタンを押すと、ダウンロードが始まります。プロジェクトの大きさによっては数分かかります。</p></li>
+<li><p>完了すると、Forkの画面に変更履歴が表示されます。ここが今後の作業画面になります。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-07_fork_main.png" alt="Forkのメイン画面">
+<div class="caption">Forkのメイン画面</div>
+<p>画面の見方は3ブロックだけ覚えておけば大丈夫です。</p>
+<ul><li><strong>左</strong>：ブランチ（作業場所）の一覧</li><li><strong>中央</strong>：変更履歴の一覧</li><li><strong>下</strong>：選択した履歴の中身</li></ul></li>
+<li><p>では、UnityHubからこのプロジェクトを開いてみましょう。</p>
+<ul><li>UnityHubの「Add」→「Add project from disk」</li><li>さっきクローンしたフォルダを選択</li></ul>
+<p>初回はLibraryフォルダを一から作り直すので、<strong>5〜15分ほどかかります</strong>。これが1-05で説明した「Unityが自動生成するデータを各自のPCで作る」作業です。待ちましょう。</p></li>
+<li><p>Unityでプロジェクトが開けたら、今回は完成です！<br>準備はここまで。次回からは、実際に作業して記録していきます。</p></li></ol>
+<h1 class="chapter">【1-08】コミットしよう（変更を記録する）【1章：Git導入編】</h1>
+<ol class="steps"><li><p>クリア条件：ファイルを変更して、コミットを1回できればOK！</p></li>
+<li><p>いよいよGitの基本操作、コミットです。</p>
+<div class="term"><b>用語：コミット（commit）</b>その時点のファイルの状態を、変更履歴として記録すること。ゲームのセーブに近いですが、<strong>上書きではなく、記録するたびにセーブデータが1つずつ増えていく</strong>タイプです。だから何度でも過去の状態に戻れます。</div></li>
+<li><p>まずは何か変更を作りましょう。練習なので内容は何でもOKです。<br>（例：シーンにテキストを1つ追加して保存、画像を1枚Assetsに追加、など）<br>※必ず<strong>Unity側でCtrl+Sして保存</strong>してから、Forkに戻ってください。保存していない変更はGitからは見えません。</p></li>
+<li><p>Forkを開くと、左メニューの一番上に「Local Changes」という項目があり、数字が付いているはずです。この数字が「変更されたファイルの数」です。クリックしてみましょう。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_localchanges_image.png" alt="ForkのLocal Changes画面">
+<div class="caption">ForkのLocal Changes画面</div>
+<p>画像ファイルを選ぶと、右側にプレビューが表示されます。素材を差し替えたときの確認に便利です。</p></li>
+<li><p>画面が上下2つに分かれています。ここがコミットの操作画面です。</p>
+<ul><li><strong>上（Unstaged）</strong>：変更されたけど、まだ記録の対象に選んでいないファイル</li><li><strong>下（Staged）</strong>：記録の対象に選んだファイル</li></ul>
+<div class="term"><b>用語：ステージング</b>「この変更を今回の記録に含める」と選ぶ作業のこと。変更したファイル全部を毎回記録する必要はなく、<strong>今回の作業に関係するファイルだけを選べます</strong>。</div></li>
+<li><p>ファイルを選んで「Stage」ボタン（または右クリック→Stage）を押すと、下に移動します。<br>全部まとめて記録するなら、全選択して「Stage」でOKです。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_stage_area.png" alt="StagedとUnstaged">
+<div class="caption">StagedとUnstaged</div>
+<p class="warn">※ファイルを選ぶと、右側にそのファイルの変更内容が表示されます。テキストファイルなら、<strong>追加した行が緑色</strong>で表示されます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_diff_text.png" alt="テキストの差分表示">
+<div class="caption">テキストの差分表示</div></li>
+<li><p>【1-05の復習】.metaファイルも一緒にステージしてください。<br>画像を1枚追加すると「Player.png」と「Player.png.meta」の2つが出てくるはずです。<strong>必ずセットで</strong>記録します。片方だけだと、相手の環境で絵が外れます。</p></li>
+<li><p>下の入力欄に、コミットメッセージを書きます。ここが実は一番大事です。</p>
+<div class="term"><b>用語：コミットメッセージ</b>「この変更で何をしたか」を書く一言メモ。あとから履歴を見たとき、<strong>自分とチームメンバーがこれだけを頼りに中身を判断します</strong>。</div></li>
+<li><p>良いメッセージと悪いメッセージの例を挙げます。</p>
+<div class="tablewrap"><table>
 <tr><th>❌ 悪い例</th><th>⭕ 良い例</th></tr>
 <tr><td>修正</td><td>敵キャラの当たり判定を小さく修正</td></tr>
 <tr><td>aaa</td><td>タイトル画面のロゴ画像を差し替え</td></tr>
 <tr><td>いろいろ</td><td>プレイヤーの移動速度を5.0に調整</td></tr>
 <tr><td>(空欄)</td><td>ゲームオーバー時のBGMを追加</td></tr>
-</table>
-<p>コツは「<strong>何を</strong>どうしたか」を書くこと。3ヶ月後の自分は、絶対に「修正」の中身を覚えていません。</p>
-<ol class="steps" start="10">
-<li>メッセージを書いたら「Commit」ボタンを押します。これでセーブ完了！
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_commit_message.png" alt="コミットメッセージの入力欄">
-<br>※ボタンに「Commit 1 File」と、対象ファイル数が出ます。意図した数になっているか確認してから押しましょう。
-<li>左メニューの「All Commits」（履歴）を見てみましょう。あなたのコミットが、名前とメッセージ付きで一番上に追加されているはずです。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_history.png" alt="Forkのコミット履歴">
-<br>左端の<strong>カラフルな線が、ブランチの枝分かれ</strong>を表しています。今は意味が分からなくてOK。次々回に分かります。
-<li>【コツ】コミットは細かく、こまめに
-<br>「1日の終わりにまとめて1回」ではなく、「1つの作業が終わるたびに1回」がおすすめです。
-<ul><li>❌ 「今日やったこと全部」（何かあった時に戻る場所が粗い）</li></ul>
-<ul><li>⭕ 「敵の絵を追加」「敵のサイズ調整」「敵の色味修正」（ピンポイントで戻れる）</li></ul>
-<br>セーブポイントは、多くて困ることはありません。
-<li>コミットが履歴に表示されたら、今回は完成です！
-<br>……ただし、これはまだ<strong>自分のPCの中だけ</strong>の話。チームには何も届いていません。次回、いよいよ倉庫に送ります。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
-<h1 class="chapter">【1-09】プッシュ＆プルしよう（納品と仕入れ）【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：自分のコミットをGitHubに送り、メンバーの変更を受け取る
-<li>前回のコミットは、実は<strong>まだ自分のPCの中だけ</strong>の出来事でした。
-<br>Gitは「手元の倉庫」と「ネットの倉庫（GitHub）」の2階建てになっていて、この2つは自動では同期しません。自分のタイミングで送ったり受け取ったりします。
-<li>今回覚える操作は2つ。往復するだけです。
-</ol>
-<table>
-<tr><th>操作</th><th>向き</th><th>たとえるなら</th></tr>
-<tr><td><strong>プッシュ（push）</strong></td><td>自分 → GitHub</td><td>納品する</td></tr>
-<tr><td><strong>プル（pull）</strong></td><td>GitHub → 自分</td><td>仕入れる</td></tr>
-</table>
-<div class="term"><b>用語：プッシュ / プル</b>
-push は「押し出す」、pull は「引っぱる」。自分から見て、荷物を押し出すのか、引き寄せるのか、と覚えると迷いません。
-</div>
-<ol class="steps" start="4">
-<li>まずプッシュしてみましょう。Forkの上部ツールバーにある「Push」ボタン（↑の矢印アイコン）を押します。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-09_fork_toolbar.png" alt="Forkのツールバー">
-<br>※左から Quick Launch / Fetch / <strong>Pull</strong> / <strong>Push</strong> / Stash。今回使うのは3番目と4番目です。
-<li>確認ダイアログが出るので、そのまま「Push」を押せばOK。
-<br>数秒待って、エラーが出なければ納品完了です。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-09_fork_push_dialog.png" alt="Pushダイアログ">
-<br>※「Create tracking reference」にチェックが入っていればそのままでOK。これは「このブランチをGitHub側と紐づける」という意味です。
-<br>※初回はGitHubのログインを求められることがあります。1-04で連携していれば自動で通ります。
-<li>GitHubのリポジトリページをブラウザで開いて、リロードしてみてください。
-<br>さっきのコミットメッセージが、ちゃんとサイトに反映されているはずです。これでチーム全員があなたの作業を見られる状態になりました。
-<li>次はプル。他のメンバーが納品したものを受け取る操作です。
-<br>さっきのツールバーの「Pull」ボタン（↓の矢印アイコン）を押すだけ。こちらも確認ダイアログでそのままOKで大丈夫です。
-<li>【超重要】作業を始める前は、必ずプルする
-<br>これはチーム制作の<strong>鉄の掟</strong>です。理由を絵で説明します。
-<pre>
-   ✕ 悪い例：プルしないで作業
-      Aさん：古いデータのまま作業 → 納品しようとする
-      GitHub：「その間に他の人が更新してるよ」→ 拒否される
-      Aさん：手作業で合体させるハメに（つらい）
+</table></div>
+<p>コツは「<strong>何を</strong>」「<strong>どうしたか</strong>」を書くことです。3ヶ月後の自分は「修正」の中身を覚えていません。</p></li>
+<li><p>メッセージを書いたら「Commit」ボタンを押します。これで記録完了です！</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_commit_message.png" alt="コミットメッセージの入力欄">
+<div class="caption">コミットメッセージの入力欄</div>
+<p class="warn">※ボタンに「Commit 1 File」のように対象ファイル数が表示されます。意図した数になっているか確認してから押しましょう。</p></li>
+<li><p>左メニューの「All Commits」（変更履歴）を見てみましょう。今のコミットが、名前とメッセージ付きで一番上に追加されているはずです。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-08_fork_history.png" alt="Forkのコミット履歴">
+<div class="caption">Forkのコミット履歴</div>
+<p>左端のカラフルな線は、ブランチ（作業場所）の枝分かれを表しています。今は意味が分からなくてOKです。1-10で扱います。</p></li>
+<li><p>【コツ】コミットは細かく、こまめに<br>「1日の終わりにまとめて1回」ではなく、「1つの作業が終わるたびに1回」がおすすめです。</p>
+<ul><li>❌ 「今日やったこと全部」を1回で記録（戻れる場所が粗くなる）</li><li>⭕ 「敵の絵を追加」「敵のサイズ調整」「敵の色味修正」と3回に分ける（ピンポイントで戻れる）</li></ul></li>
+<li><p>コミットが履歴に表示されたら、今回は完成です！<br>……ただし、これはまだ<strong>自分のPCの中だけ</strong>の記録です。チームにはまだ何も届いていません。次回、GitHubに送ります。</p></li></ol>
+<h1 class="chapter">【1-09】プッシュ＆プルしよう【1章：Git導入編】</h1>
+<ol class="steps"><li><p>クリア条件：自分のコミットをGitHubに送って、メンバーの変更を受け取れればOK！</p></li>
+<li><p>前回のコミットは、<strong>自分のPCの中だけ</strong>の記録でした。<br>Gitでは「自分のPCの記録」と「GitHub上の記録」が別々に存在していて、この2つは自動では同期しません。自分のタイミングで送ったり受け取ったりします。</p></li>
+<li><p>今回覚える操作は2つ。送るか、受け取るかだけです。</p>
+<div class="tablewrap"><table>
+<tr><th>操作</th><th>向き</th><th>何をする</th></tr>
+<tr><td><strong>プッシュ（push）</strong></td><td>自分のPC → GitHub</td><td>自分のコミットをGitHubに送る</td></tr>
+<tr><td><strong>プル（pull）</strong></td><td>GitHub → 自分のPC</td><td>メンバーのコミットを自分のPCに取り込む</td></tr>
+</table></div>
+<div class="term"><b>用語：プッシュ / プル</b>push は「押し出す」、pull は「引っぱる」。自分から見て、送り出すのか、引き寄せるのかで覚えると迷いません。</div></li>
+<li><p>まずプッシュしてみましょう。Forkの上部にある「Push」ボタン（↑の矢印アイコン）を押します。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-09_fork_toolbar.png" alt="Forkのツールバー">
+<div class="caption">Forkのツールバー</div>
+<p class="warn">※左から Quick Launch / Fetch / <strong>Pull</strong> / <strong>Push</strong> / Stash。今回使うのは3番目と4番目です。</p></li>
+<li><p>確認ダイアログが出るので、そのまま「Push」を押せばOK。<br>数秒待ってエラーが出なければ送信完了です。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-09_fork_push_dialog.png" alt="Pushダイアログ">
+<div class="caption">Pushダイアログ</div>
+<p class="warn">※「Create tracking reference」にチェックが入っていればそのままでOK。「このブランチをGitHub側と紐づける」という意味です。<br>※初回はGitHubのログインを求められることがあります。1-04で連携していれば自動で通ります。</p></li>
+<li><p>GitHubのリポジトリページをブラウザで開いて、リロードしてみてください。<br>さっきのコミットメッセージが表示されているはずです。これでチーム全員があなたの作業を見られる状態になりました。</p></li>
+<li><p>次はプル。メンバーが送った変更を受け取る操作です。<br>同じツールバーの「Pull」ボタン（↓の矢印アイコン）を押すだけ。こちらも確認ダイアログはそのままOKで大丈夫です。</p></li>
+<li><p>【超重要】作業を始める前は、必ずプルする</p>
+<p>これはチーム制作で一番大事な習慣です。理由はこうです。</p>
+<pre>✕ プルしないで作業した場合
+  Aさん：古い状態のまま作業 → プッシュしようとする
+  GitHub：「その間に他の人が更新しているよ」→ 拒否される
+  Aさん：手作業でまとめ直すことになる
 
-   ⭕ 良い例：作業前にプル
-      Aさん：最新を取得 → 作業 → 納品（すんなり通る）
-</pre>
-<br>Unityを開く前に、まずForkでPull。これを習慣にしてください。<strong>朝イチのメールチェックと同じ</strong>だと思ってください。
-<li>【Unity特有の注意】プルする前に、Unityは閉じておく
-<br>Unityを開いたままプルすると、Unityが「開いているファイルが勝手に書き換わった！」と混乱して、最悪プロジェクトが壊れます。
-<br>安全な手順はこれです。
-<li>Unityで作業 → 保存 → <strong>Unityを閉じる</strong>
-<li>Forkでプル
-<li>Unityを開き直す
-<br>※慣れてくると開いたままでも大丈夫な場面は分かりますが、最初は必ず閉じましょう。
-<li>【エラーが出たら】「Push rejected」と言われた場合
-<br>これは「あなたが作業している間に、他の人が先に納品したよ」という意味です。焦らなくて大丈夫。
-<li>まず <strong>Pull</strong> する（相手の変更を受け取る）
-<li>自動で合体できれば、そのまま <strong>Push</strong> し直す
-<li>合体に失敗した（コンフリクト）場合は、1-13で対処法をやります
-<li>プッシュしてGitHub上で確認できて、プルもできたら、今回は完成です！
-<br>これでGitの基本操作（コミット・プッシュ・プル）は全部そろいました。次回からは、チームで衝突しないための仕組みに入ります。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+⭕ 作業前にプルした場合
+  Aさん：最新を取得 → 作業 → プッシュ（そのまま通る）</pre>
+<p>Unityを開く前に、まずForkでPull。これを毎回の習慣にしてください。</p></li>
+<li><p>【Unity特有の注意】プルする前に、Unityは閉じておく</p>
+<p>Unityを開いたままプルすると、Unityが開いているファイルが裏で書き換わってしまい、表示がおかしくなったりプロジェクトが壊れたりすることがあります。<br>安全な手順はこれです。</p>
+<p>1. Unityで作業 → 保存 → <strong>Unityを閉じる</strong><br>2. Forkでプル<br>3. Unityを開き直す</p>
+<p class="warn">※慣れれば開いたままで大丈夫な場面も分かってきますが、最初は必ず閉じましょう。</p></li>
+<li><p>【エラーが出たら】「Push rejected」と表示された場合</p>
+<p>「あなたが作業している間に、他の人が先に送ったよ」という意味です。慌てなくて大丈夫。</p>
+<p>1. まず <strong>Pull</strong> する（相手の変更を受け取る）<br>2. 自動でまとめられれば、そのまま <strong>Push</strong> し直す<br>3. 自動でまとめられなかった場合（コンフリクト）は、1-13で対処法を扱います</p></li>
+<li><p>プッシュしてGitHub上で確認できて、プルもできたら、今回は完成です！<br>これでGitの基本操作（コミット・プッシュ・プル）がそろいました。次回からは、チームで作業がぶつからないための仕組みに入ります。</p></li></ol>
 <h1 class="chapter">【1-10】ブランチってなに？【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：ブランチを1本作って、切り替えられるようになる
-<li>ここまでで、1人での作業はできるようになりました。でもチーム3人が同じ場所に納品し続けると、こうなります。
-<ul><li>Aさんが作業中の「まだ動かない敵キャラ」を納品</li></ul>
-<ul><li>Bさんがそれを受け取る → <strong>ゲームが起動しなくなる</strong></li></ul>
-<ul><li>Bさん「動かないんだけど！」</li></ul>
-<ul><li>Aさん「ごめん、作業途中で……」</li></ul>
-<br>よくある事故です。これを防ぐのがブランチです。
-<li>ブランチとは、<strong>作業用のパラレルワールド</strong>です。
-<div class="term"><b>用語：ブランチ（branch）</b>
-直訳は「枝」。本流から枝分かれさせた、独立した作業スペースのこと。枝の中で何をしても本流には影響しません。作業が完成してから、枝を本流に合流させます。
-</div>
-<li>デザイナーさん向けのたとえで言うと、<strong>レイヤーの複製</strong>が近いです。
-<ul><li>元のレイヤー（main）はそのまま残す</li></ul>
-<ul><li>複製したレイヤー（feature）で好きなだけ試す</li></ul>
-<ul><li>うまくいったら統合する。ダメなら複製ごと捨てる</li></ul>
-<br>Photoshopで直接背景レイヤーを塗りつぶす人はいませんよね。それと同じ話です。
-<li>もうひとつのたとえは<strong>ノート</strong>です。
-<ul><li><strong>main</strong> ＝ 清書ノート（きれいな状態を保つ。人に見せられる）</li></ul>
-<ul><li><strong>feature</strong> ＝ 下書きノート（ぐちゃぐちゃに書いてOK。失敗し放題）</li></ul>
-<li>では実際に作ってみましょう。Forkの左メニューに「Branches」という項目があり、今は <code>main</code> だけがあるはずです。
-<li>ブランチを作るには、画面右上の「Branch」ボタン（またはメニューの <code>Repository &gt; Create Branch</code>）を押します。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-10_fork_newbranch.png" alt="ブランチ作成ダイアログ">
-<br>※「Create branch at」は「どこから枝分かれさせるか」。今いるブランチが自動で入ります。
-<br>※「Check out after create」にチェックを入れると、作成と同時にそのブランチへ移動します。入れておくと便利です。
-<li>名前を付けます。ここでルールがあります。
-<pre>
-   feature/作業内容
-</pre>
-<br>例：
-<ul><li><code>feature/enemy-graphics</code>（敵の絵を作る）</li></ul>
-<ul><li><code>feature/title-ui</code>（タイトル画面のUI）</li></ul>
-<ul><li><code>feature/bgm</code>（BGM追加）</li></ul>
-<br>「/」で区切ると、Forkの画面上でフォルダのようにまとまって見やすくなります。日本語も使えますが、トラブルの元なので<strong>半角英数</strong>推奨です。
-<li>「Create Branch」を押すと、新しいブランチができて、<strong>自動でそちらに切り替わります</strong>。
-<div class="term"><b>用語：チェックアウト（checkout）</b>
-ブランチを切り替えること。切り替えると、<strong>フォルダの中身が一瞬でそのブランチの状態に入れ替わります</strong>。魔法みたいですが、Gitが履歴から復元しているだけです。
-</div>
-<li>【重要】今どのブランチにいるか、必ず確認するクセをつける
-<br>Forkの左メニューで、<strong>チェックマーク（✔）が付いているのが現在のブランチ</strong>です。作業を始める前にここをチラ見してください。
-<br>「mainで作業しちゃった！」は初心者あるあるのミスNo.1です（対処法は1-14の逆引き表に載せます）。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-10_fork_branches.png" alt="Forkのブランチ一覧">
-<br>※<code>feature</code> の下に枝がぶら下がっているのは、<code>feature/○○</code> という名前の「/」でForkが自動的にフォルダ分けしてくれているからです。
-<li>試しに、ブランチを行ったり来たりしてみましょう。
-<ul><li>featureブランチで何かファイルを追加してコミット</li></ul>
-<ul><li>mainにチェックアウト（ダブルクリックで切り替え）</li></ul>
-<ul><li><strong>エクスプローラーでフォルダを見ると、追加したファイルが消えている！</strong></li></ul>
-<ul><li>featureに戻すと、また現れる</li></ul>
-<br>消えたわけではなく、パラレルワールドを移動しているだけです。これがブランチの感覚です。
-<br>※Unityを開いたままブランチを切り替えると混乱するので、切り替え時もUnityは閉じておきましょう。
-<li>ブランチを作って、切り替えができたら、今回は完成です！
-<br>次回は、チームでどうブランチを使い分けるかのルールを決めます。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+<ol class="steps"><li><p>クリア条件：ブランチを1本作って、切り替えられればOK！</p></li>
+<li><p>ここまでで、1人での作業はできるようになりました。でもチーム全員が同じ場所に送り続けると、こうなります。</p>
+<ul><li>Aさんが作業途中の「まだ動かない敵キャラ」を送る</li><li>Bさんがそれを受け取る → <strong>ゲームが起動しなくなる</strong></li><li>Bさん「動かないんだけど！」</li><li>Aさん「ごめん、作業途中で……」</li></ul>
+<p>これを防ぐのがブランチです。</p></li>
+<li><p>ブランチとは、<strong>他の人に影響を与えずに作業できる、独立した作業場所</strong>のことです。</p>
+<div class="term"><b>用語：ブランチ（branch）</b>直訳は「枝」。元の状態から枝分かれさせて作る作業用のコピーのこと。<strong>枝の中で何をしても、元の状態や他の人の枝には影響しません</strong>。作業が終わってから、元の場所に合流させます。</div></li>
+<li><p>具体的には、こういう使い分けをします。</p>
+<ul><li><strong>main</strong>：完成している状態を置いておくブランチ。ここは常に動く状態を保つ</li><li><strong>feature/○○</strong>：自分の作業用のブランチ。ここで好きなだけ試して、途中で壊れていてもOK</li></ul>
+<p>作業が完成したら、featureブランチの内容をまとめて合流させます。詳しいルールは次回（1-11）決めます。</p></li>
+<li><p>では実際に作ってみましょう。Forkの左メニューに「Branches」という項目があり、今は <code>main</code> だけがあるはずです。</p></li>
+<li><p>ブランチを作るには、画面右上の「Branch」ボタン（またはメニューの <code>Repository &gt; Create Branch</code>）を押します。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-10_fork_newbranch.png" alt="ブランチ作成ダイアログ">
+<div class="caption">ブランチ作成ダイアログ</div>
+<p class="warn">※「Create branch at」は「どこから枝分かれさせるか」の指定です。今いるブランチが自動で入ります。<br>※「Check out after create」にチェックを入れると、作成と同時にそのブランチに移動します。入れておくと便利です。</p></li>
+<li><p>名前を付けます。ここでルールがあります。</p>
+<pre>feature/作業内容</pre>
+<p>例：</p>
+<ul><li><code>feature/enemy-graphics</code>（敵の絵を作る）</li><li><code>feature/title-ui</code>（タイトル画面のUI）</li><li><code>feature/bgm</code>（BGM追加）</li></ul>
+<p>「/」で区切ると、Forkの画面上でフォルダのようにまとまって表示されて見やすくなります。日本語も使えますが、トラブルの原因になるので<strong>半角英数</strong>にしてください。</p></li>
+<li><p>「Create Branch」を押すと、新しいブランチができて、<strong>自動でそちらに切り替わります</strong>。</p>
+<div class="term"><b>用語：チェックアウト（checkout）</b>作業するブランチを切り替えること。切り替えると、<strong>プロジェクトフォルダの中身が、そのブランチの状態に入れ替わります</strong>。Gitが履歴から復元しているだけなので、ファイルが消えたわけではありません。</div></li>
+<li><p>【重要】今どのブランチにいるか、必ず確認するクセをつける</p>
+<p>Forkの左メニューで、<strong>チェックマーク（✔）が付いているのが現在のブランチ</strong>です。作業を始める前にここを確認してください。<br>「mainで作業してしまった」は、最初のうち一番多いミスです（直し方は1-14の逆引き表に載せます）。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-10_fork_branches.png" alt="Forkのブランチ一覧">
+<div class="caption">Forkのブランチ一覧</div>
+<p class="warn">※<code>feature</code> の下に枝がぶら下がって見えるのは、<code>feature/○○</code> という名前の「/」でForkが自動的にフォルダ分けして表示しているためです。</p></li>
+<li><p>試しに、ブランチを行き来してみましょう。</p>
+<ul><li>featureブランチで何かファイルを追加してコミット</li><li>mainにチェックアウト（ブランチ名をダブルクリックで切り替え）</li><li><strong>エクスプローラーでフォルダを見ると、追加したファイルが無くなっている</strong></li><li>featureに戻すと、また現れる</li></ul>
+<p>消えたのではなく、ブランチごとに中身が切り替わっているだけです。これがブランチの感覚です。</p>
+<p class="warn">※ブランチを切り替えるときも、Unityは閉じておきましょう（1-09と同じ理由です）。</p></li>
+<li><p>ブランチを作って、切り替えができたら、今回は完成です！<br>次回は、チームでブランチをどう使い分けるかのルールを決めます。</p></li></ol>
 <h1 class="chapter">【1-11】main / develop / feature で運用しよう【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：3種類のブランチの役割を理解して、チームのルールを決める
-<li>前回ブランチを作れるようになりました。でも全員が好き勝手にブランチを作ると、それはそれで混乱します。
-<br>そこで、チームで<strong>3層構造</strong>のルールを決めます。これは世界中のチームが使っている定番のやり方です。
-<li>3つのブランチの役割はこうです。
-</ol>
-<table>
-<tr><th>ブランチ</th><th>役割</th><th>たとえるなら</th></tr>
-<tr><td><strong>main</strong></td><td>完成版。いつでも遊べる状態を保つ</td><td>本番放送 / 提出用の清書</td></tr>
-<tr><td><strong>develop</strong></td><td>開発版。みんなの作業がここに集まる</td><td>リハーサルスタジオ</td></tr>
-<tr><td><strong>feature/○○</strong></td><td>個人の作業用。1タスク1本</td><td>各自の個人練習室</td></tr>
-</table>
-<ol class="steps" start="4">
-<li>図にするとこうです。作業は下から上に合流していきます。
-<pre>
-   main     ●────────────────────●  ← 完成したときだけ更新
-             \                  /
-   develop    ●──────●───────●─●    ← 日々ここに集まる
-               \    /  \    /
-   feature/A    ●──●    \  /        ← 敵の絵を作る人
-   feature/B            ●●          ← UIを作る人
-</pre>
-<li>ルールはシンプルに3つだけ。
-<ul><li><strong>mainには直接コミットしない</strong>（絶対）</li></ul>
-<ul><li><strong>developにも直接コミットしない</strong>（原則。PR経由で入れる）</li></ul>
-<ul><li><strong>作業は必ずfeatureブランチを切ってから</strong></li></ul>
-<br>「じゃあどこで作業するの？」→ <strong>常にfeatureです</strong>。これだけ覚えてください。
-<li>【なぜmainを守るのか】
-<br>締切当日に「とりあえず今の状態を提出しよう」となったとき、mainがいつでも動く状態になっていれば、そこから出せば済みます。
-<br>逆にmainが壊れていると、締切直前に地獄を見ます。<strong>mainは避難場所</strong>だと思ってください。
-<li>featureブランチの名前は、作業内容がわかるように付けます。
-<pre>
-   feature/enemy-graphics     敵キャラの絵
-   feature/title-ui           タイトル画面
-   feature/bgm-stage1         ステージ1のBGM
-   feature/fix-player-speed   プレイヤー速度の調整
-</pre>
-<br>ポイントは「<strong>1つのブランチ＝1つのタスク</strong>」。
-<br>「今日やること全部」を1本のブランチに詰め込むと、レビューする人が泣きます。だいたい半日〜2日で終わる粒度が目安です。
-<li>では実際に、チームのdevelopブランチを作りましょう（<strong>リーダーが1回だけやればOK</strong>）。
-<ul><li>Forkで <code>main</code> にいることを確認</li></ul>
-<ul><li>New Branch → 名前を <code>develop</code> にして作成</li></ul>
-<ul><li><strong>Push</strong> して、GitHubにもdevelopを作る</li></ul>
-<li>GitHubのリポジトリページで「Branches」を見ると、mainとdevelopの2本があるはずです。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-10_branches.png" alt="ブランチ一覧">
-<li>【リーダー向け・強くおすすめ】mainを保護する
-<br>GitHubには「このブランチには直接コミットさせない」という設定があります。事故を仕組みで防げるので、設定しておくと安心です。
-<ul><li>リポジトリの <code>Settings &gt; Branches</code></li></ul>
-<ul><li>「Add branch ruleset」または「Add rule」</li></ul>
-<ul><li>Branch name pattern に <code>main</code> を入力</li></ul>
-<ul><li>「Require a pull request before merging」にチェック</li></ul>
-<br>これで、うっかりmainに直接プッシュしようとしても、GitHubが止めてくれます。
-<li>【メンバー全員でやること】自分の作業ブランチを作る
-<br>developができたら、各自こうします。
-<li>Forkで <code>develop</code> にチェックアウト
-<li><strong>Pull</strong>（最新のdevelopにする）
-<li>New Branch で <code>feature/自分のタスク名</code> を作成
-<li>そこで作業開始！
-<br>※featureは<strong>必ずdevelopから枝分かれさせる</strong>のがポイントです。mainから作ると、他の人の作業が入っていない古い状態から始まってしまいます。
-<li>developブランチができて、各自がfeatureブランチを持てたら、今回は完成です！
-<br>次回は、featureで終わった作業をdevelopに合流させる手続きをやります。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+<ol class="steps"><li><p>クリア条件：3種類のブランチの役割が分かって、チームのルールを決められればOK！</p></li>
+<li><p>前回でブランチを作れるようになりました。ただ、全員が好きなようにブランチを作ると管理しきれなくなります。<br>そこで、ブランチを<strong>3種類に分けて</strong>使います。これは多くの開発チームで使われている定番のやり方です。</p></li>
+<li><p>3つのブランチの役割はこうです。</p>
+<div class="tablewrap"><table>
+<tr><th>ブランチ</th><th>役割</th><th>状態</th></tr>
+<tr><td><strong>main</strong></td><td>完成版。提出・公開できる状態を保つ</td><td>常に動く</td></tr>
+<tr><td><strong>develop</strong></td><td>開発版。全員の作業がここに集まる</td><td>だいたい動く</td></tr>
+<tr><td><strong>feature/○○</strong></td><td>個人の作業用。1タスクにつき1本</td><td>途中で壊れていてOK</td></tr>
+</table></div></li>
+<li><p>図にするとこうです。作業は下から上に合流していきます。</p>
+<pre>main     ●────────────────────●  ← 完成したときだけ更新
+         \                  /
+develop    ●──────●───────●─●    ← 日々ここに集まる
+           \    /  \    /
+feature/A    ●──●    \  /        ← 敵の絵を作る人
+feature/B            ●●          ← UIを作る人</pre></li>
+<li><p>ルールは3つだけです。</p>
+<ul><li><strong>mainには直接コミットしない</strong></li><li><strong>developにも直接コミットしない</strong>（プルリクエスト経由で入れます。1-12でやります）</li><li><strong>作業は必ずfeatureブランチを作ってから</strong></li></ul>
+<p>「じゃあどこで作業するの？」→ <strong>常にfeatureです</strong>。これだけ覚えてください。</p></li>
+<li><p>【なぜmainを直接触らないのか】<br>提出日に「今の状態をとりあえず出そう」となったとき、mainが常に動く状態になっていれば、そこから出せば済みます。<br>逆にmainが壊れていると、提出直前に慌てることになります。<strong>mainは最後の避難先</strong>として、きれいなまま置いておきます。</p></li>
+<li><p>featureブランチの名前は、作業内容が分かるように付けます。</p>
+<pre>feature/enemy-graphics     敵キャラの絵
+feature/title-ui           タイトル画面
+feature/bgm-stage1         ステージ1のBGM
+feature/fix-player-speed   プレイヤー速度の調整</pre>
+<p>ポイントは「<strong>1つのブランチ＝1つの作業</strong>」。<br>「今日やること全部」を1本に詰め込むと、あとで中身を確認する人が大変になります。半日〜2日で終わるくらいの大きさが目安です。</p></li>
+<li><p>では実際に、チームのdevelopブランチを作りましょう（<strong>代表の人が1回だけやればOK</strong>）。</p>
+<ul><li>Forkで <code>main</code> にいることを確認</li><li>Branch（新規作成）→ 名前を <code>develop</code> にして作成</li><li><strong>Push</strong> して、GitHub側にもdevelopを作る</li></ul></li>
+<li><p>GitHubのリポジトリページで「Branches」を見ると、mainとdevelopの2本があるはずです。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-10_branches.png" alt="ブランチ一覧">
+<div class="caption">ブランチ一覧</div></li>
+<li><p>【代表の人向け・おすすめ】mainを保護する</p>
+<p>GitHubには「このブランチには直接送れないようにする」設定があります。ミスを仕組みで防げるので、設定しておくと安心です。</p>
+<ul><li>リポジトリの <code>Settings &gt; Branches</code></li><li>「Add branch ruleset」または「Add rule」</li><li>Branch name pattern に <code>main</code> を入力</li><li>「Require a pull request before merging」にチェック</li></ul>
+<p>これで、うっかりmainに直接送ろうとしても、GitHubが止めてくれます。</p></li>
+<li><p>【メンバー全員でやること】自分の作業ブランチを作る</p>
+<p>developができたら、各自こうします。</p>
+<p>1. Forkで <code>develop</code> にチェックアウト<br>2. <strong>Pull</strong>（最新のdevelopにする）<br>3. Branch（新規作成）で <code>feature/自分の作業名</code> を作成<br>4. そこで作業開始！</p>
+<p class="warn">※featureは<strong>必ずdevelopから枝分かれさせて</strong>ください。mainから作ると、他の人の作業が入っていない古い状態から始まってしまいます。</p></li>
+<li><p>developブランチができて、各自がfeatureブランチを持てたら、今回は完成です！<br>次回は、featureで終わった作業をdevelopに合流させる手続きをやります。</p></li></ol>
 <h1 class="chapter">【1-12】プルリクエストを出そう【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：featureブランチからdevelopへのプルリクエストを1本作る
-<li>featureブランチで作業が終わりました。これをdevelopに合流させたいのですが、勝手に合流させると誰も気づきません。
-<br>そこで、<strong>「合流させていいですか？」とチームにお伺いを立てる</strong>手続きを踏みます。これがプルリクエストです。
-<div class="term"><b>用語：プルリクエスト（Pull Request、略してPR）</b>
-「私の作業を取り込んでください」というお願い。<strong>提出箱</strong>、あるいは<strong>校正依頼</strong>だと思ってください。出すと、他のメンバーが中身を確認して、OKなら合流させます。
-</div>
-<li>デザインの現場で言えば、<strong>クライアントチェック</strong>に近いです。
-<ul><li>自分の作業（feature）が完成した</li></ul>
-<ul><li>いきなり本番に載せず、まず確認してもらう（PR）</li></ul>
-<ul><li>修正指摘があれば直す</li></ul>
-<ul><li>OKが出たら本番に反映（マージ）</li></ul>
-<li>まず、作業をプッシュします。1-09でやったやつです。
-<br>Forkで自分のfeatureブランチにいることを確認して、コミット → <strong>Push</strong>。
-<br>※初回のプッシュ時は「Publish branch」のような表示になります。これはGitHub側にまだこのブランチが無いので、新しく作るという意味です。そのままPushでOK。
-<li>プッシュしたら、GitHubのリポジトリページをブラウザで開いてください。
-<br>黄色い帯で「feature/○○ had recent pushes」と表示され、「Compare &amp; pull request」という緑のボタンが出ているはずです。これを押します。
-<br>※出ていない場合は、上部メニューの「Pull requests」→「New pull request」からでもOK。
-<li>【最重要】合流先（base）の確認
-<br>PR作成画面の上部に、こういう表示があります。
-<pre>
-   base: main  ←  compare: feature/enemy-graphics
-</pre>
-<br><strong>ここのbaseを <code>develop</code> に変更してください。</strong>
-<br>デフォルトだとmainになっていることが多いですが、1-11のルール通り、featureはdevelopに合流させます。
-<pre>
-   base: develop  ←  compare: feature/enemy-graphics   ⭕ これが正解
-</pre>
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-12_pr_create.png" alt="PR作成画面（baseがdevelopになっている）">
-<li>タイトルと説明を書きます。
-<ul><li><strong>タイトル</strong>：何をしたか一言（例：「敵キャラのグラフィックを追加」）</li></ul>
-<ul><li><strong>説明</strong>：もう少し詳しく</li></ul>
-<br>説明のテンプレートを置いておきます。これに沿って書けば十分です。
-<pre>
-   ## やったこと
-   - 敵キャラ（お化け）の画像を3種類追加
-   - Enemyプレハブの見た目を差し替え
+<ol class="steps"><li><p>クリア条件：featureブランチからdevelopへのプルリクエストを1本作れればOK！</p></li>
+<li><p>featureブランチでの作業が終わりました。これをdevelopに合流させたいのですが、黙って合流させると他のメンバーは気づけません。<br>そこで、<strong>「この作業をdevelopに入れていいか」をチームに確認してもらう手続き</strong>を踏みます。これがプルリクエストです。</p>
+<div class="term"><b>用語：プルリクエスト（Pull Request、略してPR）</b>「自分の作業を取り込んでください」という依頼のこと。GitHub上に専用のページが作られ、そこで<strong>変更内容の確認とコメントのやり取り</strong>ができます。OKが出たら合流させます。</div></li>
+<li><p>流れはこうなります。</p>
+<p>1. 自分のfeatureブランチで作業を完成させる<br>2. すぐdevelopに入れず、まずPRを作る<br>3. 他のメンバーが内容を見て、気になる点があればコメントする<br>4. 問題なければ合流させる（次回1-13でやります）</p>
+<p class="warn">※このサークルでは全員が同じようにUnityとスクリプトを触ります。レビューする側も同じメンバーなので、<strong>「専門家の審査」ではなく「お互いの確認」</strong>だと思ってください。</p></li>
+<li><p>まず、作業をプッシュします。1-09でやった操作です。<br>Forkで自分のfeatureブランチにいることを確認して、コミット → <strong>Push</strong>。</p>
+<p class="warn">※初回のプッシュ時は「Publish branch」のような表示になります。GitHub側にまだこのブランチが無いので、新しく作るという意味です。そのままPushでOK。</p></li>
+<li><p>プッシュしたら、GitHubのリポジトリページをブラウザで開いてください。<br>黄色い帯で「feature/○○ had recent pushes」と表示され、「Compare &amp; pull request」という緑のボタンが出ているはずです。これを押します。</p>
+<p class="warn">※出ていない場合は、上部メニューの「Pull requests」→「New pull request」からでもOKです。</p></li>
+<li><p>【最重要】合流先（base）の確認</p>
+<p>PR作成画面の上部に、こういう表示があります。</p>
+<pre>base: main  ←  compare: feature/enemy-graphics</pre>
+<p><strong>ここのbaseを <code>develop</code> に変更してください。</strong><br>初期状態ではmainになっていることが多いですが、1-11のルール通り、featureはdevelopに合流させます。</p>
+<pre>base: develop  ←  compare: feature/enemy-graphics   ⭕ これが正解</pre>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-12_pr_create.png" alt="PR作成画面（baseがdevelopになっている）">
+<div class="caption">PR作成画面（baseがdevelopになっている）</div></li>
+<li><p>タイトルと説明を書きます。</p>
+<ul><li><strong>タイトル</strong>：何をしたか一言（例：「敵キャラのグラフィックを追加」）</li><li><strong>説明</strong>：もう少し詳しく</li></ul>
+<p>説明はこのテンプレートに沿って書けば十分です。</p>
+<pre>## やったこと
+- 敵キャラ（お化け）の画像を3種類追加
+- Enemyプレハブの見た目を差し替え
 
-   ## 確認してほしいこと
-   - サイズ感が他のキャラと合っているか
-   - 色味が背景と喧嘩していないか
+## 確認してほしいこと
+- サイズ感が他のキャラと合っているか
+- 色味が背景と喧嘩していないか
 
-   ## スクショ
-   （ここに画像をドラッグ＆ドロップで貼れます）
-</pre>
-<br>※GitHubの説明欄は、<strong>画像をドラッグ&amp;ドロップでそのまま貼れます</strong>。デザイナーさんは変更前後のスクショを貼ると、レビューする人がとても助かります。
-<li>「Create pull request」を押せば、PRの完成です！
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-11_pr_page.png" alt="プルリクエストの画面">
-<li>PR画面には便利なタブがあります。
-<ul><li><strong>Conversation</strong>：コメントのやり取り。ここで議論します</li></ul>
-<ul><li><strong>Commits</strong>：このPRに含まれるコミット一覧</li></ul>
-<ul><li><strong>Files changed</strong>：<strong>変更されたファイルの中身が全部見られる</strong>タブ。画像も変更前後を並べて表示できます</li></ul>
-<br>「Files changed」は、レビューするときのメイン画面です。行にマウスを乗せると「＋」が出て、<strong>ピンポイントでコメント</strong>を付けられます。
-<br><img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-12_pr_files.png" alt="Files changedタブとコメント">
-<br>※このスクショ、実は自動レビューBotが「READMEには敵20体でクリアと書いてあるけど、シーンの設定は1体になってるよ」と指摘してくれているところです。こういう食い違いを、合流前に見つけられるのがPRの価値です。
-<li>PRを出したら、チームに一声かけましょう。
-<br>&gt; 「敵の絵のPR出しました！レビューお願いします 🙏」
-<br>GitHubは通知を出しますが、埋もれがちです。DiscordやSlackで言うのが確実です。
-<li>【レビューする側になったら】
-<br>難しく考えなくて大丈夫です。見るのはこの3点だけ。
-<ul><li>意図した変更だけが入っているか（関係ないファイルが混ざっていないか）</li></ul>
-<ul><li>明らかにおかしいところがないか</li></ul>
-<ul><li>自分の作業と衝突しそうな部分がないか</li></ul>
-<br>問題なければ「Files changed」→「Review changes」→「Approve」でOKサインを出します。
-<br>気になる点があれば、コメントを残して「Request changes」。遠慮せず質問して大丈夫です。<strong>PRは指摘の場ではなく、共有の場</strong>です。
-<li>PRが作れて、レビュー依頼まで出せたら、今回は完成です！
-<br>次回、いよいよ合流させます。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+## スクショ
+（ここに画像をドラッグ＆ドロップで貼れます）</pre>
+<p class="warn">※GitHubの説明欄は、<strong>画像をドラッグ&amp;ドロップでそのまま貼れます</strong>。見た目に関わる変更のときは、変更前後のスクショを貼っておくと、確認する人がゲームを起動しなくても判断できます。</p></li>
+<li><p>「Create pull request」を押せば、PRの完成です！</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-11_pr_page.png" alt="プルリクエストの画面">
+<div class="caption">プルリクエストの画面</div></li>
+<li><p>PR画面には3つのタブがあります。</p>
+<ul><li><strong>Conversation</strong>：コメントのやり取り。ここで相談します</li><li><strong>Commits</strong>：このPRに含まれるコミットの一覧</li><li><strong>Files changed</strong>：<strong>変更されたファイルの中身が全部見られる</strong>タブ。画像は変更前後を並べて表示できます</li></ul>
+<p>確認するときのメイン画面は「Files changed」です。行にマウスを乗せると「＋」が出て、<strong>その行に対してピンポイントでコメント</strong>を付けられます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/git_images/1-12_pr_files.png" alt="Files changedタブとコメント">
+<div class="caption">Files changedタブとコメント</div>
+<p class="warn">※このスクショでは、自動チェックのBotが「READMEには敵20体でクリアと書いてあるが、シーンの設定は1体になっている」と指摘しています。こういう食い違いを合流前に見つけられるのが、PRを挟む一番のメリットです。</p></li>
+<li><p>PRを出したら、チームに一声かけましょう。</p>
+<p>&gt; 「敵の絵のPR出しました！確認お願いします 🙏」</p>
+<p>GitHubからも通知は飛びますが、埋もれやすいのでDiscordなどで伝えるのが確実です。</p></li>
+<li><p>【確認する側になったら】<br>難しく考えなくて大丈夫です。見るのはこの3点だけ。</p>
+<ul><li>意図した変更だけが入っているか（関係ないファイルが混ざっていないか）</li><li>明らかにおかしいところがないか</li><li>自分が今触っているファイルと重なっていないか</li></ul>
+<p>問題なければ「Files changed」→「Review changes」→「Approve」でOKサインを出します。<br>気になる点があれば、コメントを残して「Request changes」。<strong>分からない部分は「ここどうなってる？」と質問するだけでも十分</strong>です。全員が同じくらいの経験値なので、遠慮なく聞き合いましょう。</p></li>
+<li><p>PRが作れて、確認をお願いできたら、今回は完成です！<br>次回、いよいよ合流させます。</p></li></ol>
 <h1 class="chapter">【1-13】マージとコンフリクト【1章：Git導入編】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：PRをマージして、コンフリクトが起きたときの直し方を知る
-<li>レビューでOKが出ました。いよいよ合流させます。この合流作業がマージです。
-<li>GitHubのPR画面を下にスクロールすると、緑色の「Merge pull request」ボタンがあります。これを押して、確認の「Confirm merge」を押すだけ。
-<br>※ボタンが緑なら「自動で合体できます」という意味。灰色や赤の場合は、後述のコンフリクトが起きています。
-<li>マージが終わると、「Delete branch」というボタンが出ます。<strong>押して大丈夫です</strong>。
-<div class="term"><b>用語：ブランチの削除</b>
-役目を終えたfeatureブランチを消すこと。<strong>中身が消えるわけではありません</strong>。作業内容はdevelopに合流済みで、履歴にも残っています。消すのは「もう使わない枝」だけ。放置するとブランチ一覧がゴミだらけになるので、こまめに消しましょう。
-</div>
-<li>マージ後、<strong>チーム全員がやること</strong>があります。
-<br>&gt; developをプルして、最新にする
-<br>誰かのPRがマージされたら、他のメンバーのdevelopは古くなります。Discordで「マージしました！」と流して、全員がプルする。これが1サイクルです。
-<li>ここからが本題。コンフリクトの話です。
-<div class="term"><b>用語：コンフリクト（conflict）</b>
-直訳「衝突」。<strong>2人が同じファイルの同じ場所を別々に書き換えた</strong>ときに起きる、Gitが自動で合体できない状態のこと。
-</div>
-<li>なぜ起きるのか。Gitはこういう判断をしています。
-<pre>
-   ⭕ 自動で合体できる
-      Aさん：3行目を修正
-      Bさん：50行目を修正
-      → 場所が違うので、両方採用すればいい
+<ol class="steps"><li><p>クリア条件：PRをマージできて、コンフリクトが起きたときの直し方が分かればOK！</p></li>
+<li><p>確認でOKが出ました。いよいよ合流させます。この合流作業がマージです。</p></li>
+<li><p>GitHubのPR画面を下にスクロールすると、緑色の「Merge pull request」ボタンがあります。これを押して、確認の「Confirm merge」を押すだけで完了です。</p>
+<p class="warn">※ボタンが緑なら「自動で合流できます」という意味。灰色や赤の場合は、後半で説明するコンフリクトが起きています。</p></li>
+<li><p>マージが終わると、「Delete branch」というボタンが出ます。<strong>押して大丈夫です</strong>。</p>
+<div class="term"><b>用語：ブランチの削除</b>役目を終えたfeatureブランチを消すこと。<strong>作業内容が消えるわけではありません</strong>。中身はdevelopに合流済みで、履歴にも残っています。消すのは使い終わった枝だけです。放置するとブランチ一覧が増えすぎるので、こまめに消しましょう。</div></li>
+<li><p>マージ後、<strong>チーム全員がやること</strong>があります。</p>
+<p>&gt; developをプルして、最新にする</p>
+<p>誰かのPRがマージされると、他のメンバーの手元のdevelopは古い状態になります。Discordで「マージしました」と伝えて、全員がプルする。ここまでで1サイクルです。</p></li>
+<li><p>ここからが本題。コンフリクトの話です。</p>
+<div class="term"><b>用語：コンフリクト（conflict）</b>直訳は「衝突」。<strong>2人が同じファイルの同じ場所を別々に書き換えた</strong>ときに起きる、Gitが自動でまとめられない状態のこと。</div></li>
+<li><p>なぜ起きるのか。Gitはこう判断しています。</p>
+<pre>⭕ 自動でまとめられる
+  Aさん：3行目を修正
+  Bさん：50行目を修正
+  → 場所が違うので、両方採用すればいい
 
-   ✕ 合体できない（コンフリクト）
-      Aさん：3行目を「赤」に変更
-      Bさん：3行目を「青」に変更
-      → どっちが正しいの？ Gitには判断できない
-</pre>
-<br>Gitは賢いですが、<strong>あなたの意図までは分かりません</strong>。だから「人間が決めてください」と手を止めるわけです。これは故障ではなく、正常な動作です。
-<li>【予防が9割】そもそも起こさない工夫
-<br>コンフリクトは、直すより起こさない方が100倍ラクです。1-05でも触れましたが、大事なので再掲します。
-<ul><li><strong>同じシーン・同じプレハブを2人で同時に触らない</strong>（Unityで最も事故る）</li></ul>
-<ul><li>作業前にDiscordで「今日はTitleScene触ります」と宣言する</li></ul>
-<ul><li>featureブランチは小さく、短期間で終わらせる（長く放置するほど衝突する）</li></ul>
-<ul><li>作業開始前に必ずdevelopをプルする</li></ul>
-<li>【起きてしまったら】GitHub上で解決する（簡単なケース）
-<br>PR画面に「This branch has conflicts that must be resolved」と出たら、「Resolve conflicts」ボタンを押します。
-<br>エディタが開いて、こういう記号が表示されます。
-<pre>
-   &lt;&lt;&lt;&lt;&lt;&lt;&lt; feature/enemy-graphics
-   speed = 8.0f;          ← あなたの変更
-   =======
-   speed = 5.0f;          ← 相手の変更
-   &gt;&gt;&gt;&gt;&gt;&gt;&gt; develop
-</pre>
-<br>やることは単純です。
-<li><strong>正しい方を残して、いらない方を消す</strong>（両方活かす場合は両方残す）
-<li><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>、<code>=======</code>、<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> の<strong>記号3行も全部消す</strong>
-<li>「Mark as resolved」→「Commit merge」
-<br>※記号の消し忘れが一番多いミスです。消し忘れると、その記号がそのままコードや設定に残って壊れます。
-<li>【Unityのシーンでコンフリクトしたら】無理せず作り直す
-<br>正直に言います。<strong>Unityのシーンファイルのコンフリクトは、手作業で直すものではありません</strong>。
-<br>中身は数千行の複雑なテキストで、人間が正しく解決するのはほぼ不可能です。
-<br>現実的な対処はこれ。
-<ul><li><strong>どちらか一方の変更を丸ごと採用する</strong>（相手と話して決める）</li></ul>
-<ul><li>捨てた側の作業は、Unity上で手作業でやり直す（悔しいですが、これが一番速くて確実）</li></ul>
-<br>Forkなら、コンフリクトしたファイルを右クリック →「Use 'ours'」（自分の方を採用）または「Use 'theirs'」（相手の方を採用）で一発です。
-<br>※だからこそ、手順8の予防がすべてなんです。「同じシーンを触らない」は本当に大事。
-<li>【最後の手段】どうしようもなくなったら
-<br>Gitは怖くありません。<strong>最悪の場合でも、GitHubに上がっているものは無事</strong>です。手元がぐちゃぐちゃになったら、こうすればリセットできます。
-<li>今のプロジェクトフォルダを別名にリネーム（念のため取っておく）
-<li>GitHubからもう一度クローンし直す（1-07の手順）
-<li>必要なファイルだけ、古いフォルダから手作業でコピーする
-<br>「壊したかも」と思っても、プッシュ済みのものは絶対に消えません。安心してください。
-<li>PRをマージできて、コンフリクトの直し方が分かったら、今回は完成です！
-<br>次回はいよいよ最終回、全部忘れても大丈夫な保存版マニュアルを作ります。
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
+✕ まとめられない（コンフリクト）
+  Aさん：3行目を「赤」に変更
+  Bさん：3行目を「青」に変更
+  → どちらが正しいか、Gitには判断できない</pre>
+<p>Gitは<strong>どちらが正しいかまでは分かりません</strong>。だから「人間が決めてください」と処理を止めます。故障ではなく、正常な動作です。</p></li>
+<li><p>【予防が9割】そもそも起こさない工夫</p>
+<p>コンフリクトは、直すより起こさない方がずっと楽です。1-05でも触れましたが、大事なので再掲します。</p>
+<ul><li><strong>同じシーン・同じプレハブを2人で同時に触らない</strong>（Unityで最も起きやすい）</li><li>作業前にDiscordで「今日はTitleScene触ります」と宣言する</li><li>featureブランチは小さく、短期間で終わらせる（長く持っているほど衝突しやすい）</li><li>作業開始前に必ずdevelopをプルする</li></ul></li>
+<li><p>【起きてしまったら】GitHub上で解決する（簡単なケース）</p>
+<p>PR画面に「This branch has conflicts that must be resolved」と出たら、「Resolve conflicts」ボタンを押します。<br>編集画面が開いて、こういう記号が表示されます。</p>
+<pre>&lt;&lt;&lt;&lt;&lt;&lt;&lt; feature/enemy-graphics
+speed = 8.0f;          ← 自分の変更
+=======
+speed = 5.0f;          ← 相手の変更
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; develop</pre>
+<p>やることは3つです。</p>
+<p>1. <strong>正しい方を残して、いらない方を消す</strong>（両方必要な場合は両方残す）<br>2. <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>、<code>=======</code>、<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> の<strong>記号3行も全部消す</strong><br>3. 「Mark as resolved」→「Commit merge」</p>
+<p class="warn">※記号の消し忘れが一番多いミスです。残したままだと、その記号がファイルに残って動かなくなります。</p></li>
+<li><p>【Unityのシーンでコンフリクトしたら】無理に直さず作り直す</p>
+<p>正直に言うと、<strong>Unityのシーンファイルのコンフリクトは、手作業で直すものではありません</strong>。<br>中身は数千行の複雑なテキストで、人間が正しく直すのはほぼ不可能です。</p>
+<p>現実的な対処はこれです。</p>
+<ul><li><strong>どちらか一方の変更を丸ごと採用する</strong>（相手と話して決める）</li><li>採用しなかった側の作業は、Unity上でやり直す（悔しいですが、これが一番速くて確実です）</li></ul>
+<p>Forkなら、コンフリクトしたファイルを右クリック →「Use 'ours'」（自分の方を採用）または「Use 'theirs'」（相手の方を採用）で切り替えられます。</p>
+<p class="warn">※だからこそ、手順8の予防が重要です。「同じシーンを触らない」を徹底してください。</p></li>
+<li><p>【最後の手段】どうしようもなくなったら</p>
+<p><strong>GitHubに送ってあるものは無事</strong>です。手元の状態がおかしくなったら、こうすればリセットできます。</p>
+<p>1. 今のプロジェクトフォルダを別名にリネーム（念のため残しておく）<br>2. GitHubからもう一度クローンし直す（1-07の手順）<br>3. 必要なファイルだけ、古いフォルダから手作業でコピーする</p>
+<p>「壊したかも」と思っても、プッシュ済みのものは消えません。落ち着いて対処すれば大丈夫です。</p></li>
+<li><p>PRをマージできて、コンフリクトの直し方が分かったら、今回は完成です！<br>次回は最終回、全部忘れても大丈夫な保存版マニュアルを作ります。</p></li></ol>
 <h1 class="chapter">【1-14】通し：チーム作業分担マニュアル【保存版】</h1>
-<ol class="steps" start="1">
-<li>クリア条件：これ1枚を見れば、全部忘れていても作業分担ができる
-<li>最終回です。ここまでの内容を全部忘れても、<strong>このページさえ開けば作業が回る</strong>ようにまとめました。
-<br>印刷するなりDiscordにピン留めするなりして、手元に置いてください。
-</ol>
+<ol class="steps"><li><p>クリア条件：これ1枚を見れば、内容を忘れていても作業を進められればOK！</p></li>
+<li><p>最終回です。ここまでの内容を忘れても、<strong>このページさえ開けば作業が回る</strong>ようにまとめました。<br>印刷するなりDiscordにピン留めするなりして、手元に置いてください。</p></li></ol>
 <hr>
-<h2 class="sec">【A】毎日の作業フロー（これだけ覚えればOK）</h2>
-<pre>
-① Discordで「今日は○○を触ります」と宣言
-        ↓
+<h2>【A】毎日の作業フロー（これだけ覚えればOK）</h2>
+<div class="block"><pre>① Discordで「今日は○○を触ります」と宣言
+    ↓
 ② Fork：develop に切り替えて Pull（最新を取得）
-        ↓
-③ Fork：New Branch で feature/○○ を作る
-        ↓
+    ↓
+③ Fork：Branch で feature/○○ を作る
+    ↓
 ④ Unity で作業する（こまめに保存）
-        ↓
+    ↓
 ⑤ Unity を閉じる
-        ↓
+    ↓
 ⑥ Fork：変更を Stage → コミットメッセージを書く → Commit
-   （④〜⑥は何回繰り返してもOK。こまめに！）
-        ↓
+（④〜⑥は何回繰り返してもOK。こまめに！）
+    ↓
 ⑦ Fork：Push（GitHubに送る）
-        ↓
+    ↓
 ⑧ GitHub：Pull Request を作る（base は develop ！）
-        ↓
-⑨ Discordで「PR出しました、レビューお願いします」
-        ↓
-⑩ レビューOK → GitHub：Merge → ブランチ削除
-        ↓
+    ↓
+⑨ Discordで「PR出しました、確認お願いします」
+    ↓
+⑩ 確認OK → GitHub：Merge → ブランチ削除
+    ↓
 ⑪ Discordで「マージしました」→ 全員が develop を Pull
-        ↓
-   ①に戻る
-</pre>
+    ↓
+①に戻る</pre></div>
 <hr>
-<h2 class="sec">【B】ブランチの役割（3つだけ）</h2>
-<table>
+<h2>【B】ブランチの役割（3つだけ）</h2>
+<div class="block"><div class="tablewrap"><table>
 <tr><th>ブランチ</th><th>役割</th><th>触り方</th></tr>
-<tr><td><strong>main</strong></td><td>完成版。いつでも遊べる状態</td><td>直接触らない。リリース時のみ</td></tr>
-<tr><td><strong>develop</strong></td><td>開発版。みんなの作業の集合場所</td><td>直接コミットしない。PR経由で入れる</td></tr>
-<tr><td><strong>feature/○○</strong></td><td>個人の作業場所</td><td><strong>ここで作業する</strong>。1タスク1本</td></tr>
-</table>
-<p>ブランチ名の例：<code>feature/enemy-graphics</code> <code>feature/title-ui</code> <code>feature/bgm-stage1</code></p>
+<tr><td><strong>main</strong></td><td>完成版。いつでも遊べる状態</td><td>直接触らない。提出・公開のときだけ</td></tr>
+<tr><td><strong>develop</strong></td><td>開発版。全員の作業の集合場所</td><td>直接コミットしない。PR経由で入れる</td></tr>
+<tr><td><strong>feature/○○</strong></td><td>個人の作業場所</td><td><strong>ここで作業する</strong>。1作業1本</td></tr>
+</table></div>
+<p>ブランチ名の例：<code>feature/enemy-graphics</code> <code>feature/title-ui</code> <code>feature/bgm-stage1</code></p></div>
 <hr>
-<h2 class="sec">【C】Unityチーム制作の鉄の掟（5ヶ条）</h2>
-<ol class="steps" start="1">
-<li><strong>同じシーン・同じプレハブを2人で同時に触らない</strong>
-<br>→ いちばん事故る。作業前にDiscordで宣言する
-<li><strong>.metaファイルも必ず一緒にコミットする</strong>
-<br>→ 忘れると相手の環境で絵やスクリプトの紐付けが外れる
-<li><strong>Pull / ブランチ切り替えのときは Unity を閉じる</strong>
-<br>→ 開いたままやるとUnityが混乱する
-<li><strong>Libraryフォルダは共有しない</strong>
-<br>→ .gitignoreで除外済み。各自のPCで自動生成される
-<li><strong>作業前は必ず develop を Pull する</strong>
-<br>→ 古い状態から作業を始めると、後で合体できなくなる
-</ol>
+<h2>【C】Unityチーム制作の決めごと（5ヶ条）</h2>
+<ol class="steps"><li><p><strong>同じシーン・同じプレハブを2人で同時に触らない</strong><br>→ いちばん事故る。作業前にDiscordで宣言する</p></li>
+<li><p><strong>.metaファイルも必ず一緒にコミットする</strong><br>→ 忘れると相手の環境で絵やスクリプトの紐付けが外れる</p></li>
+<li><p><strong>Pull / ブランチ切り替えのときは Unity を閉じる</strong><br>→ 開いたままやるとUnityの表示やデータがおかしくなる</p></li>
+<li><p><strong>Libraryフォルダは共有しない</strong><br>→ .gitignoreで除外済み。各自のPCで自動生成される</p></li>
+<li><p><strong>作業前は必ず develop を Pull する</strong><br>→ 古い状態から作業を始めると、あとでまとめられなくなる</p></li></ol>
 <hr>
-<h2 class="sec">【D】チームでの分担の決め方</h2>
-<p>作業がぶつからないように、<strong>ファイル単位で縄張りを決める</strong>のがコツです。</p>
-<table>
-<tr><th>良い分担 ⭕</th><th>悪い分担 ✕</th></tr>
-<tr><td>Aさん：Enemyプレハブ周り<br>Bさん：Playerプレハブ周り</td><td>Aさん：敵の動き<br>Bさん：敵の見た目<br>→ 同じファイルを触る</td></tr>
+<h2>【D】チームでの分担の決め方</h2>
+<div class="block"><p>作業がぶつからないように、<strong>ファイル単位で担当を決める</strong>のがコツです。</p>
+<div class="tablewrap"><table>
+<tr><th>良い分担 ⭕</th><th>避けたい分担 ✕</th></tr>
+<tr><td>Aさん：Enemyプレハブ周り<br>Bさん：Playerプレハブ周り</td><td>Aさん：敵の動き<br>Bさん：敵の見た目<br>→ 同じファイルを触ることになる</td></tr>
 <tr><td>Aさん：TitleScene<br>Bさん：GameScene</td><td>2人で同じGameSceneを編集</td></tr>
-<tr><td>絵の差し替えはAさん一括</td><td>全員が好きなタイミングで素材追加</td></tr>
-</table>
-<p><strong>大きなシーンは、機能ごとにプレハブに分けておく</strong>と分担しやすくなります。</p>
-<p>（例：UI一式をプレハブ化 → UI担当はプレハブだけ触ればよく、シーン本体は触らない）</p>
+<tr><td>素材の差し替えはAさんが一括で行う</td><td>全員が好きなタイミングで素材を追加</td></tr>
+</table></div>
+<p><strong>大きなシーンは、機能ごとにプレハブに分けておく</strong>と分担しやすくなります。<br>（例：UI一式をプレハブ化 → UI担当はプレハブだけ触ればよく、シーン本体は触らない）</p></div>
 <hr>
-<h2 class="sec">【E】困ったとき逆引き表</h2>
-<table>
+<h2>【E】困ったとき逆引き表</h2>
+<div class="block"><div class="tablewrap"><table>
 <tr><th>こうなった</th><th>こうする</th></tr>
-<tr><td><strong>mainで作業しちゃった！</strong>（まだコミット前）</td><td>Forkでブランチを作って切り替える。変更はそのまま新ブランチに付いてくる</td></tr>
-<tr><td><strong>mainにコミットしちゃった！</strong>（まだPush前）</td><td>該当コミットを右クリック →「Reset ... to Here」の前に、まずFork右上でブランチを作成 → その後mainを1つ戻す。不安ならリーダーに相談</td></tr>
-<tr><td><strong>Pushが拒否された</strong>（Push rejected）</td><td>先にPullする → 自動合体できればもう一度Push</td></tr>
-<tr><td><strong>コンフリクトした</strong></td><td>1-13参照。シーンファイルなら、片方を丸ごと採用してもう片方は手作業でやり直すのが速い</td></tr>
+<tr><td><strong>mainで作業してしまった</strong>（まだコミット前）</td><td>Forkでブランチを作って切り替える。変更はそのまま新しいブランチに引き継がれる</td></tr>
+<tr><td><strong>mainにコミットしてしまった</strong>（まだPush前）</td><td>まずFork右上の Branch で新しいブランチを作成 → そのあとmainを1つ前に戻す（該当コミットを右クリック →「Reset ... to Here」）。不安なら代表の人に相談</td></tr>
+<tr><td><strong>Pushが拒否された</strong>（Push rejected）</td><td>先にPullする → 自動でまとめられればもう一度Push</td></tr>
+<tr><td><strong>コンフリクトした</strong></td><td>1-13参照。シーンファイルなら、片方を丸ごと採用してもう片方はUnityでやり直すのが速い</td></tr>
 <tr><td><strong>相手の環境だけ絵が消える</strong></td><td>.metaファイルのコミット漏れ。Assetsの.metaを全部コミットし直す</td></tr>
-<tr><td><strong>プロジェクトが壊れた気がする</strong></td><td>フォルダをリネームして、GitHubからクローンし直す。Push済みのものは絶対に消えない</td></tr>
+<tr><td><strong>プロジェクトが壊れた気がする</strong></td><td>フォルダをリネームして、GitHubからクローンし直す。Push済みのものは消えない</td></tr>
 <tr><td><strong>間違えてPRをマージした</strong></td><td>GitHubのPR画面に「Revert」ボタンがある。取り消し用のPRが自動で作られる</td></tr>
-<tr><td><strong>どのブランチにいるか分からない</strong></td><td>Forkの左メニューで太字になっているのが現在地</td></tr>
+<tr><td><strong>どのブランチにいるか分からない</strong></td><td>Forkの左メニューでチェックマークが付いているのが現在地</td></tr>
 <tr><td><strong>Unityが「シーンが壊れています」と言う</strong></td><td>Unityを閉じて、Forkで該当ファイルを「Discard changes」→ Pullし直す</td></tr>
-</table>
+</table></div></div>
 <hr>
-<h2 class="sec">【F】コミットメッセージの書き方</h2>
-<pre>
-⭕ 敵キャラのグラフィックを3種類追加
+<h2>【F】コミットメッセージの書き方</h2>
+<div class="block"><pre>⭕ 敵キャラのグラフィックを3種類追加
 ⭕ タイトルロゴのサイズを調整
 ⭕ プレイヤーの移動速度を5.0に変更
 
 ✕ 修正
 ✕ いろいろ
-✕ aaa
-</pre>
-<p><strong>「何を」「どうしたか」</strong>。3ヶ月後の自分に向けて書きましょう。</p>
+✕ aaa</pre>
+<p><strong>「何を」「どうしたか」</strong>を書く。3ヶ月後の自分に向けて書きましょう。</p></div>
 <hr>
-<h2 class="sec">【G】1日の終わりチェックリスト</h2>
-<ul><li>[ ] 作業中のファイルは全部コミットした？</li></ul>
-<ul><li>[ ] featureブランチにPushした？（PCが壊れてもGitHubにあれば無事）</li></ul>
-<ul><li>[ ] 完成したタスクはPRを出した？</li></ul>
-<ul><li>[ ] 明日触るファイルをDiscordで宣言した？</li></ul>
+<h2>【G】1日の終わりチェックリスト</h2>
+<div class="block"><ul class="checklist"><li class="check">作業中のファイルは全部コミットした？</li><li class="check">featureブランチにPushした？（PCが壊れてもGitHubにあれば無事）</li><li class="check">完成した作業はPRを出した？</li><li class="check">明日触るファイルをDiscordで宣言した？</li></ul></div>
 <hr>
-<ol class="steps" start="3">
-<li>お疲れさまでした！これでGit編は全部完了です。
-<br>最初は用語だらけで大変だったと思いますが、実際に毎日使うのは
-<br><strong>Pull → ブランチ作る → 作業 → Commit → Push → PR</strong>
-<br>この流れだけです。1週間も回せば体が覚えます。
-<li>そして何より、Gitを覚えると<strong>思い切った試行錯誤ができるようになります</strong>。
-<br>「壊したらどうしよう」と思わなくていいので、ブランチを切って好きなだけ実験できる。気に入らなければ捨てればいい。
-<br>これはデザイン作業と本当に相性がいいはずです。良いチーム制作を！
-<li><div class="qa">↓ーーー　質問コーナー　ーーー↓</div></li>
-</ol>
-</body></html>
+<ol class="steps"><li><p>お疲れさまでした！これでGit編は全部完了です。</p>
+<p>最初は用語が多くて大変だったと思いますが、実際に毎日使うのは<br><strong>Pull → ブランチを作る → 作業 → Commit → Push → PR</strong><br>この流れだけです。1週間も回せば手が覚えます。</p></li>
+<li><p>そして何より、Gitを覚えると<strong>思い切って試せるようになります</strong>。<br>ブランチを作れば、他の人に影響を与えずに好きなだけ実験できて、うまくいかなければ捨てればいい。「壊したらどうしよう」と迷う時間が減ります。<br>良いチーム制作を！</p></li></ol>
