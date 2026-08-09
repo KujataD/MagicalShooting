@@ -28,18 +28,21 @@
   li.check::before { content: "\2610  "; }
 </style>
 <h1 class="doctitle">ミニゲーム提出マニュアル</h1>
-<div class="lead">Unity Package での書き出しと提出（全6項目）</div>
+<div class="lead">Unity Package での書き出しと提出（全7項目）</div>
 <h1 class="chapter first">【1】提出するもの</h1>
 <ol class="steps"><li><p>ミニゲームは、チームごとに別々のUnityプロジェクトで作られています。これを1つのプロジェクトにまとめるには、プロジェクトを丸ごと渡すのではなく、<strong>そのミニゲームを動かすのに必要なファイル一式</strong>を取り出して渡す必要があります。</p></li>
 <li><p>そのための仕組みが、Unityに用意されている Unity Package です。</p>
 <div class="term"><b>用語：Unity Package（.unitypackage）</b>Unityのプロジェクトから、<strong>指定したファイルをまとめて1つのファイルに書き出したもの</strong>。受け取った側は、それを自分のプロジェクトに読み込むと、フォルダ構成そのままでファイルが追加されます。</div></li>
-<li><p>提出するものは2つです。</p>
+<li><p>提出するものは、全部で5つです。</p>
 <div class="tablewrap"><table>
-<tr><th>提出物</th><th>中身</th></tr>
-<tr><td><strong>.unitypackage ファイル</strong></td><td>ミニゲームのファイル一式</td></tr>
-<tr><td><strong>ReadMe.md</strong></td><td>ゲームの説明書（操作方法、追加した機能など）</td></tr>
+<tr><th>提出物</th><th>形式</th><th>中身</th></tr>
+<tr><td><strong>.unitypackage ファイル</strong></td><td>.unitypackage</td><td>ミニゲームのファイル一式（ReadMe.mdも含む）</td></tr>
+<tr><td><strong>プレイ映像（短尺）</strong></td><td>1920×1080px、.mp4、15秒以内</td><td>ゲームの雰囲気が伝わる短いダイジェスト</td></tr>
+<tr><td><strong>プレイ映像（長尺）</strong></td><td>1920×1080px、.mp4、30秒〜1分</td><td>実際に遊んでいるところが分かる映像</td></tr>
+<tr><td><strong>サムネイル画像</strong></td><td>1920×1080px、.png</td><td>一覧やSNSに使う紹介画像</td></tr>
+<tr><td><strong>タイトルロゴ透過素材</strong></td><td>縦横1500px以内、.png（背景透過）</td><td>ロゴだけを切り出した画像</td></tr>
 </table></div>
-<p class="warn">※ReadMe.mdは、パッケージの中に含める形で提出します（作り方は【3】）。</p></li>
+<p>ReadMe.mdは新しく別ファイルにするのではなく、<strong>.unitypackageの中に含めて提出します</strong>（作り方は【3】）。プレイ映像・サムネイル・タイトルロゴの作り方と注意点は【7】で説明します。</p></li>
 <li><p>作業の流れはこうなります。</p>
 <pre>① 自分のミニゲーム用フォルダにファイルをまとめる　【2】
           ↓
@@ -47,9 +50,17 @@
           ↓
 ③ .unitypackage に書き出す　【4】
           ↓
-④ 空のプロジェクトで動作確認して提出　【5】
+④ 空のプロジェクトで動作確認する　【5】
           ↓
-⑤ 迷とら運営が統合プロジェクトに読み込む　【6】</pre></li>
+⑤ プレイ映像・サムネイル・タイトルロゴを用意する　【7】
+          ↓
+⑥ 5つの提出物をGoogle Driveの指定フォルダに入れる　【7】
+          ↓
+⑦ 迷とら運営が統合プロジェクトに読み込む　【6】</pre></li>
+<li><p>【提出先】迷とらのGoogleドライブに、指定のフォルダが用意されています。</p>
+<pre>迷とらGoogleDrive ＞ 1期 ＞ 2026.07 ＞ チーム&lt;チーム名&gt;</pre>
+<p>https://drive.google.com/drive/folders/13ALgG74ColEGcQYc1Is9OoQnvhXsfs4s?usp=sharing</p>
+<p>自分のチームのフォルダを開いて、5つの提出物をそのままアップロードします。Discordなどに送る必要はありません。</p></li>
 <li><p>【最重要】提出するファイルの名前は、全チーム統一します。</p>
 <pre>GameJam_&lt;開始年yyyy&gt;_&lt;開始月mm&gt;_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</pre>
 <p>例：</p>
@@ -175,8 +186,11 @@ Visual Studio Editor（または JetBrains Rider Editor）</pre>
 - 決定：
 - その他：
 
-## 想定プレイ時間
+## プレイ制限時間
 （15秒〜5分の範囲で。この時間でゲームが強制終了されます）
+
+## ゲームのテーマカラーを1色選ぶなら
+（6桁カラーコードで1色。#000000〜#ffffffの1,677万色から選んでください）
 
 ## 最初に開くシーン
 （例：Title_TeamA.unity）
@@ -212,8 +226,11 @@ Visual Studio Editor（または JetBrains Rider Editor）</pre>
 - 決定：スペースキー
 - その他：Escキーでタイトルに戻る
 
-## 想定プレイ時間
-40秒（1プレイあたり最短20秒〜最長40秒）
+## プレイ制限時間
+40秒
+
+## ゲームのテーマカラーを1色選ぶなら
+#2b2f77
 
 ## 最初に開くシーン
 Title_TeamA.unity
@@ -242,7 +259,8 @@ Title_TeamA.unity
 <tr><td>ゲームタイトル</td><td>タイトル画面のメニューに表示する名前になる</td></tr>
 <tr><td>ゲーム概要</td><td>遊び方が分からないときに読む。紹介文にも使う</td></tr>
 <tr><td>操作方法</td><td>動作確認に必要。遊ぶ人への案内にも使う</td></tr>
-<tr><td><strong>想定プレイ時間</strong></td><td><strong>この時間を過ぎるとゲームが強制終了されます。最短15秒〜最長5分の範囲で書いてください</strong>。実際の時間と大きくずれていると、遊びきる前に終了したり、次のミニゲームに進めなくなります</td></tr>
+<tr><td><strong>プレイ制限時間</strong></td><td><strong>この時間を過ぎるとゲームが強制終了されます。最短15秒〜最長5分の範囲で書いてください</strong>。実際の時間と大きくずれていると、遊びきる前に終了したり、次のミニゲームに進めなくなります</td></tr>
+<tr><td>ゲームのテーマカラー</td><td>サムネイルやロゴなど、ミニゲーム集全体の見た目を揃えるときの色の目安に使います</td></tr>
 <tr><td>最初に開くシーン</td><td>タイトル画面から<strong>このシーンへつなぎます</strong>。これが無いと組み込めません</td></tr>
 <tr><td>追加した機能</td><td>統合プロジェクトに同じ機能を入れます。無いとエラーで動きません</td></tr>
 <tr><td>追加したタグ</td><td>統合プロジェクトに同じタグを追加します。無いと実行時に止まります</td></tr>
@@ -269,7 +287,7 @@ Title_TeamA.unity
       └ ...</pre>
 <p>ここに置いてからパッケージを書き出すことで、ReadMe.mdもパッケージに含まれます。</p></li>
 <li><p>書くときの注意は3つです。</p>
-<ul><li><strong>「なし」も書く</strong>。空欄だと「書き忘れ」なのか「無い」のか分かりません</li><li>シーン名は<strong>拡張子（.unity）まで正確に</strong>。<code>Title</code> と <code>title</code> の違いでも動きません</li><li>想定プレイ時間は<strong>15秒〜5分</strong>の範囲で。実際に遊んで測った時間を書きます</li></ul></li></ol>
+<ul><li><strong>「なし」も書く</strong>。空欄だと「書き忘れ」なのか「無い」のか分かりません</li><li>シーン名は<strong>拡張子（.unity）まで正確に</strong>。<code>Title</code> と <code>title</code> の違いでも動きません</li><li>プレイ制限時間は<strong>15秒〜5分</strong>の範囲で。実際に遊んで測った時間を、単位まで含めて書きます（例：40秒）</li><li>テーマカラーは<strong>6桁カラーコード1色だけ</strong>。<code>#</code> を付けて書きます</li></ul></li></ol>
 <h1 class="chapter">【4】パッケージに書き出す</h1>
 <ol class="steps"><li><p>フォルダの整理とReadMe.mdの準備ができたら、書き出します。</p></li>
 <li><p>Projectウィンドウで、<strong>自分のミニゲーム用フォルダ（<code>GameJam_&lt;開始年yyyy&gt;_&lt;開始月mm&gt;_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</code>）を右クリック</strong>します。<br>メニューの中から「<strong>Export As Asset Package...</strong>」を選びます。</p>
@@ -329,10 +347,10 @@ using Unity.Mathematics;       // ← これも</pre>
 <p>.metaファイルが一緒に書き出されていないか、書き出しのときに「Include dependencies」がオフだった可能性があります。<br>【4】の手順で、オンにして書き出し直してください。</p></li>
 <li><p>【よくあるエラー3】タグ関連のエラーで止まる</p>
 <p><code>Tag: ○○ is not defined</code> のようなエラーが出たら、自分で追加したタグを使っています。<br>統合先に同じタグを追加してもらう必要があるので、<strong>ReadMe.mdの「追加したタグ」に必ず書いてください</strong>。</p></li>
-<li><p>動作確認ができたら、パッケージファイルを提出します。</p></li></ol>
+<li><p>動作確認ができたら、パッケージファイルは完成です。残りの提出物（プレイ映像・サムネイル・タイトルロゴ）は【7】で用意します。</p></li></ol>
 <hr>
 <h2>提出前チェックリスト</h2>
-<div class="block"><ul class="checklist"><li class="check">自分のミニゲームのファイルが、1つのフォルダにまとまっている</li><li class="check">フォルダ名が <code>GameJam_&lt;開始年yyyy&gt;_&lt;開始月mm&gt;_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</code> になっている</li><li class="check">フォルダを移動したあと、Unityで再生して動いた</li><li class="check">ReadMe.md を書いて、フォルダの中に置いた</li><li class="check">ReadMe.md の想定プレイ時間を、15秒〜5分の範囲で書いた</li><li class="check">自分のフォルダを右クリックして書き出した（Assetsではない）</li><li class="check">「Include dependencies」がオンの状態で書き出した</li><li class="check">ファイル名が決められた形式になっている</li><li class="check">ファイルサイズが極端に小さくない（数KBは中身が空の可能性）</li><li class="check">空のプロジェクトに読み込んで、エラー無しで動いた</li></ul></div>
+<div class="block"><ul class="checklist"><li class="check">自分のミニゲームのファイルが、1つのフォルダにまとまっている</li><li class="check">フォルダ名が <code>GameJam_&lt;開始年yyyy&gt;_&lt;開始月mm&gt;_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</code> になっている</li><li class="check">フォルダを移動したあと、Unityで再生して動いた</li><li class="check">ReadMe.md を書いて、フォルダの中に置いた</li><li class="check">ReadMe.md のプレイ制限時間を、15秒〜5分の範囲で書いた</li><li class="check">ReadMe.md のテーマカラーを6桁カラーコードで1色書いた</li><li class="check">自分のフォルダを右クリックして書き出した（Assetsではない）</li><li class="check">「Include dependencies」がオンの状態で書き出した</li><li class="check">ファイル名が決められた形式になっている</li><li class="check">ファイルサイズが極端に小さくない（数KBは中身が空の可能性）</li><li class="check">空のプロジェクトに読み込んで、エラー無しで動いた</li><li class="check">プレイ映像（短尺15秒以内・長尺30秒〜1分）を1920×1080pxで用意した</li><li class="check">サムネイル画像を1920×1080pxで用意した</li><li class="check">タイトルロゴ透過素材を縦横1500px以内で用意した</li><li class="check">5つの提出物すべてを、Google Driveのチームフォルダに入れた</li></ul></div>
 <hr>
 <h2>困ったとき逆引き表</h2>
 <div class="block"><div class="tablewrap"><table>
@@ -364,7 +382,7 @@ using Unity.Mathematics;       // ← これも</pre>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-02_project_structure.png" alt="チームごとに分かれた状態">
 <div class="caption">チームごとに分かれた状態</div></li>
 <li><p>読み込んだら、まずそのチームのReadMe.mdを開きます。</p>
-<ul><li>追加した機能 → 統合プロジェクトにも同じものを入れる</li><li>追加したタグ・レイヤー → <code>Edit &gt; Project Settings &gt; Tags and Layers</code> で追加する</li><li>最初に開くシーン → タイトル画面からつなぐ先として控える</li><li>想定プレイ時間 → ミニゲームの制限時間として設定する</li></ul>
+<ul><li>追加した機能 → 統合プロジェクトにも同じものを入れる</li><li>追加したタグ・レイヤー → <code>Edit &gt; Project Settings &gt; Tags and Layers</code> で追加する</li><li>最初に開くシーン → タイトル画面からつなぐ先として控える</li><li>プレイ制限時間 → ミニゲームの制限時間として設定する</li></ul>
 <p>これを先にやっておくと、次のエラー確認がスムーズになります。</p></li>
 <li><p>次にConsoleを確認します。赤いエラーが出ていたら、そのチームのミニゲームはまだ動きません。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_console_errors.png" alt="読み込み後に出たエラー">
@@ -386,3 +404,27 @@ does not exist in the namespace 'Unity'</pre>
 <pre>1チーム読み込む → ReadMe.mdの内容を反映 → エラーを確認 → 直す → 動作確認 → 次のチームを読み込む</pre>
 <p>まとめて読み込むと、エラーが混ざって原因が分からなくなります。</p></li>
 <li><p>最後に、各ミニゲームのシーンをBuild Settingsに登録します。<br>読み込んだだけではビルドに含まれないため、<code>File &gt; Build Profiles</code> を開いて、Scene Listに全ミニゲームのシーンを追加します。<br>ここでReadMe.mdの「最初に開くシーン」を使います。</p></li></ol>
+<h1 class="chapter">【7】プレイ映像・サムネイル・タイトルロゴを用意する</h1>
+<ol class="steps"><li><p>.unitypackageとReadMe.mdのほかに、4つの素材を用意します。まとめるとこうなります。</p>
+<div class="tablewrap"><table>
+<tr><th>素材</th><th>サイズ</th><th>形式</th></tr>
+<tr><td>プレイ映像（短尺）</td><td>1920×1080px</td><td>.mp4、15秒以内</td></tr>
+<tr><td>プレイ映像（長尺）</td><td>1920×1080px</td><td>.mp4、30秒〜1分</td></tr>
+<tr><td>サムネイル画像</td><td>1920×1080px</td><td>.png</td></tr>
+<tr><td>タイトルロゴ透過素材</td><td>縦横1500px以内</td><td>.png（背景透過）</td></tr>
+</table></div></li>
+<li><p>【プレイ映像（短尺・15秒以内）】<br>実際にゲームを操作しているところを、15秒以内で録画します。全チームの短尺映像をつなげて、ミニゲーム集全体の紹介動画を作るのに使います。イメージはこちらです。</p>
+<p>https://www.youtube.com/watch?v=mVWbUbeUGxA</p>
+<p>一番面白いところ・分かりやすいところだけを切り取ってください。タイトル画面からゆっくり始めると、15秒はあっという間に終わります。</p></li>
+<li><p>【プレイ映像（長尺・30秒〜1分）】<br>短尺とは別に、実際に遊んでいる様子がひと通り分かる映像も用意します。タイトルからゲームオーバー（またはクリア）まで、一連の流れが伝わる長さにしてください。</p>
+<p class="warn">※短尺・長尺のどちらも、画面サイズは1920×1080pxにそろえます。Unity上のGame画面が960×540などの場合は、画面録画ソフト側の出力設定を1920×1080に変更してください（ゲーム画面が小さいまま中央に映るのは問題ありません）。</p></li>
+<li><p>【サムネイル画像】<br>ゲームの内容が一目で伝わる1枚を用意します。プレイ中のスクリーンショットでも、タイトル画面でも構いません。<br>サイズは1920×1080px、形式は.pngです。</p></li>
+<li><p>【タイトルロゴ透過素材】<br>ゲームタイトルのロゴだけを、背景を透明にした状態で書き出します。</p>
+<div class="term"><b>用語：透過（アルファチャンネル）</b>画像の背景を「透明」として扱う仕組み。.pngはこれに対応しているので、背景を白や黒で塗りつぶさずに書き出せます。ミニゲーム集の共通レイアウトにロゴだけを重ねて表示するのに使います。</div>
+<p>縦・横どちらも<strong>1500px以内</strong>に収めてください。正方形である必要はなく、ロゴの形に合わせた縦長・横長で構いません。</p></li>
+<li><p>【ファイル名】<br>4つの素材にも、.unitypackageと同じ名前を付けてから、内容が分かる言葉を後ろに足します。</p>
+<pre>GameJam_2026_07_TeamA_MazeRunner_short.mp4     ← 短尺（15秒以内）
+GameJam_2026_07_TeamA_MazeRunner_long.mp4      ← 長尺（30秒〜1分）
+GameJam_2026_07_TeamA_MazeRunner_thumbnail.png ← サムネイル
+GameJam_2026_07_TeamA_MazeRunner_logo.png      ← タイトルロゴ</pre></li>
+<li><p>用意ができたら、.unitypackageとあわせて5つを、【1】で案内したGoogle Driveのチームフォルダにアップロードします。</p></li></ol>
