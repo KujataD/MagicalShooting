@@ -1,0 +1,186 @@
+<meta charset="utf-8">
+<title>プレイ会向け unityroom投稿マニュアル</title>
+<style>
+  body { font-family: "Yu Gothic UI","Meiryo","Hiragino Kaku Gothic ProN",sans-serif; font-size: 11pt; line-height: 1.75; color: #222; max-width: 720px; margin: 0 auto; }
+  h1.doctitle { font-size: 22pt; margin: 0 0 10px 0; }
+  .lead { color: #555; font-size: 10.5pt; margin-bottom: 24px; }
+  h1.chapter { font-size: 16.5pt; line-height: 1.45; margin: 26px 0 14px 0; padding-bottom: 6px; border-bottom: 2px solid #444; page-break-before: always; }
+  h1.chapter.first { page-break-before: avoid; }
+  h2 { font-size: 13pt; margin: 22px 0 10px 0; }
+  ol.steps { padding-left: 1.6em; }
+  ol.steps > li { margin: 12px 0; }
+  ul { margin: 6px 0; padding-left: 1.4em; }
+  li { margin: 3px 0; }
+  p { margin: 6px 0; }
+  p.warn { font-size: 10pt; color: #555; }
+  .term { background: #f1f5f9; border-left: 4px solid #94a3b8; padding: 8px 12px; margin: 10px 0; font-size: 10.5pt; }
+  .term b { display: block; margin-bottom: 2px; }
+  pre { background: #f6f3ee; padding: 11px 13px; border-radius: 6px; font-family: "Consolas","Courier New",monospace; font-size: 8.8pt; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+  code { background: #f1efe9; padding: 1px 4px; border-radius: 3px; font-family: "Consolas","Courier New",monospace; font-size: 9.5pt; }
+  img { max-width: 100%; display: block; margin: 10px auto 2px; border: 1px solid #ddd; }
+  .caption { font-size: 9pt; color: #777; text-align: center; margin-bottom: 10px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 10pt; }
+  th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+  ul.checklist { list-style: none; padding-left: 0.3em; }
+  li.check::before { content: "\2610  "; }
+</style>
+<h1 class="doctitle">プレイ会向け unityroom投稿マニュアル</h1>
+<div class="lead">限定公開でお互いの作品を遊べるようにする（全7項目）</div>
+<h1 class="chapter first">【1】プレイ会で遊べるようにする</h1>
+<ol class="steps"><li><p>お互いが作ったミニゲームを、実際にブラウザで遊べる状態にして持ち寄ります。</p>
+<p>Unityのプロジェクトファイルをそのまま渡しても、相手はUnityを入れてビルドしないと遊べません。プレイ会の場でそれをやるのは大変なので、事前に<strong>ブラウザで開くだけで遊べる形</strong>にしておきます。それを可能にするのが unityroom です。</p>
+<div class="term"><b>用語：unityroom</b>Unityで作ったゲームを無料で投稿・公開できるサイト。投稿するとURLが発行され、そのURLを開くだけでブラウザ上でゲームが遊べます。</div></li>
+<li><p>今回使う公開設定は「<strong>限定公開</strong>」です。</p>
+<p>unityroomの公開設定には3種類あります。</p>
+<div class="tablewrap"><table>
+<tr><th>設定</th><th>誰が見られるか</th></tr>
+<tr><td>非公開</td><td>投稿した本人だけ</td></tr>
+<tr><td><strong>限定公開</strong></td><td><strong>URLを知っている人だけ</strong>。一覧やサイト内検索には出ない</td></tr>
+<tr><td>一般公開</td><td>サイトに来た人なら誰でも。ゲーム一覧にも載る</td></tr>
+</table></div>
+<p>プレイ会は身内で遊ぶ場なので、<strong>限定公開</strong>を使います。一般公開のようにアイコン画像や実況ポリシーを用意する必要がなく、URLをDiscordなどで共有するだけで準備が済みます。</p></li>
+<li><p>作業の流れはこうなります。</p>
+<pre>① Unityでビルド設定を確認する　【2】
+          ↓
+② Web向けにビルドする　【3】
+          ↓
+③ unityroomにゲームを登録する　【4】
+          ↓
+④ ビルドしたファイルをアップロードする　【5】
+          ↓
+⑤ 公開設定を限定公開にする　【6】
+          ↓
+⑥ URLをチームに共有する　【7】</pre></li>
+<li><p>unityroomのアカウントがまだの人は、先に作っておきます。トップページ右上の「ログイン」から、TwitterなどのSNSアカウントで登録できます。</p></li></ol>
+<h1 class="chapter">【2】ビルド設定を確認する</h1>
+<ol class="steps"><li><p>ビルドする前に、Project SettingsをunityroomのWeb向けに合わせておきます。ここを間違えると、アップロードしてもゲームが動きません。</p></li>
+<li><p>Unityで <code>Edit &gt; Project Settings...</code> を開き、左のリストから「Player」を選びます。右側の「Settings for Web」の中の「Resolution and Presentation」を開きます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/resolution_settings.png" alt="Resolution and Presentationの設定">
+<div class="caption">Resolution and Presentationの設定</div>
+<ul><li><strong>Default Canvas Width</strong>：960</li><li><strong>Default Canvas Height</strong>：540</li></ul>
+<p>unityroomの標準的な画面サイズです。この数字と違っていても投稿はできますが、ゲームページ内での表示が窮屈になったり余白ができたりします。</p></li>
+<li><p>同じ画面の下にある「Publishing Settings」を開きます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/publishing_settings.png" alt="Publishing Settingsの設定">
+<div class="caption">Publishing Settingsの設定</div>
+<p>ここが<strong>今回いちばん重要な設定</strong>です。</p>
+<ul><li><strong>Compression Format</strong>：Gzip</li><li><strong>Decompression Fallback</strong>：チェックを外す</li></ul>
+<div class="term"><b>用語：Compression Format（圧縮形式）</b>ビルドしたファイルをどう圧縮するかの設定。ゲーム本体はサイズが大きいので、圧縮せずに配ると読み込みに時間がかかります。unityroomはGzip形式でのアップロードを前提にしているので、ここは必ずGzipにします。</div>
+<p>Decompression Fallbackは「サーバー側で解凍できない場合に、ゲーム側で解凍する」ための機能ですが、unityroomでは<strong>逆にチェックを外しておく必要があります</strong>。入れたままビルドすると、拡張子が <code>.unityweb</code> になってしまい、unityroomが求める形式と合わなくなります。</p></li>
+<li><p>【この2つを間違えるとどうなるか】</p>
+<div class="tablewrap"><table>
+<tr><th>設定</th><th>間違えた場合</th></tr>
+<tr><td>Compression Format が Gzip 以外</td><td>アップロード後、ゲームが読み込み中のまま止まる</td></tr>
+<tr><td>Decompression Fallback にチェックが入ったまま</td><td>ファイルの拡張子が <code>.unityweb</code> になり、正しくアップロードできない</td></tr>
+</table></div>
+<p>どちらも、<strong>ビルドし直せば直ります</strong>。あとで気づいても大丈夫です。</p></li>
+<li><p>設定できたら、Project Settingsのウィンドウを閉じて次に進みます。</p></li></ol>
+<h1 class="chapter">【3】Web向けにビルドする</h1>
+<ol class="steps"><li><p><code>File &gt; Build Profiles</code> を開きます。左のPlatformsから「Web」を選び、「Active」と表示されていることを確認します。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/build_profiles.png" alt="Build Profiles画面">
+<div class="caption">Build Profiles画面</div>
+<p class="warn">※他のプラットフォームがActiveになっている場合は、「Web」をクリックしてから「Switch Platform」を押します。切り替えには数分かかります。</p></li>
+<li><p>「Build」ボタンを押します。書き出し先のフォルダを聞かれるので、分かりやすい場所を選びます。</p>
+<p class="warn">※フォルダのパスに日本語やスペースが入らない場所を選んでください。</p></li>
+<li><p>ビルドが始まります。プロジェクトの大きさによって数分〜十数分かかります。ステータスバーに「Build completed with a result of 'Succeeded'」と表示されたら成功です。</p></li>
+<li><p>書き出したフォルダの中を見ると、<code>index.html</code> と <code>Build</code> フォルダ、<code>TemplateData</code> フォルダができています。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/build_output.png" alt="ビルド出力フォルダの中身">
+<div class="caption">ビルド出力フォルダの中身</div>
+<p>unityroomにアップロードするのは、この中の <strong><code>Build</code> フォルダ</strong>です。<code>Build</code> フォルダの中には <code>.loader.js</code> や <code>.data.gz</code> などのファイルが入っています。</p></li>
+<li><p>【設定を間違えたままビルドしていたら】</p>
+<p><code>Build</code> フォルダの中のファイルの拡張子を確認します。</p>
+<ul><li><code>.data.gz</code> <code>.wasm.gz</code> になっていれば正しい設定です。次に進んで大丈夫です。</li><li><code>.data.unityweb</code> <code>.wasm.unityweb</code> になっていたら、【2】のDecompression Fallbackのチェックが外れていません。チェックを外して、もう一度ビルドし直してください。</li></ul></li></ol>
+<h1 class="chapter">【4】unityroomにゲームを登録する</h1>
+<ol class="steps"><li><p>unityroomにログインした状態で、右上の「ゲームを登録」を押します。</p></li>
+<li><p>「基本情報編集」の画面が開きます。ここで最低限の情報を入力します。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/basic_info.png" alt="基本情報編集の画面">
+<div class="caption">基本情報編集の画面</div>
+<ul><li><strong>タイトル</strong>：ゲームの名前</li><li><strong>紹介文</strong>：どんなゲームか一言（プレイ会で説明が省ける程度でOK）</li><li><strong>想定プレイ時間</strong>：プルダウンから選択</li></ul>
+<p>限定公開の場合、<strong>アイコン画像は無くても投稿できます</strong>。一般公開に切り替えるときには必要になりますが、身内のプレイ会用であれば後回しにして構いません。</p></li>
+<li><p>「更新」を押すと保存されます。これでゲームのページ自体はできましたが、まだ中身（Webビルドファイル）が入っていません。次で入れます。</p></li></ol>
+<h1 class="chapter">【5】ビルドファイルをアップロードする</h1>
+<ol class="steps"><li><p>左のメニューから「Webビルドアップロード」を選びます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/webgl_upload_page.png" alt="Webビルドアップロード画面">
+<div class="caption">Webビルドアップロード画面</div>
+<p>ここにも、【2】で説明したCompression FormatとDecompression Fallbackの注意書きが表示されています。unityroom側もそれだけ重要視している設定だということです。</p></li>
+<li><p>「Buildフォルダをドラッグ＆ドロップ」の枠に、【3】でビルドした <code>Build</code> フォルダをそのままドラッグ＆ドロップします。<br>（またはクリックしてフォルダ選択ダイアログから <code>Build</code> フォルダを選びます）</p></li>
+<li><p>「4個のファイルをこのサイトにアップロードしますか？」という確認が出ます。「アップロード」を押します。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/upload_confirm_dialog.png" alt="アップロード確認ダイアログ">
+<div class="caption">アップロード確認ダイアログ</div></li>
+<li><p>アップロードが完了すると、緑色の帯で「アップロード完了しました。」と表示され、ファイル一覧の状態がすべて「完了」になります。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/upload_complete.png" alt="アップロード完了後の画面">
+<div class="caption">アップロード完了後の画面</div></li>
+<li><p>【うまくいかないとき】</p>
+<div class="tablewrap"><table>
+<tr><th>症状</th><th>原因</th></tr>
+<tr><td>アップロードしてもファイルが「未完了」のまま</td><td>通信が不安定な可能性。もう一度ドラッグ＆ドロップし直す</td></tr>
+<tr><td>ファイル名が <code>.unityweb</code> になっていて選べない</td><td>【2】のDecompression Fallbackが外れていない。ビルドし直す</td></tr>
+<tr><td>フォルダごと選んだのにエラーになる</td><td><code>Build</code> フォルダの中身が空、または別バージョンでビルドしたファイルが混ざっている。作り直したフォルダで試す</td></tr>
+</table></div></li>
+<li><p>アップロードが完了したら、この時点でもう一度ゲームを開いて確認できます。左上の「基本情報」の「ゲームを表示」から実際の画面を見てみましょう。</p></li></ol>
+<h1 class="chapter">【6】公開設定を限定公開にする</h1>
+<ol class="steps"><li><p>左のメニューから「公開設定」を選びます。初期状態は「非公開」になっています。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/publish_settings.png" alt="公開設定の画面（非公開の状態）">
+<div class="caption">公開設定の画面（非公開の状態）</div></li>
+<li><p>「限定公開」を選びます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/publish_select_limited.png" alt="限定公開を選択した状態">
+<div class="caption">限定公開を選択した状態</div>
+<p>一般公開の欄には「一般公開するためには下記設定が必要です」と赤字で注意書きが出ていますが、限定公開にはこの制約がありません。<strong>アイコンや実況ポリシーが未設定でも、限定公開にはできます。</strong></p></li>
+<li><p>「更新」を押します。緑色の帯で「公開レベルを更新しました。」と表示され、左側の表示も「限定公開　URLを知っている人だけがアクセスできる状態です。」に変わります。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/publish_limited_done.png" alt="限定公開への切り替えが完了した状態">
+<div class="caption">限定公開への切り替えが完了した状態</div></li>
+<li><p>これで、URLを知っている人だけがゲームを開けるようになりました。実際に「ゲームを表示」からアクセスすると、ちゃんとゲームが動きます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/unityroom_images/game_play_page.png" alt="実際に動作しているゲームページ">
+<div class="caption">実際に動作しているゲームページ</div></li>
+<li><p>【注意】限定公開でも、URLを知っていれば誰でもアクセスできます</p>
+<p>「限定公開」は身内向けの合言葉のようなものではなく、<strong>URLさえ知っていれば誰でも遊べる</strong>状態です。ゲーム一覧や検索結果には出ませんが、URLをオープンな場所（公開のSNSなど）に貼ると誰でも遊べてしまいます。共有はDiscordのプレイ会用チャンネルなど、閉じた場所で行いましょう。</p></li></ol>
+<h1 class="chapter">【7】通し：投稿チェックリスト【保存版】</h1>
+<ol class="steps"><li><p>最後に、ここまでの内容を忘れても投稿できるようにまとめます。</p></li></ol>
+<hr>
+<h2>【A】投稿までの流れ</h2>
+<div class="block"><pre>① Project Settings で以下を設定する
+Compression Format：Gzip
+Decompression Fallback：チェックを外す
+Default Canvas Width / Height：960 / 540
+    ↓
+② File &gt; Build Profiles でWeb向けにビルドする
+    ↓
+③ unityroomで「ゲームを登録」→ タイトル・紹介文を入力
+    ↓
+④ 「Webビルドアップロード」で Build フォルダをアップロード
+    ↓
+⑤ 「公開設定」で「限定公開」を選んで更新
+    ↓
+⑥ ゲームのURLをプレイ会のDiscordチャンネルなどに共有</pre></div>
+<hr>
+<h2>【B】ビルド前に確認する2つの設定</h2>
+<div class="block"><div class="tablewrap"><table>
+<tr><th>設定</th><th>場所</th><th>正しい値</th></tr>
+<tr><td>Compression Format</td><td>Project Settings &gt; Player &gt; Publishing Settings</td><td>Gzip</td></tr>
+<tr><td>Decompression Fallback</td><td>同上</td><td>チェックを外す</td></tr>
+</table></div>
+<p>この2つを間違えると、アップロードできても正しく動きません。ビルドをやり直せば直ります。</p></div>
+<hr>
+<h2>【C】公開設定の使い分け</h2>
+<div class="block"><div class="tablewrap"><table>
+<tr><th>設定</th><th>用途</th></tr>
+<tr><td>非公開</td><td>作業中、まだ誰にも見せない段階</td></tr>
+<tr><td><strong>限定公開</strong></td><td><strong>プレイ会など、URLを知っている身内だけに見せる段階</strong></td></tr>
+<tr><td>一般公開</td><td>完成後、誰でも遊べるように公開する段階</td></tr>
+</table></div>
+<p>限定公開には、一般公開で必要なアイコン画像や実況ポリシーの設定は不要です。</p></div>
+<hr>
+<h2>【D】困ったとき逆引き表</h2>
+<div class="block"><div class="tablewrap"><table>
+<tr><th>こうなった</th><th>こうする</th></tr>
+<tr><td><strong>アップロード後、ゲームが読み込み中のまま止まる</strong></td><td>Compression FormatがGzipになっていない。設定してビルドし直す</td></tr>
+<tr><td><strong>ファイルの拡張子が <code>.unityweb</code> になっている</strong></td><td>Decompression Fallbackのチェックが外れていない。外してビルドし直す</td></tr>
+<tr><td><strong>ゲーム画面が窮屈、または余白だらけ</strong></td><td>Default Canvas Width / Height が960×540になっていない</td></tr>
+<tr><td><strong>アップロードしてもファイルが「未完了」のまま</strong></td><td>通信が不安定な可能性。もう一度アップロードし直す</td></tr>
+<tr><td><strong>限定公開にしたのにURLを知らない人が来た</strong></td><td>URLをオープンな場所に貼っていないか確認する</td></tr>
+<tr><td><strong>どのビルドが最新か分からなくなった</strong></td><td>アップロード画面の「更新日時」でファイルごとの時刻を確認する</td></tr>
+</table></div></div>
+<hr>
+<ol class="steps"><li><p>これで投稿は完了です。URLをチームに共有すれば、プレイ会でお互いの作品を遊べます。</p></li></ol>
