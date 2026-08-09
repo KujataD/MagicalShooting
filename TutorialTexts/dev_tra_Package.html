@@ -192,9 +192,9 @@ Visual Studio Editor（または JetBrains Rider Editor）</pre>
 ## ゲームのテーマカラーを1色選ぶなら
 （6桁カラーコードで1色。#000000〜#ffffffの1,677万色から選んでください）
 
-## まとめPV用の説明とタイトルコール
+## まとめPV用の説明とタイトルの読み方
 - 50文字以内の説明：
-- タイトルコール：
+- タイトルの正しい読み方（ひらがな）：
 
 ## 最初に開くシーン
 （例：Title_TeamA.unity）
@@ -236,9 +236,9 @@ Visual Studio Editor（または JetBrains Rider Editor）</pre>
 ## ゲームのテーマカラーを1色選ぶなら
 #2b2f77
 
-## まとめPV用の説明とタイトルコール
-- 50文字以内の説明：制限時間内にゴールを目指す2D迷路ゲーム。アイテムを取って時間を延ばそう
-- タイトルコール：迷路ダッシュ！
+## まとめPV用の説明とタイトルの読み方
+- 50文字以内の説明：壁の向こうにゴールが見える。あと一歩、あと一歩が命取り。試されるのは記憶力と度胸だ。
+- タイトルの正しい読み方（ひらがな）：めいろだっしゅ
 
 ## 最初に開くシーン
 Title_TeamA.unity
@@ -269,7 +269,7 @@ Title_TeamA.unity
 <tr><td>操作方法</td><td>動作確認に必要。遊ぶ人への案内にも使う</td></tr>
 <tr><td><strong>プレイ制限時間</strong></td><td><strong>この時間を過ぎるとゲームが強制終了されます。最短15秒〜最長5分の範囲で書いてください</strong>。実際の時間と大きくずれていると、遊びきる前に終了したり、次のミニゲームに進めなくなります</td></tr>
 <tr><td>ゲームのテーマカラー</td><td>サムネイルやロゴなど、ミニゲーム集全体の見た目を揃えるときの色の目安に使います</td></tr>
-<tr><td>まとめPV用の説明とタイトルコール</td><td>全チームのミニゲームを紹介するまとめPVで、そのまま<strong>ナレーションやテロップ</strong>に使います</td></tr>
+<tr><td>まとめPV用の説明とタイトルの読み方</td><td>全チームのミニゲームを紹介するまとめPVで、そのまま<strong>ナレーションやテロップ</strong>に使います</td></tr>
 <tr><td>最初に開くシーン</td><td>タイトル画面から<strong>このシーンへつなぎます</strong>。これが無いと組み込めません</td></tr>
 <tr><td>追加した機能</td><td>統合プロジェクトに同じ機能を入れます。無いとエラーで動きません</td></tr>
 <tr><td>追加したタグ</td><td>統合プロジェクトに同じタグを追加します。無いと実行時に止まります</td></tr>
@@ -296,7 +296,7 @@ Title_TeamA.unity
       └ ...</pre>
 <p>ここに置いてからパッケージを書き出すことで、ReadMe.mdもパッケージに含まれます。</p></li>
 <li><p>書くときの注意は3つです。</p>
-<ul><li><strong>「なし」も書く</strong>。空欄だと「書き忘れ」なのか「無い」のか分かりません</li><li>シーン名は<strong>拡張子（.unity）まで正確に</strong>。<code>Title</code> と <code>title</code> の違いでも動きません</li><li>プレイ制限時間は<strong>15秒〜5分</strong>の範囲で。実際に遊んで測った時間を、単位まで含めて書きます（例：40秒）</li><li>テーマカラーは<strong>6桁カラーコード1色だけ</strong>。<code>#</code> を付けて書きます</li><li>まとめPV用の説明は<strong>50文字以内</strong>。長いとテロップに入りきりません。タイトルコールは短く、読み上げやすい形にします（例：「迷路ダッシュ！」）</li></ul></li></ol>
+<ul><li><strong>「なし」も書く</strong>。空欄だと「書き忘れ」なのか「無い」のか分かりません</li><li>シーン名は<strong>拡張子（.unity）まで正確に</strong>。<code>Title</code> と <code>title</code> の違いでも動きません</li><li>プレイ制限時間は<strong>15秒〜5分</strong>の範囲で。実際に遊んで測った時間を、単位まで含めて書きます（例：40秒）</li><li>テーマカラーは<strong>6桁カラーコード1色だけ</strong>。<code>#</code> を付けて書きます</li><li>まとめPV用の説明は<strong>50文字以内</strong>。長いとテロップに入りきりません</li><li>【重要】説明文は「制限時間内にゴールを目指す2D迷路ゲーム」のような<strong>ジャンルの説明だけ</strong>になりがちです。それだと全チームの文章が似たり寄ったりになってしまいます。<strong>Nintendo Directの「もうすぐ発売！ ソフトラインナップ」のナレーション</strong>がとても参考になるので、見てみてください。世界観や煽り文句で、自分のゲームらしさを出しましょう</li><li>タイトルの読み方は<strong>すべてひらがな</strong>で。読み間違えられそうな部分（伸ばす音、濁点など）が分かるように書きます</li></ul></li></ol>
 <h1 class="chapter">【4】パッケージに書き出す</h1>
 <ol class="steps"><li><p>フォルダの整理とReadMe.mdの準備ができたら、書き出します。</p></li>
 <li><p>Projectウィンドウで、<strong>自分のミニゲーム用フォルダ（<code>GameJam_&lt;開始年yyyy&gt;_&lt;開始月mm&gt;_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</code>）を右クリック</strong>します。<br>メニューの中から「<strong>Export As Asset Package...</strong>」を選びます。</p>
@@ -359,7 +359,7 @@ using Unity.Mathematics;       // ← これも</pre>
 <li><p>動作確認ができたら、パッケージファイルは完成です。残りの提出物（プレイ映像・サムネイル・タイトルロゴ）は【7】で用意します。</p></li></ol>
 <hr>
 <h2>提出前チェックリスト</h2>
-<div class="block"><ul class="checklist"><li class="check">自分のミニゲームのファイルが、1つのフォルダにまとまっている</li><li class="check">フォルダ名が <code>GameJam_&lt;開始年yyyy&gt;_&lt;開始月mm&gt;_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</code> になっている</li><li class="check">フォルダを移動したあと、Unityで再生して動いた</li><li class="check">ReadMe.md を書いて、フォルダの中に置いた</li><li class="check">ReadMe.md のプレイ制限時間を、15秒〜5分の範囲で書いた</li><li class="check">ReadMe.md のテーマカラーを6桁カラーコードで1色書いた</li><li class="check">ReadMe.md にまとめPV用の説明（50文字以内）とタイトルコールを書いた</li><li class="check">自分のフォルダを右クリックして書き出した（Assetsではない）</li><li class="check">「Include dependencies」がオンの状態で書き出した</li><li class="check">ファイル名が決められた形式になっている</li><li class="check">ファイルサイズが極端に小さくない（数KBは中身が空の可能性）</li><li class="check">空のプロジェクトに読み込んで、エラー無しで動いた</li><li class="check">プレイ映像（短尺15秒以内・長尺30秒〜1分）を1920×1080pxで用意した</li><li class="check">サムネイル画像を1920×1080pxで用意した</li><li class="check">タイトルロゴ透過素材を縦横1500px以内で用意した</li><li class="check">5つの提出物すべてを、Google Driveのチームフォルダに入れた</li></ul></div>
+<div class="block"><ul class="checklist"><li class="check">自分のミニゲームのファイルが、1つのフォルダにまとまっている</li><li class="check">フォルダ名が <code>GameJam_&lt;開始年yyyy&gt;_&lt;開始月mm&gt;_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</code> になっている</li><li class="check">フォルダを移動したあと、Unityで再生して動いた</li><li class="check">ReadMe.md を書いて、フォルダの中に置いた</li><li class="check">ReadMe.md のプレイ制限時間を、15秒〜5分の範囲で書いた</li><li class="check">ReadMe.md のテーマカラーを6桁カラーコードで1色書いた</li><li class="check">ReadMe.md にまとめPV用の説明（50文字以内・ジャンル説明だけになっていない）とタイトルの読み方（ひらがな）を書いた</li><li class="check">自分のフォルダを右クリックして書き出した（Assetsではない）</li><li class="check">「Include dependencies」がオンの状態で書き出した</li><li class="check">ファイル名が決められた形式になっている</li><li class="check">ファイルサイズが極端に小さくない（数KBは中身が空の可能性）</li><li class="check">空のプロジェクトに読み込んで、エラー無しで動いた</li><li class="check">プレイ映像（短尺15秒以内・長尺30秒〜1分）を1920×1080pxで用意した</li><li class="check">サムネイル画像を1920×1080pxで用意した</li><li class="check">タイトルロゴ透過素材を縦横1500px以内で用意した</li><li class="check">5つの提出物すべてを、Google Driveのチームフォルダに入れた</li></ul></div>
 <hr>
 <h2>困ったとき逆引き表</h2>
 <div class="block"><div class="tablewrap"><table>
