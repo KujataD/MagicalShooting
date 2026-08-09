@@ -128,7 +128,29 @@ GameJam_2026_07_TeamC_RhythmCat.unitypackage</pre>
 <p>左側の「In Project」を選ぶと、このプロジェクトで使っている機能の一覧が表示されます。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-03_package_manager.png" alt="Package ManagerのIn Project表示">
 <div class="caption">Package ManagerのIn Project表示</div>
-<p class="warn">※Unityに最初から入っているものはそのままでOKです。自分で追加した覚えのあるものだけ控えてください。</p></li>
+<p>問題は、この一覧には<strong>Unityに最初から入っているものと、自分で追加したものが混ざって表示される</strong>ことです。見分けがつかない人向けに、確実な方法を2つ紹介します。</p>
+<p><strong>方法1：最初から入っている一覧と見比べる</strong></p>
+<p>2Dのテンプレートでプロジェクトを作った場合、以下は最初から入っています。一覧の中にこれらの名前があっても、気にしなくて大丈夫です。</p>
+<pre>2D Animation
+2D Aseprite Importer
+2D PSD Importer
+2D Sprite
+2D SpriteShape
+2D Tilemap Editor
+2D Tilemap Extras
+2D Tooling
+Input System
+Multiplayer Center
+Universal RP
+Test Framework
+Timeline
+Visual Scripting
+Version Control
+Visual Studio Editor（または JetBrains Rider Editor）</pre>
+<p><strong>一覧の中に、この中に無い名前があれば、それが自分で追加した機能です。</strong>（例：TextMeshPro、Cinemachine、DOTween など）</p>
+<p class="warn">※3Dなど別のテンプレートで作った人は、最初から入っているものが多少変わります。次の方法2で確認してください。</p>
+<p><strong>方法2：まっさらな新規プロジェクトと見比べる（確実）</strong></p>
+<p>一番確実なのは、<strong>UnityHubで自分のミニゲームと同じテンプレート・同じバージョンの新規プロジェクトを作り</strong>、そのPackage ManagerのIn Project一覧を見ることです。<br>何も追加していない状態のプロジェクトなので、そこに表示される名前が「最初から入っているもの」そのものです。自分のプロジェクトの一覧と見比べて、<strong>新規プロジェクトの方には無い名前</strong>が、自分で追加した機能です。</p></li>
 <li><p>【調べる2】自分で追加したタグ・レイヤー</p>
 <p><code>Project Settings</code> の中身は、パッケージには<strong>一切入りません</strong>。自分で追加したタグやレイヤーがあると、統合先では存在しないため、実行時にエラーで止まります。</p>
 <p><code>Edit &gt; Project Settings...</code> を開いて、左のリストから「Tags and Layers」を選び、「Tags」の欄を開きます。</p>
@@ -177,6 +199,43 @@ GameJam_2026_07_TeamC_RhythmCat.unitypackage</pre>
 <li><p>書くと、左に入力した内容が右にすぐ表示されます。見出しや箇条書きがきれいに表示されていれば、書き方は合っています。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/readme_hackmd_editor.png" alt="HackMDの編集画面">
 <div class="caption">HackMDの編集画面</div></li>
+<li><p>書いたときの例です。テンプレートを埋めるとこうなります。</p>
+<pre># 迷路ダッシュ
+
+## ゲーム概要
+制限時間内にゴールを目指す2D迷路ゲームです。
+道中のアイテムを取ると制限時間が5秒増えます。
+時間切れになるとゲームオーバーです。
+
+## 操作方法
+- 移動：矢印キー
+- 決定：スペースキー
+- その他：Escキーでタイトルに戻る
+
+## 想定プレイ時間
+40秒（1プレイあたり最短20秒〜最長40秒）
+
+## 最初に開くシーン
+Title_TeamA.unity
+
+## 追加した機能（Package Manager）
+- TextMeshPro
+- Cinemachine
+
+## 追加したタグ
+- Item
+- Goal
+
+## 追加したレイヤー
+- なし
+
+## その他
+- 終了条件：ゴールに触れるとクリア、制限時間0でゲームオーバー。どちらもタイトルに戻ります
+- 使用素材：効果音ラボ（https://soundeffect-lab.info/）、キャラ絵は自作
+- 既知の不具合：まれに壁をすり抜けることがあります
+- 制作メンバー：○○、△△
+- 連絡先：Discord @maruo</pre>
+<p>「追加した機能」と「追加したタグ」は、手順3・4で調べた内容をそのまま書き写せばOKです。</p></li>
 <li><p>各項目が何に使われるかを知っておくと、書く内容に迷いません。</p>
 <div class="tablewrap"><table>
 <tr><th>項目</th><th>迷とら運営がこう使う</th></tr>
