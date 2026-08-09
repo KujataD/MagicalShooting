@@ -1,0 +1,352 @@
+<meta charset="utf-8">
+<title>dev tra　パッケージ編</title>
+<style>
+  body { font-family: "Yu Gothic UI","Meiryo","Hiragino Kaku Gothic ProN",sans-serif; font-size: 11pt; line-height: 1.75; color: #222; max-width: 720px; margin: 0 auto; }
+  h1.doctitle { font-size: 22pt; margin: 0 0 10px 0; }
+  .lead { color: #555; font-size: 10.5pt; margin-bottom: 24px; }
+  h1.chapter { font-size: 16.5pt; line-height: 1.45; margin: 26px 0 14px 0; padding-bottom: 6px; border-bottom: 2px solid #444; page-break-before: always; }
+  h1.chapter.first { page-break-before: avoid; }
+  h2 { font-size: 13pt; margin: 22px 0 10px 0; }
+  ol.steps { padding-left: 1.6em; }
+  ol.steps > li { margin: 12px 0; }
+  ul { margin: 6px 0; padding-left: 1.4em; }
+  li { margin: 3px 0; }
+  p { margin: 6px 0; }
+  p.warn { font-size: 10pt; color: #555; }
+  .term { background: #f1f5f9; border-left: 4px solid #94a3b8; padding: 8px 12px; margin: 10px 0; font-size: 10.5pt; }
+  .term b { display: block; margin-bottom: 2px; }
+  pre { background: #f6f3ee; padding: 11px 13px; border-radius: 6px; font-family: "Consolas","Courier New",monospace; font-size: 8.8pt; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+  code { background: #f1efe9; padding: 1px 4px; border-radius: 3px; font-family: "Consolas","Courier New",monospace; font-size: 9.5pt; }
+  img { max-width: 100%; display: block; margin: 10px auto 2px; border: 1px solid #ddd; }
+  .caption { font-size: 9pt; color: #777; text-align: center; margin-bottom: 10px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 10pt; }
+  th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+  ul.checklist { list-style: none; padding-left: 0.3em; }
+  li.check::before { content: "\2610  "; }
+</style>
+<h1 class="doctitle">dev tra　パッケージ編</h1>
+<div class="lead">ミニゲームを1つに集めるための Unity Package 入門（全7回）</div>
+<h1 class="chapter first">【1-01】ミニゲームを1つに集めよう【1章：パッケージ編】</h1>
+<ol class="steps"><li><p>クリア条件：今回何を作るのか、そのために何を提出するのかが分かればOK！</p></li>
+<li><p>ここからは別巻、Unity Packageの使い方です。<br>今回のゲームジャムでは、<strong>各チームが作ったミニゲームを1つのゲームにまとめます</strong>。タイトル画面から好きなミニゲームを選んで遊べる、いわゆるミニゲーム集です。</p></li>
+<li><p>でも、ここで問題があります。ミニゲームは<strong>チームごとに別々のUnityプロジェクト</strong>で作られています。</p>
+<pre>Aチームのプロジェクト   ← 迷路ゲーム
+Bチームのプロジェクト   ← シューティング
+Cチームのプロジェクト   ← リズムゲーム</pre>
+<p>これを最終的に、1つのプロジェクトの中に全部入れる必要があります。</p>
+<pre>統合プロジェクト
+ ├ 迷路ゲーム
+ ├ シューティング
+ └ リズムゲーム</pre></li>
+<li><p>「プロジェクトのフォルダごと渡せばいいのでは？」と思うかもしれませんが、それだと<strong>プロジェクトが3つ並ぶだけ</strong>で、1つのゲームにはなりません。<br>必要なのは「プロジェクトそのもの」ではなく、「<strong>そのミニゲームを動かすのに必要なファイル一式</strong>」を取り出して渡すことです。</p></li>
+<li><p>そのための仕組みが、Unityに用意されている Unity Package です。</p>
+<div class="term"><b>用語：Unity Package（.unitypackage）</b>Unityのプロジェクトから、<strong>指定したファイルをまとめて1つのファイルに書き出したもの</strong>。受け取った側は、それを自分のプロジェクトに読み込むと、フォルダ構成そのままでファイルが追加されます。</div></li>
+<li><p>今回のゲームジャムでの流れは、こうなります。</p>
+<pre>① 各チーム：自分のミニゲームを .unitypackage に書き出す
+                ↓
+② 各チーム：できたファイルを提出する（Discordなど）
+                ↓
+③ 統合担当：全部を統合プロジェクトに読み込む
+                ↓
+④ 統合担当：タイトル画面から各ミニゲームへつなぐ</pre>
+<p>この別巻では、<strong>①の書き出し</strong>（1-02〜1-05）と、<strong>③の読み込み</strong>（1-06）を扱います。</p></li>
+<li><p>【最重要】提出するファイルの名前は、全チーム統一します。</p>
+<pre>GameJam_2026_07_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</pre>
+<p>例：</p>
+<pre>GameJam_2026_07_TeamAlpha_MazeRunner.unitypackage
+GameJam_2026_07_TeamBravo_ShootingStar.unitypackage
+GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage</pre>
+<p class="warn">※<code>&lt;&gt;</code> は書きません。<code>Team</code> の後にそのままチーム名をつなげます。<br>※半角英数とアンダースコア（_）だけを使ってください。日本語やスペースが入ると、読み込む側で不具合の原因になります。</p></li>
+<li><p>なぜ名前を統一するのか。統合担当の画面には、全チームのファイルが並びます。</p>
+<pre>⭕ 統一されている場合
+  GameJam_2026_07_TeamAlpha_MazeRunner.unitypackage
+  GameJam_2026_07_TeamBravo_ShootingStar.unitypackage
+  GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage
+  → どれが誰のもので、いつの提出物か一目で分かる
+
+✕ バラバラの場合
+  game.unitypackage
+  最新版.unitypackage
+  test2.unitypackage
+  → 中身を開くまで分からない。同名ファイルで上書き事故も起きる</pre></li>
+<li><p>今回の目的（ミニゲームを1つに集める）と、提出するもの（決まった名前の.unitypackage）が分かったら、今回は完成です！<br>次回は、書き出す前の準備をします。</p></li></ol>
+<h1 class="chapter">【1-02】書き出す前にフォルダをまとめよう【1章：パッケージ編】</h1>
+<ol class="steps"><li><p>クリア条件：自分のミニゲームのファイルが、1つのフォルダにまとまっていればOK！</p></li>
+<li><p>書き出しの前に、準備が必要です。ここをやらないと、統合するときに全チームのファイルが混ざります。</p></li>
+<li><p>まず、よくない例から見てみましょう。作りながら進めると、だいたいAssetsフォルダはこうなっています。</p>
+<pre>Assets/
+ ├ Scenes/
+ ├ Scripts/
+ ├ Images/
+ ├ Prefabs/
+ └ Audio/</pre>
+<p>一見きれいですが、<strong>このまま書き出すと問題が起きます</strong>。<br>統合プロジェクトに3チーム分を読み込むと、こうなるからです。</p>
+<pre>Assets/
+ ├ Scenes/     ← A・B・C チームのシーンが全部ここに入る
+ ├ Scripts/    ← 3チーム分のスクリプトが混ざる
+ ├ Images/     ← 3チーム分の画像が混ざる
+ └ ...</pre>
+<p>どれが誰のファイルか分からなくなりますし、<strong>同じ名前のファイルがあると上書きされます</strong>。<br><code>Player.cs</code> や <code>Title.unity</code> のような名前は、まず間違いなくかぶります。</p></li>
+<li><p>そこで、書き出す前に<strong>自分のミニゲーム専用のフォルダを1つ作って、その中に全部入れます</strong>。</p>
+<pre>Assets/
+ └ GameJam_2026_07_TeamAlpha_MazeRunner/
+     ├ Scenes/
+     ├ Scripts/
+     ├ Images/
+     ├ Prefabs/
+     └ Audio/</pre>
+<p>こうしておけば、統合プロジェクトに読み込んでも、チームごとにきれいに分かれます。</p>
+<pre>Assets/
+ ├ GameJam_2026_07_TeamAlpha_MazeRunner/
+ ├ GameJam_2026_07_TeamBravo_ShootingStar/
+ └ GameJam_2026_07_TeamCharlie_RhythmCat/</pre></li>
+<li><p>フォルダ名は、提出ファイルと同じ名前にしてください。</p>
+<pre>GameJam_2026_07_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</pre>
+<p>ファイル名とフォルダ名がそろっていると、統合担当が「このフォルダはどのチームのものか」を確認せずに済みます。</p></li>
+<li><p>では作りましょう。UnityのProjectウィンドウで、Assetsフォルダを右クリック →「Create」→「Folder」。<br>名前を <code>GameJam_2026_07_Team○○_○○○</code> にします。</p></li>
+<li><p>次に、既存のフォルダをこの中へ移動します。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-02_project_structure.png" alt="Projectウィンドウでフォルダをまとめた状態">
+<div class="caption">Projectウィンドウでフォルダをまとめた状態</div>
+<p><strong>必ずUnityのProjectウィンドウ上でドラッグして移動してください。</strong><br>エクスプローラー（Finder）で直接動かすと、Unityが参照を追えなくなって、シーンからスクリプトや画像が外れることがあります。</p>
+<div class="term"><b>用語：.metaファイル</b>Unityが自動で作る、素材とセットの設定ファイル。<strong>Unity上で移動すれば.metaも一緒に動く</strong>ので参照は壊れませんが、エクスプローラーで動かすと.metaだけ取り残されて壊れる場合があります。フォルダの整理はUnity上で、が鉄則です。</div></li>
+<li><p>移動が終わったら、Unityを再生（Play）して、ゲームがちゃんと動くか確認しましょう。<br>ここで動かなくなっていたら、参照が外れている可能性があります。<strong>書き出す前に必ず直してください</strong>。</p></li>
+<li><p>【この時点でよくあるトラブル】</p>
+<div class="tablewrap"><table>
+<tr><th>症状</th><th>原因と対処</th></tr>
+<tr><td>シーンを開いたらオブジェクトが白い四角になった</td><td>画像の参照が外れている。Inspectorで画像を割り当て直す</td></tr>
+<tr><td>Missing (Mono Script) と表示される</td><td>スクリプトの参照が外れている。Inspectorでスクリプトを割り当て直す</td></tr>
+<tr><td>Consoleに赤いエラーが出る</td><td>エラー内容を読んで対処。まず移動前の状態に戻せないか確認</td></tr>
+</table></div></li>
+<li><p>Assetsの中に自分のミニゲーム用フォルダが1つでき、その中に全ファイルが入って、ゲームが動いたら今回は完成です！<br>次回は、そのフォルダの外に忘れ物がないかを確認します。</p></li></ol>
+<h1 class="chapter">【1-03】フォルダの外の忘れ物を確認しよう【1章：パッケージ編】</h1>
+<ol class="steps"><li><p>クリア条件：自分のフォルダの外にある「持っていけないもの」に気づけばOK！</p></li>
+<li><p>前回、ミニゲームのファイルを1つのフォルダにまとめました。<br>ただし、<strong>Unity Packageに入らないもの</strong>がいくつかあります。ここを知らずに提出すると、統合したときに「自分の環境では動いたのに、統合したら動かない」が起きます。</p></li>
+<li><p>Unity Packageに入るもの／入らないものは、こう分かれます。</p>
+<div class="tablewrap"><table>
+<tr><th>種類</th><th>場所</th><th>パッケージに入る？</th></tr>
+<tr><td>画像・音・スクリプト・シーン・プレハブ</td><td>Assets の中</td><td>⭕ 入る（選んだものだけ）</td></tr>
+<tr><td>Package Manager で入れた機能</td><td>Packages</td><td>✕ 入らない</td></tr>
+<tr><td>タグ・レイヤー・入力設定・物理設定など</td><td>Project Settings</td><td>✕ 入らない</td></tr>
+<tr><td>Build Settings のシーン一覧</td><td>Project Settings</td><td>✕ 入らない</td></tr>
+</table></div></li>
+<li><p>【確認1】自分のフォルダの外にあるファイルを使っていないか</p>
+<p>前回作ったフォルダの外に、使っている素材が残っていないか確認しましょう。<br>例えば「共通で使うフォントを Assets/Fonts に置いたまま」だと、フォルダごと書き出しても付いてきません。</p>
+<p>確認方法は簡単です。<strong>自分のミニゲームのシーンを開いて、Hierarchyのオブジェクトを1つずつ選び、Inspectorに表示されている素材を確認する</strong>……のは大変なので、書き出しのときにUnityが自動で調べてくれる機能を使います（次回1-04の「Include dependencies」）。</p>
+<p>ただし自動でも拾えないものがあるので、下の2つは自分で確認してください。</p></li>
+<li><p>【確認2】Package Manager で追加した機能</p>
+<p>TextMeshPro、Cinemachine、DOTweenなど、後から追加した機能は<strong>パッケージに入りません</strong>。<br>使っている場合は、提出のときに「この機能を使っています」と伝える必要があります。</p>
+<p>確認するには、<code>Window &gt; Package Management &gt; Package Manager</code> を開きます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-03_packagemanager_menu.png" alt="Package Managerを開くメニュー">
+<div class="caption">Package Managerを開くメニュー</div>
+<p>左側の「In Project」を選ぶと、このプロジェクトで使っている機能の一覧が表示されます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-03_package_manager.png" alt="Package ManagerのIn Project表示">
+<div class="caption">Package ManagerのIn Project表示</div>
+<p class="warn">※Unityに最初から入っているものはそのままでOKです。自分で追加した覚えのあるものだけメモしておいてください。</p></li>
+<li><p>【確認3】タグ・レイヤー・入力設定</p>
+<p><code>Project Settings</code> の中身は、パッケージには<strong>一切入りません</strong>。特に次の3つはミニゲームでよく使うので要注意です。</p>
+<ul><li><strong>Tag（タグ）</strong>：<code>Player</code> や <code>Enemy</code> など、自分で追加したタグ</li><li><strong>Layer（レイヤー）</strong>：自分で追加したレイヤー、Layer Collision Matrix の設定</li><li><strong>Input（入力）</strong>：Input Managerで追加した軸の名前、Input Systemの設定ファイル</li></ul>
+<p><code>Edit &gt; Project Settings...</code> を開いて、左のリストから「Tags and Layers」を選びます。「Tags」の欄を開いて、自分で追加したものがあればメモしておきましょう。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-03_tags_layers.png" alt="Tags and Layersの画面">
+<div class="caption">Tags and Layersの画面</div>
+<p class="warn">※スクショのように「List is empty」と表示されていれば、自分で追加したタグは無いということです。この場合は何も申告しなくて大丈夫。<br>※<code>Untagged</code> <code>MainCamera</code> <code>Player</code> などの最初からあるタグは、統合先にも最初からあるので大丈夫です。</p></li>
+<li><p>【対策】スクリプトでタグを使っている場合の注意</p>
+<p>例えばスクリプトにこう書いてあるとします。</p>
+<pre>if (other.gameObject.tag == "Item")</pre>
+<p>このとき統合先に <code>Item</code> タグが無いと、実行時にエラーが出てゲームが止まります。<br><strong>自分で追加したタグは必ず申告してください</strong>。統合担当が統合先に同じタグを追加します。</p></li>
+<li><p>【まとめ】提出時に一緒に伝える情報</p>
+<p>パッケージファイルと一緒に、この3つをDiscordなどで伝えましょう。</p>
+<pre>・追加した機能：TextMeshPro、Cinemachine
+・追加したタグ：Item、Goal
+・追加したレイヤー：Ground、Trap
+・最初に開くシーン：Title_TeamAlpha.unity</pre>
+<p class="warn">※「最初に開くシーン」は、統合担当がタイトル画面からつなぐときに必要です。必ず書いてください。</p></li>
+<li><p>自分のフォルダの外に何があるか把握できて、伝える内容がまとまったら、今回は完成です！<br>次回はいよいよ書き出します。</p></li></ol>
+<h1 class="chapter">【1-04】unitypackageに書き出そう【1章：パッケージ編】</h1>
+<ol class="steps"><li><p>クリア条件：決められた名前で .unitypackage ファイルが作れればOK！</p></li>
+<li><p>準備ができたので、書き出します。操作自体は3ステップで終わります。</p></li>
+<li><p>まず、Projectウィンドウで<strong>自分のミニゲーム用フォルダを右クリック</strong>します。<br>メニューの中から「<strong>Export As Asset Package...</strong>」を選んでください。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-04_export_menu.png" alt="右クリックメニューのExport As Asset Package">
+<div class="caption">右クリックメニューのExport As Asset Package</div>
+<p class="warn">※Unityのバージョンによっては「Export Package...」という名前です。どちらも同じ機能です。<br>※<code>Assets</code> を右クリックすると全部が対象になります。<strong>必ず自分のフォルダを選んでから</strong>右クリックしてください。</p></li>
+<li><p>「Exporting package」というウィンドウが開きます。ここが書き出しの設定画面です。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-04_export_dialog.png" alt="Exporting packageウィンドウ">
+<div class="caption">Exporting packageウィンドウ</div>
+<ul><li>中央のリスト：書き出すファイルの一覧。チェックが付いているものが書き出されます</li><li><strong>All / None</strong>：全部にチェックを付ける／全部外す</li><li>リストの各行のチェックボックス：個別に外すこともできます</li></ul></li>
+<li><p>下にある2つのチェックボックスは、<strong>両方チェックを入れたままにしてください</strong>。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-04_export_checkboxes.png" alt="Include dependenciesとInclude all scripts">
+<div class="caption">Include dependenciesとInclude all scripts</div>
+<ul><li><strong>Include dependencies</strong>：選んだファイルが使っている他のファイルも自動で追加する</li><li><strong>Include all scripts</strong>：プロジェクト内のスクリプトをまとめて追加する</li></ul>
+<div class="term"><b>用語：Include dependencies（依存関係を含める）</b>例えばプレハブを1つ選んだとき、そのプレハブが使っている画像やスクリプトも一緒に書き出す設定です。<strong>チェックを外すと、統合先で「絵が付いていない」「スクリプトが無い」状態になります</strong>。特別な理由がなければ、必ずチェックを入れてください。</div></li>
+<li><p>準備ができたら、右下の「<strong>Export...</strong>」ボタンを押します。<br>保存先を聞かれるので、分かりやすい場所（デスクトップなど）を選び、ファイル名を入力します。</p></li>
+<li><p>【最重要】ファイル名は、決められた形式で付けてください。</p>
+<pre>GameJam_2026_07_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</pre>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-04_save_filename.png" alt="保存ダイアログでのファイル名">
+<div class="caption">保存ダイアログでのファイル名</div>
+<p class="warn">※スクショの例では <code>GameJam_2026_07_TeamKujata_MagicalShooting.unitypackage</code> としています。<br>※<code>.unitypackage</code> の部分は自動で付くので、入力しなくて大丈夫です。<br>※半角英数とアンダースコア（_）だけを使ってください。</p></li>
+<li><p>「保存」を押すと書き出しが始まります。プロジェクトの大きさによっては1分ほどかかります。<br>指定した場所に <code>.unitypackage</code> ファイルができていれば成功です。</p></li>
+<li><p>ファイルサイズを確認しておきましょう。</p>
+<ul><li>数MB〜数十MB：正常です</li><li>数百バイト〜数KB：ほとんど中身が入っていません。手順3でフォルダを選び忘れた可能性があります</li><li>1GB以上：Libraryフォルダなど、本来入らないものが混ざっている可能性があります。書き出す対象を見直してください</li></ul></li>
+<li><p>決められた名前の .unitypackage ファイルができたら、今回は完成です！<br>ただし、<strong>このまま提出してはいけません</strong>。次回、ちゃんと動くかを自分で確認します。</p></li></ol>
+<h1 class="chapter">【1-05】提出前に自分で動作確認しよう【1章：パッケージ編】</h1>
+<ol class="steps"><li><p>クリア条件：空のプロジェクトに読み込んで、動くか確認できればOK！</p></li>
+<li><p>書き出したパッケージ、そのまま提出したくなりますが、あと1ステップだけ待ってください。<br><strong>自分のプロジェクトでは動くのに、統合先では動かない</strong>というのが、パッケージで一番多いトラブルです。</p></li>
+<li><p>理由は1-03で説明した通りです。パッケージには入らないものがあるからです。</p>
+<ul><li>Package Managerで追加した機能</li><li>タグ、レイヤー、入力設定</li></ul>
+<p>自分のプロジェクトにはこれらが全部そろっているので、当然動きます。でも統合先は別のプロジェクトです。</p></li>
+<li><p>そこで、<strong>空のプロジェクトを作って、自分のパッケージだけを読み込んでみます</strong>。<br>ここで動けば、統合先でもほぼ確実に動きます。動かなければ、統合前に自分で直せます。</p></li>
+<li><p>UnityHubで「New project」を押して、新しいプロジェクトを作りましょう。</p>
+<ul><li>テンプレート：<strong>自分のミニゲームと同じもの</strong>（2Dで作ったなら Universal 2D）</li><li>Unityバージョン：<strong>チームで決めたバージョン</strong>（今回は 6000.3.15f1）</li><li>プロジェクト名：<code>ImportTest</code> など、分かるもの</li></ul>
+<p class="warn">※バージョンが違うと、それだけで動かないことがあります。ここは必ずそろえてください。</p></li>
+<li><p>新しいプロジェクトが開いたら、<code>Assets &gt; Import Package &gt; Custom Package...</code> を選び、書き出したパッケージを読み込みます。<br>（詳しい手順は次回1-06で説明します。ここでは読み込んで動かすだけです）</p></li>
+<li><p>読み込んだら、この4つを確認してください。</p>
+<div class="tablewrap"><table>
+<tr><th>確認項目</th><th>見るところ</th></tr>
+<tr><td>エラーが出ていないか</td><td>Consoleに赤いエラーが無いか</td></tr>
+<tr><td>シーンが開けるか</td><td>自分のシーンをダブルクリックして開く</td></tr>
+<tr><td>見た目が崩れていないか</td><td>白い四角（Missing）になっている絵が無いか</td></tr>
+<tr><td>実際に遊べるか</td><td>Playボタンを押して動かしてみる</td></tr>
+</table></div></li>
+<li><p>【よくあるエラー1】赤いエラーで「型または名前空間が見つかりません」</p>
+<p>実際にやってみたところ、こういうエラーが出ました。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_error_detail.png" alt="読み込み後に出たエラー">
+<div class="caption">読み込み後に出たエラー</div>
+<p>これは、スクリプトの先頭にある <code>using</code> が、統合先に無い機能を指しているときに出ます。</p>
+<pre>using Unity.VisualScripting;   // ← この機能が統合先に無い
+using Unity.Mathematics;       // ← これも</pre>
+<p>対処は2つあります。</p>
+<ul><li><strong>その機能を実際に使っていない場合</strong>：<code>using</code> の行を消す（多くの場合こちらです。エディタが自動で追加しただけ）</li><li><strong>実際に使っている場合</strong>：1-03で説明した通り、「この機能を使っています」と統合担当に申告する</li></ul></li>
+<li><p>【よくあるエラー2】絵が白い四角になる</p>
+<p>1-05でも触れた.metaの問題か、書き出しのときに「Include dependencies」のチェックが外れていた可能性があります。<br>もう一度1-04の手順で、チェックを入れて書き出し直してください。</p></li>
+<li><p>【よくあるエラー3】タグ関連のエラーで止まる</p>
+<p><code>Tag: ○○ is not defined</code> のようなエラーが出たら、自分で追加したタグを使っています。<br>統合先に同じタグを追加してもらう必要があるので、<strong>タグ名を必ず申告してください</strong>。</p></li>
+<li><p>空のプロジェクトで問題なく動いたら、いよいよ提出です。<br>決められた名前のファイルと一緒に、1-03でまとめた情報を書いて提出しましょう。</p>
+<pre>【提出】GameJam_2026_07_TeamAlpha_MazeRunner.unitypackage
+
+・最初に開くシーン：Title_TeamAlpha.unity
+・追加した機能：TextMeshPro
+・追加したタグ：Item、Goal
+・追加したレイヤー：なし
+・操作方法：矢印キーで移動、スペースでジャンプ</pre></li>
+<li><p>空のプロジェクトで動作確認ができて、提出できたら、今回は完成です！<br>ここまでで、書き出す側の作業は終わりです。次回は受け取る側（統合担当）の作業を見ていきます。</p></li></ol>
+<h1 class="chapter">【1-06】統合プロジェクトに読み込もう【1章：パッケージ編】</h1>
+<ol class="steps"><li><p>クリア条件：受け取ったパッケージを統合プロジェクトに読み込めればOK！</p></li>
+<li><p>ここからは受け取る側、統合担当の作業です。<br>※自分が統合担当でない人も、目を通しておいてください。<strong>自分の提出物がどう扱われるか</strong>が分かると、提出物の作り方が変わります。</p></li>
+<li><p>全チームのパッケージがそろったら、統合プロジェクトを開きます。<br>まだ無ければ、UnityHubで新規プロジェクトを作ってください（テンプレートとバージョンは、チームで決めたものにそろえます）。</p></li>
+<li><p><code>Assets &gt; Import Package &gt; Custom Package...</code> を選びます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_import_menu.png" alt="Import Packageメニュー">
+<div class="caption">Import Packageメニュー</div></li>
+<li><p>ファイル選択の画面が出るので、1チーム分のパッケージを選びます。<br>※<strong>必ず1つずつ読み込んでください</strong>。まとめて読み込むと、問題が起きたときにどのチームのものが原因か分からなくなります。</p></li>
+<li><p>「Import Unity Package」というウィンドウが開きます。中身の一覧が表示されるので、そのまま右下の「Import」を押します。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_import_dialog.png" alt="Import Unity Packageウィンドウ">
+<div class="caption">Import Unity Packageウィンドウ</div>
+<ul><li>上部にパッケージ名が表示されます。<strong>ここで名前を確認</strong>しておくと、どのチームのものか分かります</li><li>緑の「New」は新しく追加されるファイル、「Changed」は既にあるファイルが上書きされるという意味です</li></ul>
+<p class="warn">※「Changed」が出たら要注意です。他のチームのファイルを上書きしようとしている可能性があります。その場合はImportを押さず、提出者に確認してください。</p></li>
+<li><p>読み込みが終わると、Projectウィンドウにファイルが追加されます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_after_import.png" alt="読み込み後のProjectウィンドウ">
+<div class="caption">読み込み後のProjectウィンドウ</div>
+<p>1-02でフォルダをまとめてもらっているので、チームごとにきれいに分かれているはずです。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-02_project_structure.png" alt="チームごとに分かれた状態">
+<div class="caption">チームごとに分かれた状態</div></li>
+<li><p>【ここからが本番】読み込んだ直後に必ず確認すること</p>
+<p>Consoleを見てください。赤いエラーが出ていたら、そのチームのミニゲームはまだ動きません。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_console_errors.png" alt="読み込み後に出たエラー">
+<div class="caption">読み込み後に出たエラー</div>
+<p>実際にやってみたところ、3つのエラーが出ました。内容はこれです。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_error_detail.png" alt="エラーの詳細">
+<div class="caption">エラーの詳細</div>
+<pre>error CS0234: The type or namespace name 'VisualScripting'
+does not exist in the namespace 'Unity'</pre>
+<p>これは「スクリプトが使っている機能が、このプロジェクトに入っていない」という意味です。1-03で説明した「パッケージに入らないもの」が原因です。</p></li>
+<li><p>【対処】足りない機能を追加する</p>
+<p><code>Window &gt; Package Management &gt; Package Manager</code> を開いて、エラーに出ている機能を追加します。<br>または、その機能を実際には使っていない場合、スクリプトの <code>using</code> の行を消せば直ります（提出者に確認してから消しましょう）。</p></li>
+<li><p>【注意】エラーがあるまま再起動すると、Safe Modeになる</p>
+<p>コンパイルエラーが残った状態でUnityを開き直すと、この画面が出ます。</p>
+<img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_safemode_dialog.png" alt="Enter Safe Mode?ダイアログ">
+<div class="caption">Enter Safe Mode?ダイアログ</div>
+<ul><li><strong>Enter Safe Mode</strong>：エラーを直すことに集中できるモードで開く</li><li><strong>Ignore</strong>：とりあえず無視して開く（エラーは残ったまま）</li></ul>
+<p>どちらを選んでも、エラーを直さない限りゲームは動きません。<strong>エラーは読み込んだその日に直す</strong>のが鉄則です。</p></li>
+<li><p>【全チーム分を読み込む手順】</p>
+<p>1チーム読み込む → エラーを確認 → 直す → 動作確認 → <strong>次のチームを読み込む</strong></p>
+<p>この順番を必ず守ってください。まとめて読み込むと、エラーが混ざって原因が分からなくなります。</p></li>
+<li><p>【最後に】シーンをBuild Settingsに登録する</p>
+<p>各ミニゲームのシーンは、読み込んだだけではビルドに含まれません。<br><code>File &gt; Build Profiles</code> を開いて、Scene Listに全ミニゲームのシーンを追加してください。<br>※1-05で各チームに申告してもらった「最初に開くシーン」が、ここで役に立ちます。</p></li>
+<li><p>全チームのパッケージを読み込めて、エラーが無くなったら、今回は完成です！<br>次回は最終回、提出前のチェックリストをまとめます。</p></li></ol>
+<h1 class="chapter">【1-07】通し：提出チェックリスト【保存版】</h1>
+<ol class="steps"><li><p>クリア条件：これ1枚を見れば、提出まで迷わず進められればOK！</p></li>
+<li><p>最終回です。ここまでの内容を忘れても、<strong>このページさえ開けば提出できる</strong>ようにまとめました。<br>Discordにピン留めするなどして、手元に置いてください。</p></li></ol>
+<hr>
+<h2>【A】提出までの流れ</h2>
+<div class="block"><pre>① Unityで自分のミニゲーム用フォルダを1つ作る
+名前：GameJam_2026_07_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;
+    ↓
+② そのフォルダの中に、自分の素材・スクリプト・シーンを全部移動
+（移動はUnityのProjectウィンドウ上で！）
+    ↓
+③ Unityで再生して、まだ動くか確認
+    ↓
+④ 追加した機能・タグ・レイヤーをメモ（1-03）
+    ↓
+⑤ フォルダを右クリック →「Export As Asset Package...」
+    ↓
+⑥ Include dependencies にチェックが入っているか確認 → Export
+    ↓
+⑦ ファイル名を決められた形式で保存
+    ↓
+⑧ 空のプロジェクトを作って読み込み、動作確認（1-05）
+    ↓
+⑨ パッケージ＋メモを提出</pre></div>
+<hr>
+<h2>【B】ファイル名とフォルダ名のルール</h2>
+<div class="block"><pre>GameJam_2026_07_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</pre>
+<div class="tablewrap"><table>
+<tr><th>良い例 ⭕</th><th>避けたい例 ✕</th></tr>
+<tr><td>GameJam_2026_07_TeamAlpha_MazeRunner</td><td>game.unitypackage</td></tr>
+<tr><td>GameJam_2026_07_TeamBravo_ShootingStar</td><td>最新版.unitypackage</td></tr>
+<tr><td>GameJam_2026_07_TeamCharlie_RhythmCat</td><td>GameJam 2026 07 チームC.unitypackage</td></tr>
+</table></div>
+<ul><li><code>&lt;&gt;</code> は書かない（<code>Team</code> の後にそのままチーム名）</li><li><strong>半角英数とアンダースコア（_）だけ</strong>を使う</li><li>日本語・スペース・記号は使わない</li><li><strong>フォルダ名もファイル名と同じ</strong>にする</li></ul></div>
+<hr>
+<h2>【C】パッケージに入るもの・入らないもの</h2>
+<div class="block"><div class="tablewrap"><table>
+<tr><th>種類</th><th>入る？</th><th>対応</th></tr>
+<tr><td>画像・音・スクリプト・シーン・プレハブ</td><td>⭕</td><td>自分のフォルダにまとめる</td></tr>
+<tr><td>Package Managerで追加した機能</td><td>✕</td><td>提出時に申告する</td></tr>
+<tr><td>タグ・レイヤー</td><td>✕</td><td>提出時に申告する</td></tr>
+<tr><td>入力設定（Input）</td><td>✕</td><td>提出時に申告する</td></tr>
+<tr><td>Build Settingsのシーン一覧</td><td>✕</td><td>「最初に開くシーン」を申告する</td></tr>
+</table></div></div>
+<hr>
+<h2>【D】提出テンプレート</h2>
+<div class="block"><p>パッケージと一緒に、これをDiscordに貼ってください。</p>
+<pre>【提出】GameJam_2026_07_Team○○_○○○.unitypackage
+
+・最初に開くシーン：○○○.unity
+・追加した機能：（Package Managerで入れたもの／無ければ「なし」）
+・追加したタグ：（無ければ「なし」）
+・追加したレイヤー：（無ければ「なし」）
+・操作方法：
+・空プロジェクトでの動作確認：済 / 未</pre></div>
+<hr>
+<h2>【E】提出前チェックリスト</h2>
+<div class="block"><ul class="checklist"><li class="check">自分のミニゲームのファイルが、1つのフォルダにまとまっている</li><li class="check">フォルダ名が決められた形式になっている</li><li class="check">フォルダを移動したあと、Unityで再生して動いた</li><li class="check">「Include dependencies」にチェックを入れて書き出した</li><li class="check">ファイル名が決められた形式になっている</li><li class="check">ファイルサイズが極端に小さくない（数KBは中身が空の可能性）</li><li class="check">空のプロジェクトに読み込んで、エラー無しで動いた</li><li class="check">追加した機能・タグ・レイヤー・開始シーンを書いて提出した</li></ul></div>
+<hr>
+<h2>【F】困ったとき逆引き表</h2>
+<div class="block"><div class="tablewrap"><table>
+<tr><th>こうなった</th><th>こうする</th></tr>
+<tr><td><strong>書き出したファイルが数KBしかない</strong></td><td>フォルダを選ばずに書き出した可能性。自分のフォルダを右クリックしてやり直す</td></tr>
+<tr><td><strong>読み込んだら絵が白い四角になる</strong></td><td>Include dependencies のチェック漏れ。チェックを入れて書き出し直す</td></tr>
+<tr><td><strong><code>型または名前空間が見つかりません</code> エラー</strong></td><td>統合先に無い機能を使っている。使っていないなら該当の <code>using</code> を消す。使っているなら申告する</td></tr>
+<tr><td><strong><code>Tag: ○○ is not defined</code> エラー</strong></td><td>自分で追加したタグを使っている。統合先に同じタグを追加してもらう</td></tr>
+<tr><td><strong>Unityを開いたら Enter Safe Mode? が出た</strong></td><td>コンパイルエラーが残っている。Ignoreで開いて、Consoleの赤いエラーを直す</td></tr>
+<tr><td><strong>統合先で他チームのファイルを上書きしそう</strong></td><td>Importウィンドウに「Changed」が出ている。Importせず提出者に確認</td></tr>
+<tr><td><strong>フォルダを移動したら参照が外れた</strong></td><td>エクスプローラーで移動した可能性。Unity上で移動し直す</td></tr>
+<tr><td><strong>統合先でシーンが起動しない</strong></td><td>Build ProfilesのScene Listにシーンが追加されていない</td></tr>
+</table></div></div>
+<hr>
+<ol class="steps"><li><p>お疲れさまでした！これでパッケージ編は完了です。</p>
+<p>ポイントは3つだけです。</p>
+<ul><li><strong>1つのフォルダにまとめてから書き出す</strong></li><li><strong>決められた名前を付ける</strong></li><li><strong>空のプロジェクトで動作確認してから提出する</strong></li></ul>
+<p>この3つを守れば、統合作業はとてもスムーズになります。良いゲームジャムを！</p></li></ol>
