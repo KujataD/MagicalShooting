@@ -39,9 +39,16 @@
    GameJam_2026_07_Team<チーム名>_<ゲームタイトル>
    ```
 
+   例（チーム名はA〜D）：
+
+   ```
+   GameJam_2026_07_TeamA_MazeRunner
+   GameJam_2026_07_TeamB_ShootingStar
+   ```
+
    ![保存ダイアログでのファイル名](../package_images/1-04_save_filename.png)
 
-   ※スクショの例では `GameJam_2026_07_TeamKujata_MagicalShooting.unitypackage` としています。
+   ※スクショは操作画面の例です。実際は自分のチーム名（A〜D）とゲームタイトルを入れてください。
    ※`.unitypackage` の部分は自動で付くので、入力しなくて大丈夫です。
    ※半角英数とアンダースコア（_）だけを使ってください。
 

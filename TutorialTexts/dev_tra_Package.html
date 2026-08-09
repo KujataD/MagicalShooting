@@ -28,43 +28,47 @@
   li.check::before { content: "\2610  "; }
 </style>
 <h1 class="doctitle">dev tra　パッケージ編</h1>
-<div class="lead">ミニゲームを1つに集めるための Unity Package 入門（全7回）</div>
+<div class="lead">ミニゲームを1つに集めるための Unity Package 入門（全8回）</div>
 <h1 class="chapter first">【1-01】ミニゲームを1つに集めよう【1章：パッケージ編】</h1>
-<ol class="steps"><li><p>クリア条件：今回何を作るのか、そのために何を提出するのかが分かればOK！</p></li>
-<li><p>ここからは別巻、Unity Packageの使い方です。<br>今回のゲームジャムでは、<strong>各チームが作ったミニゲームを1つのゲームにまとめます</strong>。タイトル画面から好きなミニゲームを選んで遊べる、いわゆるミニゲーム集です。</p></li>
-<li><p>でも、ここで問題があります。ミニゲームは<strong>チームごとに別々のUnityプロジェクト</strong>で作られています。</p>
-<pre>Aチームのプロジェクト   ← 迷路ゲーム
-Bチームのプロジェクト   ← シューティング
-Cチームのプロジェクト   ← リズムゲーム</pre>
+<ol class="steps"><li><p>クリア条件：何を作るのか、そのために何を提出するのかが分かればOK！</p></li>
+<li><p>ここからは別巻、Unity Packageの使い方です。<br>作るのは、<strong>各チームが作ったミニゲームを1つにまとめたゲーム</strong>です。タイトル画面から好きなミニゲームを選んで遊べる、ミニゲーム集の形になります。</p></li>
+<li><p>ここで問題があります。ミニゲームは<strong>チームごとに別々のUnityプロジェクト</strong>で作られています。</p>
+<pre>チームAのプロジェクト　←　迷路ゲーム
+チームBのプロジェクト　←　シューティング
+チームCのプロジェクト　←　リズムゲーム
+チームDのプロジェクト　←　パズルゲーム</pre>
 <p>これを最終的に、1つのプロジェクトの中に全部入れる必要があります。</p>
 <pre>統合プロジェクト
  ├ 迷路ゲーム
  ├ シューティング
- └ リズムゲーム</pre></li>
-<li><p>「プロジェクトのフォルダごと渡せばいいのでは？」と思うかもしれませんが、それだと<strong>プロジェクトが3つ並ぶだけ</strong>で、1つのゲームにはなりません。<br>必要なのは「プロジェクトそのもの」ではなく、「<strong>そのミニゲームを動かすのに必要なファイル一式</strong>」を取り出して渡すことです。</p></li>
+ ├ リズムゲーム
+ └ パズルゲーム</pre></li>
+<li><p>「プロジェクトのフォルダごと渡せばいいのでは？」と思うかもしれませんが、それだと<strong>プロジェクトが4つ並ぶだけ</strong>で、1つのゲームにはなりません。<br>必要なのは「プロジェクトそのもの」ではなく、「<strong>そのミニゲームを動かすのに必要なファイル一式</strong>」を取り出して渡すことです。</p></li>
 <li><p>そのための仕組みが、Unityに用意されている Unity Package です。</p>
 <div class="term"><b>用語：Unity Package（.unitypackage）</b>Unityのプロジェクトから、<strong>指定したファイルをまとめて1つのファイルに書き出したもの</strong>。受け取った側は、それを自分のプロジェクトに読み込むと、フォルダ構成そのままでファイルが追加されます。</div></li>
-<li><p>今回のゲームジャムでの流れは、こうなります。</p>
+<li><p>作業の流れはこうなります。</p>
 <pre>① 各チーム：自分のミニゲームを .unitypackage に書き出す
                 ↓
-② 各チーム：できたファイルを提出する（Discordなど）
+② 各チーム：ファイルとReadMe.mdを提出する
                 ↓
-③ 統合担当：全部を統合プロジェクトに読み込む
+③ 迷とら運営：全部を統合プロジェクトに読み込む
                 ↓
-④ 統合担当：タイトル画面から各ミニゲームへつなぐ</pre>
-<p>この別巻では、<strong>①の書き出し</strong>（1-02〜1-05）と、<strong>③の読み込み</strong>（1-06）を扱います。</p></li>
+④ 迷とら運営：タイトル画面から各ミニゲームへつなぐ</pre>
+<p>この別巻では、<strong>①〜②の提出まで</strong>（1-02〜1-06）と、<strong>③の読み込み</strong>（1-07）を扱います。</p></li>
 <li><p>【最重要】提出するファイルの名前は、全チーム統一します。</p>
 <pre>GameJam_2026_07_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</pre>
-<p>例：</p>
-<pre>GameJam_2026_07_TeamAlpha_MazeRunner.unitypackage
-GameJam_2026_07_TeamBravo_ShootingStar.unitypackage
-GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage</pre>
-<p class="warn">※<code>&lt;&gt;</code> は書きません。<code>Team</code> の後にそのままチーム名をつなげます。<br>※半角英数とアンダースコア（_）だけを使ってください。日本語やスペースが入ると、読み込む側で不具合の原因になります。</p></li>
-<li><p>なぜ名前を統一するのか。統合担当の画面には、全チームのファイルが並びます。</p>
+<p>チーム名はA〜Dなので、こうなります。</p>
+<pre>GameJam_2026_07_TeamA_MazeRunner.unitypackage
+GameJam_2026_07_TeamB_ShootingStar.unitypackage
+GameJam_2026_07_TeamC_RhythmCat.unitypackage
+GameJam_2026_07_TeamD_PuzzleBox.unitypackage</pre>
+<p class="warn">※<code>&lt;&gt;</code> は書きません。<code>Team</code> の後にそのままチーム名（A〜D）をつなげます。<br>※半角英数とアンダースコア（_）だけを使ってください。日本語やスペースが入ると、読み込む側で不具合の原因になります。</p></li>
+<li><p>なぜ名前を統一するのか。迷とら運営の画面には、全チームのファイルが並びます。</p>
 <pre>⭕ 統一されている場合
-  GameJam_2026_07_TeamAlpha_MazeRunner.unitypackage
-  GameJam_2026_07_TeamBravo_ShootingStar.unitypackage
-  GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage
+  GameJam_2026_07_TeamA_MazeRunner.unitypackage
+  GameJam_2026_07_TeamB_ShootingStar.unitypackage
+  GameJam_2026_07_TeamC_RhythmCat.unitypackage
+  GameJam_2026_07_TeamD_PuzzleBox.unitypackage
   → どれが誰のもので、いつの提出物か一目で分かる
 
 ✕ バラバラの場合
@@ -72,7 +76,7 @@ GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage</pre>
   最新版.unitypackage
   test2.unitypackage
   → 中身を開くまで分からない。同名ファイルで上書き事故も起きる</pre></li>
-<li><p>今回の目的（ミニゲームを1つに集める）と、提出するもの（決まった名前の.unitypackage）が分かったら、今回は完成です！<br>次回は、書き出す前の準備をします。</p></li></ol>
+<li><p>目的（ミニゲームを1つに集める）と、提出するもの（決まった名前の.unitypackage）が分かったら、今回は完成です！<br>次回は、書き出す前の準備をします。</p></li></ol>
 <h1 class="chapter">【1-02】書き出す前にフォルダをまとめよう【1章：パッケージ編】</h1>
 <ol class="steps"><li><p>クリア条件：自分のミニゲームのファイルが、1つのフォルダにまとまっていればOK！</p></li>
 <li><p>書き出しの前に、準備が必要です。ここをやらないと、統合するときに全チームのファイルが混ざります。</p></li>
@@ -83,16 +87,16 @@ GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage</pre>
  ├ Images/
  ├ Prefabs/
  └ Audio/</pre>
-<p>一見きれいですが、<strong>このまま書き出すと問題が起きます</strong>。<br>統合プロジェクトに3チーム分を読み込むと、こうなるからです。</p>
+<p>一見きれいですが、<strong>このまま書き出すと問題が起きます</strong>。<br>統合プロジェクトに4チーム分を読み込むと、こうなるからです。</p>
 <pre>Assets/
- ├ Scenes/     ← A・B・C チームのシーンが全部ここに入る
- ├ Scripts/    ← 3チーム分のスクリプトが混ざる
- ├ Images/     ← 3チーム分の画像が混ざる
+ ├ Scenes/     ← A・B・C・D チームのシーンが全部ここに入る
+ ├ Scripts/    ← 4チーム分のスクリプトが混ざる
+ ├ Images/     ← 4チーム分の画像が混ざる
  └ ...</pre>
 <p>どれが誰のファイルか分からなくなりますし、<strong>同じ名前のファイルがあると上書きされます</strong>。<br><code>Player.cs</code> や <code>Title.unity</code> のような名前は、まず間違いなくかぶります。</p></li>
 <li><p>そこで、書き出す前に<strong>自分のミニゲーム専用のフォルダを1つ作って、その中に全部入れます</strong>。</p>
 <pre>Assets/
- └ GameJam_2026_07_TeamAlpha_MazeRunner/
+ └ GameJam_2026_07_TeamA_MazeRunner/
      ├ Scenes/
      ├ Scripts/
      ├ Images/
@@ -100,13 +104,14 @@ GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage</pre>
      └ Audio/</pre>
 <p>こうしておけば、統合プロジェクトに読み込んでも、チームごとにきれいに分かれます。</p>
 <pre>Assets/
- ├ GameJam_2026_07_TeamAlpha_MazeRunner/
- ├ GameJam_2026_07_TeamBravo_ShootingStar/
- └ GameJam_2026_07_TeamCharlie_RhythmCat/</pre></li>
+ ├ GameJam_2026_07_TeamA_MazeRunner/
+ ├ GameJam_2026_07_TeamB_ShootingStar/
+ ├ GameJam_2026_07_TeamC_RhythmCat/
+ └ GameJam_2026_07_TeamD_PuzzleBox/</pre></li>
 <li><p>フォルダ名は、提出ファイルと同じ名前にしてください。</p>
 <pre>GameJam_2026_07_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</pre>
-<p>ファイル名とフォルダ名がそろっていると、統合担当が「このフォルダはどのチームのものか」を確認せずに済みます。</p></li>
-<li><p>では作りましょう。UnityのProjectウィンドウで、Assetsフォルダを右クリック →「Create」→「Folder」。<br>名前を <code>GameJam_2026_07_Team○○_○○○</code> にします。</p></li>
+<p>ファイル名とフォルダ名がそろっていると、迷とら運営が「このフォルダはどのチームのものか」を確認せずに済みます。</p></li>
+<li><p>では作りましょう。UnityのProjectウィンドウで、Assetsフォルダを右クリック →「Create」→「Folder」。<br>名前を <code>GameJam_2026_07_Team○_○○○</code> にします。</p></li>
 <li><p>次に、既存のフォルダをこの中へ移動します。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-02_project_structure.png" alt="Projectウィンドウでフォルダをまとめた状態">
 <div class="caption">Projectウィンドウでフォルダをまとめた状態</div>
@@ -134,10 +139,9 @@ GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage</pre>
 </table></div></li>
 <li><p>【確認1】自分のフォルダの外にあるファイルを使っていないか</p>
 <p>前回作ったフォルダの外に、使っている素材が残っていないか確認しましょう。<br>例えば「共通で使うフォントを Assets/Fonts に置いたまま」だと、フォルダごと書き出しても付いてきません。</p>
-<p>確認方法は簡単です。<strong>自分のミニゲームのシーンを開いて、Hierarchyのオブジェクトを1つずつ選び、Inspectorに表示されている素材を確認する</strong>……のは大変なので、書き出しのときにUnityが自動で調べてくれる機能を使います（次回1-04の「Include dependencies」）。</p>
-<p>ただし自動でも拾えないものがあるので、下の2つは自分で確認してください。</p></li>
+<p>これは書き出しのときにUnityが自動で調べてくれます（次回1-04の「Include dependencies」）。ただし自動でも拾えないものがあるので、下の2つは自分で確認してください。</p></li>
 <li><p>【確認2】Package Manager で追加した機能</p>
-<p>TextMeshPro、Cinemachine、DOTweenなど、後から追加した機能は<strong>パッケージに入りません</strong>。<br>使っている場合は、提出のときに「この機能を使っています」と伝える必要があります。</p>
+<p>TextMeshPro、Cinemachine、DOTweenなど、後から追加した機能は<strong>パッケージに入りません</strong>。<br>使っている場合は、提出時にReadMe.mdへ書く必要があります（1-06でやります）。</p>
 <p>確認するには、<code>Window &gt; Package Management &gt; Package Manager</code> を開きます。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-03_packagemanager_menu.png" alt="Package Managerを開くメニュー">
 <div class="caption">Package Managerを開くメニュー</div>
@@ -151,19 +155,14 @@ GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage</pre>
 <p><code>Edit &gt; Project Settings...</code> を開いて、左のリストから「Tags and Layers」を選びます。「Tags」の欄を開いて、自分で追加したものがあればメモしておきましょう。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-03_tags_layers.png" alt="Tags and Layersの画面">
 <div class="caption">Tags and Layersの画面</div>
-<p class="warn">※スクショのように「List is empty」と表示されていれば、自分で追加したタグは無いということです。この場合は何も申告しなくて大丈夫。<br>※<code>Untagged</code> <code>MainCamera</code> <code>Player</code> などの最初からあるタグは、統合先にも最初からあるので大丈夫です。</p></li>
+<p class="warn">※スクショのように「List is empty」と表示されていれば、自分で追加したタグは無いということです。この場合は「なし」と書けばOK。<br>※<code>Untagged</code> <code>MainCamera</code> <code>Player</code> などの最初からあるタグは、統合先にも最初からあるので大丈夫です。</p></li>
 <li><p>【対策】スクリプトでタグを使っている場合の注意</p>
 <p>例えばスクリプトにこう書いてあるとします。</p>
 <pre>if (other.gameObject.tag == "Item")</pre>
-<p>このとき統合先に <code>Item</code> タグが無いと、実行時にエラーが出てゲームが止まります。<br><strong>自分で追加したタグは必ず申告してください</strong>。統合担当が統合先に同じタグを追加します。</p></li>
-<li><p>【まとめ】提出時に一緒に伝える情報</p>
-<p>パッケージファイルと一緒に、この3つをDiscordなどで伝えましょう。</p>
-<pre>・追加した機能：TextMeshPro、Cinemachine
-・追加したタグ：Item、Goal
-・追加したレイヤー：Ground、Trap
-・最初に開くシーン：Title_TeamAlpha.unity</pre>
-<p class="warn">※「最初に開くシーン」は、統合担当がタイトル画面からつなぐときに必要です。必ず書いてください。</p></li>
-<li><p>自分のフォルダの外に何があるか把握できて、伝える内容がまとまったら、今回は完成です！<br>次回はいよいよ書き出します。</p></li></ol>
+<p>このとき統合先に <code>Item</code> タグが無いと、実行時にエラーが出てゲームが止まります。<br><strong>自分で追加したタグは必ず書き残してください</strong>。迷とら運営が統合先に同じタグを追加します。</p></li>
+<li><p>ここでメモした内容は、1-06で作るReadMe.mdにそのまま書きます。<br>メモしておく項目はこの4つです。</p>
+<ul><li>追加した機能（Package Managerで入れたもの）</li><li>追加したタグ</li><li>追加したレイヤー</li><li>最初に開くシーンの名前</li></ul></li>
+<li><p>自分のフォルダの外に何があるか把握できたら、今回は完成です！<br>次回はいよいよ書き出します。</p></li></ol>
 <h1 class="chapter">【1-04】unitypackageに書き出そう【1章：パッケージ編】</h1>
 <ol class="steps"><li><p>クリア条件：決められた名前で .unitypackage ファイルが作れればOK！</p></li>
 <li><p>準備ができたので、書き出します。操作自体は3ステップで終わります。</p></li>
@@ -183,24 +182,27 @@ GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage</pre>
 <li><p>準備ができたら、右下の「<strong>Export...</strong>」ボタンを押します。<br>保存先を聞かれるので、分かりやすい場所（デスクトップなど）を選び、ファイル名を入力します。</p></li>
 <li><p>【最重要】ファイル名は、決められた形式で付けてください。</p>
 <pre>GameJam_2026_07_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</pre>
+<p>例（チーム名はA〜D）：</p>
+<pre>GameJam_2026_07_TeamA_MazeRunner
+GameJam_2026_07_TeamB_ShootingStar</pre>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-04_save_filename.png" alt="保存ダイアログでのファイル名">
 <div class="caption">保存ダイアログでのファイル名</div>
-<p class="warn">※スクショの例では <code>GameJam_2026_07_TeamKujata_MagicalShooting.unitypackage</code> としています。<br>※<code>.unitypackage</code> の部分は自動で付くので、入力しなくて大丈夫です。<br>※半角英数とアンダースコア（_）だけを使ってください。</p></li>
+<p class="warn">※スクショは操作画面の例です。実際は自分のチーム名（A〜D）とゲームタイトルを入れてください。<br>※<code>.unitypackage</code> の部分は自動で付くので、入力しなくて大丈夫です。<br>※半角英数とアンダースコア（_）だけを使ってください。</p></li>
 <li><p>「保存」を押すと書き出しが始まります。プロジェクトの大きさによっては1分ほどかかります。<br>指定した場所に <code>.unitypackage</code> ファイルができていれば成功です。</p></li>
 <li><p>ファイルサイズを確認しておきましょう。</p>
 <ul><li>数MB〜数十MB：正常です</li><li>数百バイト〜数KB：ほとんど中身が入っていません。手順3でフォルダを選び忘れた可能性があります</li><li>1GB以上：Libraryフォルダなど、本来入らないものが混ざっている可能性があります。書き出す対象を見直してください</li></ul></li>
 <li><p>決められた名前の .unitypackage ファイルができたら、今回は完成です！<br>ただし、<strong>このまま提出してはいけません</strong>。次回、ちゃんと動くかを自分で確認します。</p></li></ol>
 <h1 class="chapter">【1-05】提出前に自分で動作確認しよう【1章：パッケージ編】</h1>
 <ol class="steps"><li><p>クリア条件：空のプロジェクトに読み込んで、動くか確認できればOK！</p></li>
-<li><p>書き出したパッケージ、そのまま提出したくなりますが、あと1ステップだけ待ってください。<br><strong>自分のプロジェクトでは動くのに、統合先では動かない</strong>というのが、パッケージで一番多いトラブルです。</p></li>
+<li><p>書き出したパッケージ、そのまま提出したくなりますが、あと少し待ってください。<br><strong>自分のプロジェクトでは動くのに、統合先では動かない</strong>というのが、パッケージで一番多いトラブルです。</p></li>
 <li><p>理由は1-03で説明した通りです。パッケージには入らないものがあるからです。</p>
 <ul><li>Package Managerで追加した機能</li><li>タグ、レイヤー、入力設定</li></ul>
 <p>自分のプロジェクトにはこれらが全部そろっているので、当然動きます。でも統合先は別のプロジェクトです。</p></li>
-<li><p>そこで、<strong>空のプロジェクトを作って、自分のパッケージだけを読み込んでみます</strong>。<br>ここで動けば、統合先でもほぼ確実に動きます。動かなければ、統合前に自分で直せます。</p></li>
+<li><p>そこで、<strong>空のプロジェクトを作って、自分のパッケージだけを読み込んでみます</strong>。<br>ここで動けば、統合先でもほぼ確実に動きます。動かなければ、提出前に自分で直せます。</p></li>
 <li><p>UnityHubで「New project」を押して、新しいプロジェクトを作りましょう。</p>
-<ul><li>テンプレート：<strong>自分のミニゲームと同じもの</strong>（2Dで作ったなら Universal 2D）</li><li>Unityバージョン：<strong>チームで決めたバージョン</strong>（今回は 6000.3.15f1）</li><li>プロジェクト名：<code>ImportTest</code> など、分かるもの</li></ul>
+<ul><li>テンプレート：<strong>自分のミニゲームと同じもの</strong>（2Dで作ったなら Universal 2D）</li><li>Unityバージョン：<strong>チームで決めたバージョン</strong>（6000.3.15f1）</li><li>プロジェクト名：<code>ImportTest</code> など、分かるもの</li></ul>
 <p class="warn">※バージョンが違うと、それだけで動かないことがあります。ここは必ずそろえてください。</p></li>
-<li><p>新しいプロジェクトが開いたら、<code>Assets &gt; Import Package &gt; Custom Package...</code> を選び、書き出したパッケージを読み込みます。<br>（詳しい手順は次回1-06で説明します。ここでは読み込んで動かすだけです）</p></li>
+<li><p>新しいプロジェクトが開いたら、<code>Assets &gt; Import Package &gt; Custom Package...</code> を選び、書き出したパッケージを読み込みます。<br>（詳しい手順は1-07で説明します。ここでは読み込んで動かすだけです）</p></li>
 <li><p>読み込んだら、この4つを確認してください。</p>
 <div class="tablewrap"><table>
 <tr><th>確認項目</th><th>見るところ</th></tr>
@@ -217,23 +219,121 @@ GameJam_2026_07_TeamCharlie_RhythmCat.unitypackage</pre>
 <pre>using Unity.VisualScripting;   // ← この機能が統合先に無い
 using Unity.Mathematics;       // ← これも</pre>
 <p>対処は2つあります。</p>
-<ul><li><strong>その機能を実際に使っていない場合</strong>：<code>using</code> の行を消す（多くの場合こちらです。エディタが自動で追加しただけ）</li><li><strong>実際に使っている場合</strong>：1-03で説明した通り、「この機能を使っています」と統合担当に申告する</li></ul></li>
+<ul><li><strong>その機能を実際に使っていない場合</strong>：<code>using</code> の行を消す（多くの場合こちらです。エディタが自動で追加しただけ）</li><li><strong>実際に使っている場合</strong>：ReadMe.mdに「この機能を使っています」と書く（1-06でやります）</li></ul></li>
 <li><p>【よくあるエラー2】絵が白い四角になる</p>
-<p>1-05でも触れた.metaの問題か、書き出しのときに「Include dependencies」のチェックが外れていた可能性があります。<br>もう一度1-04の手順で、チェックを入れて書き出し直してください。</p></li>
+<p>.metaファイルが一緒に書き出されていないか、書き出しのときに「Include dependencies」のチェックが外れていた可能性があります。<br>もう一度1-04の手順で、チェックを入れて書き出し直してください。</p></li>
 <li><p>【よくあるエラー3】タグ関連のエラーで止まる</p>
-<p><code>Tag: ○○ is not defined</code> のようなエラーが出たら、自分で追加したタグを使っています。<br>統合先に同じタグを追加してもらう必要があるので、<strong>タグ名を必ず申告してください</strong>。</p></li>
-<li><p>空のプロジェクトで問題なく動いたら、いよいよ提出です。<br>決められた名前のファイルと一緒に、1-03でまとめた情報を書いて提出しましょう。</p>
-<pre>【提出】GameJam_2026_07_TeamAlpha_MazeRunner.unitypackage
+<p><code>Tag: ○○ is not defined</code> のようなエラーが出たら、自分で追加したタグを使っています。<br>統合先に同じタグを追加してもらう必要があるので、<strong>タグ名をReadMe.mdに必ず書いてください</strong>。</p></li>
+<li><p>空のプロジェクトで問題なく動いたら、あとは提出用の説明書（ReadMe.md）を書くだけです。</p></li>
+<li><p>空のプロジェクトで動作確認ができたら、今回は完成です！<br>次回、提出に必要なReadMe.mdを作ります。</p></li></ol>
+<h1 class="chapter">【1-06】ReadMe.mdを書こう【1章：パッケージ編】</h1>
+<ol class="steps"><li><p>クリア条件：自分のミニゲームの説明書（ReadMe.md）が作れればOK！</p></li>
+<li><p>パッケージができました。でも、ファイルだけ渡されても迷とら運営は困ります。<br>「このゲームはどう操作するのか」「どのシーンから始まるのか」「何を追加したのか」が分からないからです。</p></li>
+<li><p>そこで、<strong>説明書のファイルを一緒に提出します</strong>。名前は <code>ReadMe.md</code> に統一します。</p>
+<div class="term"><b>用語：ReadMe（リードミー）</b>「最初に読んでね」という意味の、説明書ファイルの定番の名前。プログラムの世界では、フォルダの中にReadMeがあれば、まずそれを読むという習慣があります。</div>
+<div class="term"><b>用語：.md（マークダウン）</b>文字だけで見出しや箇条書きを書けるファイル形式。<code>#</code> を付ければ見出し、<code>-</code> を付ければ箇条書きになります。<strong>中身はただの文字なので、メモ帳でも作れます</strong>。</div></li>
+<li><p>まずは作り方から。メモ帳（Windows）またはテキストエディット（Mac）で作れます。</p>
+<p>【Windowsの場合】<br>1. メモ帳を開く<br>2. 後で出てくるテンプレートを貼り付けて、中身を書き換える<br>3. <code>ファイル &gt; 名前を付けて保存</code><br>4. <strong>ファイルの種類を「すべてのファイル」に変更</strong><br>5. <strong>文字コードを「UTF-8」に変更</strong><br>6. ファイル名を <code>ReadMe.md</code> にして保存</p>
+<p class="warn">※手順4をやらないと <code>ReadMe.md.txt</code> という名前になってしまいます。<br>※手順5をやらないと、日本語が文字化けすることがあります。</p>
+<p>【Macの場合】<br>テキストエディットは初期設定だとリッチテキストになるので、<code>フォーマット &gt; 標準テキストにする</code> をしてから保存してください。</p>
+<p class="warn">※VSCodeを使っている人は、新規ファイルを作って <code>ReadMe.md</code> の名前で保存するだけでOKです。</p></li>
+<li><p>置き場所は、<strong>自分のミニゲームのフォルダの中</strong>です。</p>
+<pre>Assets/
+ └ GameJam_2026_07_TeamA_MazeRunner/
+     ├ ReadMe.md      ← ここに置く
+     ├ Scenes/
+     ├ Scripts/
+     └ ...</pre>
+<p>ここに置いてからパッケージを書き出せば、ReadMe.mdもパッケージに含まれます。<br>※すでに書き出し済みの人は、ReadMe.mdを置いてから<strong>もう一度1-04の手順で書き出し直してください</strong>。</p></li>
+<li><p>では、中身を書きます。下のテンプレートを<strong>そのままコピーして</strong>使ってください。</p>
+<pre># ゲームタイトル
 
-・最初に開くシーン：Title_TeamAlpha.unity
-・追加した機能：TextMeshPro
-・追加したタグ：Item、Goal
-・追加したレイヤー：なし
-・操作方法：矢印キーで移動、スペースでジャンプ</pre></li>
-<li><p>空のプロジェクトで動作確認ができて、提出できたら、今回は完成です！<br>ここまでで、書き出す側の作業は終わりです。次回は受け取る側（統合担当）の作業を見ていきます。</p></li></ol>
-<h1 class="chapter">【1-06】統合プロジェクトに読み込もう【1章：パッケージ編】</h1>
+## ゲーム概要
+（どんなゲームか2〜3行で。ジャンル、目的、勝敗条件など）
+
+## 操作方法
+- 移動：
+- 決定：
+- その他：
+
+## 最初に開くシーン
+（例：Title_TeamA.unity）
+
+## 追加した機能（Package Manager）
+- （例：TextMeshPro）
+- 無ければ「なし」
+
+## 追加したタグ
+- （例：Item）
+- 無ければ「なし」
+
+## 追加したレイヤー
+- （例：Ground）
+- 無ければ「なし」
+
+## その他
+- 想定プレイ時間：
+- 終了条件：（どうなったらゲームが終わるか）
+- 使用素材：（配布サイトの名前とURL。自作なら「自作」）
+- 既知の不具合：
+- 制作メンバー：
+- 連絡先：（DiscordのID。統合中に質問が出たとき用）</pre></li>
+<li><p>書き方の例です。テンプレートを埋めるとこうなります。</p>
+<pre># 迷路ダッシュ
+
+## ゲーム概要
+制限時間内にゴールを目指す2D迷路ゲームです。
+道中のアイテムを取ると制限時間が5秒増えます。
+時間切れになるとゲームオーバーです。
+
+## 操作方法
+- 移動：矢印キー
+- 決定：スペースキー
+- その他：Escキーでタイトルに戻る
+
+## 最初に開くシーン
+Title_TeamA.unity
+
+## 追加した機能（Package Manager）
+- TextMeshPro
+- Cinemachine
+
+## 追加したタグ
+- Item
+- Goal
+
+## 追加したレイヤー
+- なし
+
+## その他
+- 想定プレイ時間：2分
+- 終了条件：ゴールに触れるとクリア、制限時間0でゲームオーバー。どちらもタイトルに戻ります
+- 使用素材：効果音ラボ（https://soundeffect-lab.info/）、キャラ絵は自作
+- 既知の不具合：まれに壁をすり抜けることがあります
+- 制作メンバー：○○、△△
+- 連絡先：Discord @maruo</pre></li>
+<li><p>各項目について、迷とら運営が何に使うかを説明します。ここが分かると書きやすくなります。</p>
+<div class="tablewrap"><table>
+<tr><th>項目</th><th>運営がこう使う</th></tr>
+<tr><td>ゲームタイトル</td><td>タイトル画面のメニューに表示する名前になる</td></tr>
+<tr><td>ゲーム概要</td><td>遊び方が分からないときに読む。紹介文にも使う</td></tr>
+<tr><td>操作方法</td><td>動作確認するときに必要。遊ぶ人への案内にも使う</td></tr>
+<tr><td>最初に開くシーン</td><td>タイトル画面から<strong>このシーンへつなぐ</strong>。これが無いと組み込めない</td></tr>
+<tr><td>追加した機能</td><td>統合プロジェクトに同じ機能を入れる。無いとエラーで動かない</td></tr>
+<tr><td>追加したタグ</td><td>統合プロジェクトに同じタグを追加する。無いと実行時に止まる</td></tr>
+<tr><td>追加したレイヤー</td><td>同上。当たり判定が絡むので、抜けると挙動が変わる</td></tr>
+<tr><td>終了条件</td><td>ミニゲームが終わったらタイトルに戻す処理を入れるときに必要</td></tr>
+<tr><td>使用素材</td><td>配布サイトによっては表記が必要。まとめてクレジットに載せる</td></tr>
+<tr><td>既知の不具合</td><td>統合後に発覚したとき「元からか、統合で壊れたか」の判断材料になる</td></tr>
+<tr><td>連絡先</td><td>統合中に不明点が出たとき、すぐ聞ける</td></tr>
+</table></div></li>
+<li><p>【書くときの注意】</p>
+<ul><li><strong>「なし」も書く</strong>。空欄だと「書き忘れ」なのか「無い」のか分かりません</li><li>追加したタグ・レイヤーは、<strong>1-03で確認した内容</strong>をそのまま書けばOK</li><li>シーン名は<strong>拡張子（.unity）まで正確に</strong>。<code>Title</code> と <code>title</code> の違いでも動きません</li></ul></li>
+<li><p>書けたら、提出です。<strong>パッケージファイルとReadMe.mdの両方</strong>を提出してください。<br>ReadMe.mdの中身は、Discordにそのまま貼り付けてもらえると運営が確認しやすいです。</p></li>
+<li><p>ReadMe.mdが作れて、提出できたら、今回は完成です！<br>ここまでで、書き出す側の作業は終わりです。次回は受け取る側（迷とら運営）の作業を見ていきます。</p></li></ol>
+<h1 class="chapter">【1-07】統合プロジェクトに読み込もう【1章：パッケージ編】</h1>
 <ol class="steps"><li><p>クリア条件：受け取ったパッケージを統合プロジェクトに読み込めればOK！</p></li>
-<li><p>ここからは受け取る側、統合担当の作業です。<br>※自分が統合担当でない人も、目を通しておいてください。<strong>自分の提出物がどう扱われるか</strong>が分かると、提出物の作り方が変わります。</p></li>
+<li><p>ここからは受け取る側、迷とら運営の作業です。<br>※自分が運営でない人も、目を通しておいてください。<strong>自分の提出物がどう扱われるか</strong>が分かると、提出物の作り方が変わります。</p></li>
 <li><p>全チームのパッケージがそろったら、統合プロジェクトを開きます。<br>まだ無ければ、UnityHubで新規プロジェクトを作ってください（テンプレートとバージョンは、チームで決めたものにそろえます）。</p></li>
 <li><p><code>Assets &gt; Import Package &gt; Custom Package...</code> を選びます。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_import_menu.png" alt="Import Packageメニュー">
@@ -243,15 +343,18 @@ using Unity.Mathematics;       // ← これも</pre>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_import_dialog.png" alt="Import Unity Packageウィンドウ">
 <div class="caption">Import Unity Packageウィンドウ</div>
 <ul><li>上部にパッケージ名が表示されます。<strong>ここで名前を確認</strong>しておくと、どのチームのものか分かります</li><li>緑の「New」は新しく追加されるファイル、「Changed」は既にあるファイルが上書きされるという意味です</li></ul>
-<p class="warn">※「Changed」が出たら要注意です。他のチームのファイルを上書きしようとしている可能性があります。その場合はImportを押さず、提出者に確認してください。</p></li>
+<p class="warn">※「Changed」が出たら要注意です。他のチームのファイルを上書きしようとしている可能性があります。その場合はImportを押さず、提出したチームに確認してください。</p></li>
 <li><p>読み込みが終わると、Projectウィンドウにファイルが追加されます。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_after_import.png" alt="読み込み後のProjectウィンドウ">
 <div class="caption">読み込み後のProjectウィンドウ</div>
 <p>1-02でフォルダをまとめてもらっているので、チームごとにきれいに分かれているはずです。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-02_project_structure.png" alt="チームごとに分かれた状態">
 <div class="caption">チームごとに分かれた状態</div></li>
-<li><p>【ここからが本番】読み込んだ直後に必ず確認すること</p>
-<p>Consoleを見てください。赤いエラーが出ていたら、そのチームのミニゲームはまだ動きません。</p>
+<li><p>読み込んだら、まず<strong>そのチームのReadMe.mdを開いてください</strong>。</p>
+<ul><li>追加した機能 → 統合プロジェクトにも同じものを入れる</li><li>追加したタグ・レイヤー → <code>Edit &gt; Project Settings &gt; Tags and Layers</code> で追加する</li><li>最初に開くシーン → タイトル画面からつなぐ先として控えておく</li></ul>
+<p>ここを先にやっておくと、次のエラー確認がスムーズになります。</p></li>
+<li><p>【ここからが本番】Consoleを確認する</p>
+<p>赤いエラーが出ていたら、そのチームのミニゲームはまだ動きません。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_console_errors.png" alt="読み込み後に出たエラー">
 <div class="caption">読み込み後に出たエラー</div>
 <p>実際にやってみたところ、3つのエラーが出ました。内容はこれです。</p>
@@ -261,7 +364,7 @@ using Unity.Mathematics;       // ← これも</pre>
 does not exist in the namespace 'Unity'</pre>
 <p>これは「スクリプトが使っている機能が、このプロジェクトに入っていない」という意味です。1-03で説明した「パッケージに入らないもの」が原因です。</p></li>
 <li><p>【対処】足りない機能を追加する</p>
-<p><code>Window &gt; Package Management &gt; Package Manager</code> を開いて、エラーに出ている機能を追加します。<br>または、その機能を実際には使っていない場合、スクリプトの <code>using</code> の行を消せば直ります（提出者に確認してから消しましょう）。</p></li>
+<p><code>Window &gt; Package Management &gt; Package Manager</code> を開いて、エラーに出ている機能を追加します。<br>または、その機能を実際には使っていない場合、スクリプトの <code>using</code> の行を消せば直ります（提出したチームに確認してから消しましょう）。</p></li>
 <li><p>【注意】エラーがあるまま再起動すると、Safe Modeになる</p>
 <p>コンパイルエラーが残った状態でUnityを開き直すと、この画面が出ます。</p>
 <img src="file:///C:/Users/muto/source/repos/MagicalShooting/TutorialTexts/package_images/1-06_safemode_dialog.png" alt="Enter Safe Mode?ダイアログ">
@@ -269,12 +372,12 @@ does not exist in the namespace 'Unity'</pre>
 <ul><li><strong>Enter Safe Mode</strong>：エラーを直すことに集中できるモードで開く</li><li><strong>Ignore</strong>：とりあえず無視して開く（エラーは残ったまま）</li></ul>
 <p>どちらを選んでも、エラーを直さない限りゲームは動きません。<strong>エラーは読み込んだその日に直す</strong>のが鉄則です。</p></li>
 <li><p>【全チーム分を読み込む手順】</p>
-<p>1チーム読み込む → エラーを確認 → 直す → 動作確認 → <strong>次のチームを読み込む</strong></p>
+<p>1チーム読み込む → ReadMe.mdの内容を反映 → エラーを確認 → 直す → 動作確認 → <strong>次のチームを読み込む</strong></p>
 <p>この順番を必ず守ってください。まとめて読み込むと、エラーが混ざって原因が分からなくなります。</p></li>
 <li><p>【最後に】シーンをBuild Settingsに登録する</p>
-<p>各ミニゲームのシーンは、読み込んだだけではビルドに含まれません。<br><code>File &gt; Build Profiles</code> を開いて、Scene Listに全ミニゲームのシーンを追加してください。<br>※1-05で各チームに申告してもらった「最初に開くシーン」が、ここで役に立ちます。</p></li>
+<p>各ミニゲームのシーンは、読み込んだだけではビルドに含まれません。<br><code>File &gt; Build Profiles</code> を開いて、Scene Listに全ミニゲームのシーンを追加してください。<br>※ReadMe.mdの「最初に開くシーン」が、ここで役に立ちます。</p></li>
 <li><p>全チームのパッケージを読み込めて、エラーが無くなったら、今回は完成です！<br>次回は最終回、提出前のチェックリストをまとめます。</p></li></ol>
-<h1 class="chapter">【1-07】通し：提出チェックリスト【保存版】</h1>
+<h1 class="chapter">【1-08】通し：提出チェックリスト【保存版】</h1>
 <ol class="steps"><li><p>クリア条件：これ1枚を見れば、提出まで迷わず進められればOK！</p></li>
 <li><p>最終回です。ここまでの内容を忘れても、<strong>このページさえ開けば提出できる</strong>ようにまとめました。<br>Discordにピン留めするなどして、手元に置いてください。</p></li></ol>
 <hr>
@@ -287,66 +390,92 @@ does not exist in the namespace 'Unity'</pre>
     ↓
 ③ Unityで再生して、まだ動くか確認
     ↓
-④ 追加した機能・タグ・レイヤーをメモ（1-03）
+④ 追加した機能・タグ・レイヤーを確認してメモ（1-03）
     ↓
-⑤ フォルダを右クリック →「Export As Asset Package...」
+⑤ ReadMe.md を書いて、自分のフォルダの中に置く（1-06）
     ↓
-⑥ Include dependencies にチェックが入っているか確認 → Export
+⑥ フォルダを右クリック →「Export As Asset Package...」
     ↓
-⑦ ファイル名を決められた形式で保存
+⑦ Include dependencies にチェックが入っているか確認 → Export
     ↓
-⑧ 空のプロジェクトを作って読み込み、動作確認（1-05）
+⑧ ファイル名を決められた形式で保存
     ↓
-⑨ パッケージ＋メモを提出</pre></div>
+⑨ 空のプロジェクトを作って読み込み、動作確認（1-05）
+    ↓
+⑩ パッケージ＋ReadMe.mdを提出</pre></div>
 <hr>
 <h2>【B】ファイル名とフォルダ名のルール</h2>
 <div class="block"><pre>GameJam_2026_07_Team&lt;チーム名&gt;_&lt;ゲームタイトル&gt;</pre>
 <div class="tablewrap"><table>
 <tr><th>良い例 ⭕</th><th>避けたい例 ✕</th></tr>
-<tr><td>GameJam_2026_07_TeamAlpha_MazeRunner</td><td>game.unitypackage</td></tr>
-<tr><td>GameJam_2026_07_TeamBravo_ShootingStar</td><td>最新版.unitypackage</td></tr>
-<tr><td>GameJam_2026_07_TeamCharlie_RhythmCat</td><td>GameJam 2026 07 チームC.unitypackage</td></tr>
+<tr><td>GameJam_2026_07_TeamA_MazeRunner</td><td>game.unitypackage</td></tr>
+<tr><td>GameJam_2026_07_TeamB_ShootingStar</td><td>最新版.unitypackage</td></tr>
+<tr><td>GameJam_2026_07_TeamC_RhythmCat</td><td>GameJam 2026 07 チームC.unitypackage</td></tr>
+<tr><td>GameJam_2026_07_TeamD_PuzzleBox</td><td>teamD_final_ver2.unitypackage</td></tr>
 </table></div>
-<ul><li><code>&lt;&gt;</code> は書かない（<code>Team</code> の後にそのままチーム名）</li><li><strong>半角英数とアンダースコア（_）だけ</strong>を使う</li><li>日本語・スペース・記号は使わない</li><li><strong>フォルダ名もファイル名と同じ</strong>にする</li></ul></div>
+<ul><li><code>&lt;&gt;</code> は書かない（<code>Team</code> の後にそのままチーム名A〜D）</li><li><strong>半角英数とアンダースコア（_）だけ</strong>を使う</li><li>日本語・スペース・記号は使わない</li><li><strong>フォルダ名もファイル名と同じ</strong>にする</li></ul></div>
 <hr>
 <h2>【C】パッケージに入るもの・入らないもの</h2>
 <div class="block"><div class="tablewrap"><table>
 <tr><th>種類</th><th>入る？</th><th>対応</th></tr>
 <tr><td>画像・音・スクリプト・シーン・プレハブ</td><td>⭕</td><td>自分のフォルダにまとめる</td></tr>
-<tr><td>Package Managerで追加した機能</td><td>✕</td><td>提出時に申告する</td></tr>
-<tr><td>タグ・レイヤー</td><td>✕</td><td>提出時に申告する</td></tr>
-<tr><td>入力設定（Input）</td><td>✕</td><td>提出時に申告する</td></tr>
-<tr><td>Build Settingsのシーン一覧</td><td>✕</td><td>「最初に開くシーン」を申告する</td></tr>
+<tr><td>Package Managerで追加した機能</td><td>✕</td><td>ReadMe.mdに書く</td></tr>
+<tr><td>タグ・レイヤー</td><td>✕</td><td>ReadMe.mdに書く</td></tr>
+<tr><td>入力設定（Input）</td><td>✕</td><td>ReadMe.mdに書く</td></tr>
+<tr><td>Build Settingsのシーン一覧</td><td>✕</td><td>「最初に開くシーン」をReadMe.mdに書く</td></tr>
 </table></div></div>
 <hr>
-<h2>【D】提出テンプレート</h2>
-<div class="block"><p>パッケージと一緒に、これをDiscordに貼ってください。</p>
-<pre>【提出】GameJam_2026_07_Team○○_○○○.unitypackage
+<h2>【D】ReadMe.md テンプレート（そのままコピーして使えます）</h2>
+<div class="block"><pre># ゲームタイトル
 
-・最初に開くシーン：○○○.unity
-・追加した機能：（Package Managerで入れたもの／無ければ「なし」）
-・追加したタグ：（無ければ「なし」）
-・追加したレイヤー：（無ければ「なし」）
-・操作方法：
-・空プロジェクトでの動作確認：済 / 未</pre></div>
+## ゲーム概要
+（どんなゲームか2〜3行で。ジャンル、目的、勝敗条件など）
+
+## 操作方法
+- 移動：
+- 決定：
+- その他：
+
+## 最初に開くシーン
+（例：Title_TeamA.unity）
+
+## 追加した機能（Package Manager）
+- 無ければ「なし」
+
+## 追加したタグ
+- 無ければ「なし」
+
+## 追加したレイヤー
+- 無ければ「なし」
+
+## その他
+- 想定プレイ時間：
+- 終了条件：（どうなったらゲームが終わるか）
+- 使用素材：（配布サイトの名前とURL。自作なら「自作」）
+- 既知の不具合：
+- 制作メンバー：
+- 連絡先：（DiscordのID）</pre>
+<ul><li>保存するときは、ファイル名 <code>ReadMe.md</code>、文字コード <strong>UTF-8</strong></li><li>置き場所は<strong>自分のミニゲームのフォルダの中</strong>（パッケージに一緒に入ります）</li><li>「なし」も必ず書く（空欄だと書き忘れと区別がつきません）</li></ul></div>
 <hr>
 <h2>【E】提出前チェックリスト</h2>
-<div class="block"><ul class="checklist"><li class="check">自分のミニゲームのファイルが、1つのフォルダにまとまっている</li><li class="check">フォルダ名が決められた形式になっている</li><li class="check">フォルダを移動したあと、Unityで再生して動いた</li><li class="check">「Include dependencies」にチェックを入れて書き出した</li><li class="check">ファイル名が決められた形式になっている</li><li class="check">ファイルサイズが極端に小さくない（数KBは中身が空の可能性）</li><li class="check">空のプロジェクトに読み込んで、エラー無しで動いた</li><li class="check">追加した機能・タグ・レイヤー・開始シーンを書いて提出した</li></ul></div>
+<div class="block"><ul class="checklist"><li class="check">自分のミニゲームのファイルが、1つのフォルダにまとまっている</li><li class="check">フォルダ名が決められた形式になっている</li><li class="check">フォルダを移動したあと、Unityで再生して動いた</li><li class="check">ReadMe.md を書いて、フォルダの中に置いた</li><li class="check">「Include dependencies」にチェックを入れて書き出した</li><li class="check">ファイル名が決められた形式になっている</li><li class="check">ファイルサイズが極端に小さくない（数KBは中身が空の可能性）</li><li class="check">空のプロジェクトに読み込んで、エラー無しで動いた</li><li class="check">パッケージとReadMe.mdの両方を提出した</li></ul></div>
 <hr>
 <h2>【F】困ったとき逆引き表</h2>
 <div class="block"><div class="tablewrap"><table>
 <tr><th>こうなった</th><th>こうする</th></tr>
 <tr><td><strong>書き出したファイルが数KBしかない</strong></td><td>フォルダを選ばずに書き出した可能性。自分のフォルダを右クリックしてやり直す</td></tr>
 <tr><td><strong>読み込んだら絵が白い四角になる</strong></td><td>Include dependencies のチェック漏れ。チェックを入れて書き出し直す</td></tr>
-<tr><td><strong><code>型または名前空間が見つかりません</code> エラー</strong></td><td>統合先に無い機能を使っている。使っていないなら該当の <code>using</code> を消す。使っているなら申告する</td></tr>
-<tr><td><strong><code>Tag: ○○ is not defined</code> エラー</strong></td><td>自分で追加したタグを使っている。統合先に同じタグを追加してもらう</td></tr>
+<tr><td><strong><code>型または名前空間が見つかりません</code> エラー</strong></td><td>統合先に無い機能を使っている。使っていないなら該当の <code>using</code> を消す。使っているならReadMe.mdに書く</td></tr>
+<tr><td><strong><code>Tag: ○○ is not defined</code> エラー</strong></td><td>自分で追加したタグを使っている。ReadMe.mdに書いて、統合先にも追加してもらう</td></tr>
 <tr><td><strong>Unityを開いたら Enter Safe Mode? が出た</strong></td><td>コンパイルエラーが残っている。Ignoreで開いて、Consoleの赤いエラーを直す</td></tr>
-<tr><td><strong>統合先で他チームのファイルを上書きしそう</strong></td><td>Importウィンドウに「Changed」が出ている。Importせず提出者に確認</td></tr>
+<tr><td><strong>統合先で他チームのファイルを上書きしそう</strong></td><td>Importウィンドウに「Changed」が出ている。Importせず提出チームに確認</td></tr>
 <tr><td><strong>フォルダを移動したら参照が外れた</strong></td><td>エクスプローラーで移動した可能性。Unity上で移動し直す</td></tr>
 <tr><td><strong>統合先でシーンが起動しない</strong></td><td>Build ProfilesのScene Listにシーンが追加されていない</td></tr>
+<tr><td><strong>ReadMe.md が ReadMe.md.txt になった</strong></td><td>メモ帳の保存時に「ファイルの種類：すべてのファイル」を選び忘れ。名前を変更する</td></tr>
+<tr><td><strong>ReadMe.md の日本語が文字化けする</strong></td><td>保存時の文字コードがUTF-8になっていない。UTF-8で保存し直す</td></tr>
 </table></div></div>
 <hr>
 <ol class="steps"><li><p>お疲れさまでした！これでパッケージ編は完了です。</p>
-<p>ポイントは3つだけです。</p>
-<ul><li><strong>1つのフォルダにまとめてから書き出す</strong></li><li><strong>決められた名前を付ける</strong></li><li><strong>空のプロジェクトで動作確認してから提出する</strong></li></ul>
-<p>この3つを守れば、統合作業はとてもスムーズになります。良いゲームジャムを！</p></li></ol>
+<p>ポイントは4つだけです。</p>
+<ul><li><strong>1つのフォルダにまとめてから書き出す</strong></li><li><strong>決められた名前を付ける</strong></li><li><strong>ReadMe.mdを書く</strong></li><li><strong>空のプロジェクトで動作確認してから提出する</strong></li></ul>
+<p>この4つを守れば、統合作業はとてもスムーズになります。良いゲームジャムを！</p></li></ol>

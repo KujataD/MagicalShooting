@@ -16,13 +16,13 @@
    ```
 
    一見きれいですが、**このまま書き出すと問題が起きます**。
-   統合プロジェクトに3チーム分を読み込むと、こうなるからです。
+   統合プロジェクトに4チーム分を読み込むと、こうなるからです。
 
    ```
    Assets/
-     ├ Scenes/     ← A・B・C チームのシーンが全部ここに入る
-     ├ Scripts/    ← 3チーム分のスクリプトが混ざる
-     ├ Images/     ← 3チーム分の画像が混ざる
+     ├ Scenes/     ← A・B・C・D チームのシーンが全部ここに入る
+     ├ Scripts/    ← 4チーム分のスクリプトが混ざる
+     ├ Images/     ← 4チーム分の画像が混ざる
      └ ...
    ```
 
@@ -33,7 +33,7 @@
 
    ```
    Assets/
-     └ GameJam_2026_07_TeamAlpha_MazeRunner/
+     └ GameJam_2026_07_TeamA_MazeRunner/
          ├ Scenes/
          ├ Scripts/
          ├ Images/
@@ -45,9 +45,10 @@
 
    ```
    Assets/
-     ├ GameJam_2026_07_TeamAlpha_MazeRunner/
-     ├ GameJam_2026_07_TeamBravo_ShootingStar/
-     └ GameJam_2026_07_TeamCharlie_RhythmCat/
+     ├ GameJam_2026_07_TeamA_MazeRunner/
+     ├ GameJam_2026_07_TeamB_ShootingStar/
+     ├ GameJam_2026_07_TeamC_RhythmCat/
+     └ GameJam_2026_07_TeamD_PuzzleBox/
    ```
 
 5. フォルダ名は、提出ファイルと同じ名前にしてください。
@@ -56,10 +57,10 @@
    GameJam_2026_07_Team<チーム名>_<ゲームタイトル>
    ```
 
-   ファイル名とフォルダ名がそろっていると、統合担当が「このフォルダはどのチームのものか」を確認せずに済みます。
+   ファイル名とフォルダ名がそろっていると、迷とら運営が「このフォルダはどのチームのものか」を確認せずに済みます。
 
 6. では作りましょう。UnityのProjectウィンドウで、Assetsフォルダを右クリック →「Create」→「Folder」。
-   名前を `GameJam_2026_07_Team○○_○○○` にします。
+   名前を `GameJam_2026_07_Team○_○○○` にします。
 
 7. 次に、既存のフォルダをこの中へ移動します。
 
