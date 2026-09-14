@@ -237,4 +237,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletTrailEffect
   trailEffectPrefab_: {fileID: 1027305722729357350, guid: ab2640cc5e514aa4e9aa7fbcafc2fa14, type: 3}
-  effectScale_: 4
+  effectScale_: 1.5
