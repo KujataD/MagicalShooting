@@ -120,4 +120,20 @@ public class GameManager : MonoBehaviour
         Debug.Log("Defeat Count : " + defeatCount_);
     }
 
+    /// <summary>
+    /// 現在の撃破数を取得（スコア表示用）
+    /// </summary>
+    public int GetDefeatCount()
+    {
+        return defeatCount_;
+    }
+
+    /// <summary>
+    /// クリアに必要な撃破数を取得（スコア表示用）
+    /// </summary>
+    public int GetClearTargetCount()
+    {
+        return clearTargetCount_;
+    }
+
 }
