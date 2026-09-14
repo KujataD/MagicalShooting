@@ -1038,6 +1038,9 @@ MonoBehaviour:
   bulletPrefab_: {fileID: 4544561105219441346, guid: b24d9a8d14b52f340a4fe0767e2c633e, type: 3}
   audioSource_: {fileID: 1487784779}
   shootSe_: {fileID: 8300000, guid: 44cd6e6151ba02640aa07415455c826a, type: 3}
+  chargeTimeToMax_: 1
+  maxChargeDamageMultiplier_: 3
+  maxChargeScaleMultiplier_: 2
 --- !u!114 &1487784774
 MonoBehaviour:
   m_ObjectHideFlags: 0
