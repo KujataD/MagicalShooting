@@ -12,6 +12,12 @@ public class PlayerHealth : MonoBehaviour
     // プレイヤー死亡アニメーション
     private PlayerDeathAnimation playerDeathAnimation_;
 
+    // 被弾音を鳴らすAudioSource
+    [SerializeField] private AudioSource audioSource_;
+
+    // 被弾音
+    [SerializeField] private AudioClip damageSe_;
+
     void Start()
     {
         // 開始時は満タンのHPにする
@@ -28,6 +34,9 @@ public class PlayerHealth : MonoBehaviour
 
         // わかりやすいようにログを出す
         Debug.Log("Player HP : " + hp_);
+
+        // 被弾音を鳴らす
+        audioSource_.PlayOneShot(damageSe_);
 
         // hpがゼロ以下ならプレイヤーを削除
         if (hp_ <= 0)
