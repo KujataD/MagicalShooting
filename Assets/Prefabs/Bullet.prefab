@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -6923003521405609887}
   - component: {fileID: -7579880601623437359}
   - component: {fileID: 1302270314849824423}
+  - component: {fileID: 380338075553384509}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -220,3 +221,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02dce0d41084844b85c9fe0682c459e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletHit
+  hitEffectPrefab_: {fileID: 3577843954833906120, guid: e1c2c3112b4b0964088f1f9066d2508c, type: 3}
+  hitEffectLifeTime_: 1
+--- !u!114 &380338075553384509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4544561105219441346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d348ce52d1af7974caf9adea5a80f552, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletTrailEffect
+  trailEffectPrefab_: {fileID: 1027305722729357350, guid: ab2640cc5e514aa4e9aa7fbcafc2fa14, type: 3}
