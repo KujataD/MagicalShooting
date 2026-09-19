@@ -104,6 +104,3 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
-
-# 効果音ラボの音源は再配布禁止のためコミットしない
-Assets/Sounds/SE/*.mp3
